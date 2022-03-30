@@ -1,0 +1,22 @@
+name: Deploy Beetroot to Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+
+      - name: Code checkout
+        uses: actions/checkout@v2
+
+      - name: Build docker image
+        run: docker compose build
+      
+      - name: Run docker container
+        run: docker compose up -d

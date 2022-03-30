@@ -1,0 +1,21 @@
+  @-webkit-keyframes leap {
+	50% {
+	  transform: translateY(-50%) rotate(-15deg);
+	}
+  }
+  @keyframes leap {
+	50% {
+	  transform: translateY(-50%) rotate(-15deg);
+	}
+  }
+
+  
+  .wobble span {
+	display: inline-block;
+	pointer-events: none;
+  }
+  
+  .wobble span.leap {
+	-webkit-animation: leap 0.7s 1;
+			animation: leap 0.7s 1;
+  }
