@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 import { getCollections } from "../actions/actions";
 import { Blockies } from "../components/Blockies";
 import Lists from "../components/List";
@@ -11,7 +12,9 @@ import ThemeBtn from "../components/ThemeBtn";
 import UserInfo from "../components/UserInfo";
 import { getCollectionsService } from "../services/services";
 import Provider from "../utils/Provider";
+import CollectionDetail from "./CollectionDetail";
 import Holdings from "./Holdings";
+import LandingPage from "./LandingPage";
 import PnL from "./PnL";
 
 const WalletButton = () => {
@@ -70,7 +73,14 @@ const Home = () => {
     <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">
       <Header />
       <div className="h-full overflow-hidden">
-        {tab === 0 ? <Holdings /> : <PnL />}
+        <Routes>
+          {/* <Route path="/">
+            <LandingPage />
+          </Route> */}
+          <Route path="/" element={<Holdings />} />
+          <Route path="/pnl" element={<PnL />} />
+          <Route path="/collection" element={<CollectionDetail />} />
+        </Routes>
       </div>
     </main>
   );

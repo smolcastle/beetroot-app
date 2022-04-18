@@ -1,4 +1,5 @@
 import { useCallback, useRef } from "react";
+import { Link } from "react-router-dom";
 import col from "../pages/test.json";
 import UserInfo from "./UserInfo";
 
@@ -104,20 +105,22 @@ export default function Lists() {
       {collections.map((collection, index) => {
         const { name, owned_asset_count, featured_image_url } = collection;
         return (
-          <li
-            key={index}
-            className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden"
-          >
-            <div className="flex flex-1 items-center justify-around relative">
-              <CollectionRank rank={index} />
-              <CollectionImage img_url={featured_image_url} />
-              <CollectionName name={name} items={index} />
-              <CollectionFloorPrice floorPrice={"2.25"} />
-              <CollectionMarketCap marketCap={"2.25"} />
-              <CollectionHolding holding={"2.25"} />
-            </div>
-            <div class="h-[0.0625rem] w-full bg-white5 dark:bg-black8" />
-          </li>
+          <Link to={"/collection"} state={{ name, image: featured_image_url }}>
+            <li
+              key={index}
+              className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden hover:bg-white4 dark:hover:bg-black3 cursor-pointer"
+            >
+              <div className="flex flex-1 items-center justify-around relative">
+                <CollectionRank rank={index} />
+                <CollectionImage img_url={featured_image_url} />
+                <CollectionName name={name} items={index} />
+                <CollectionFloorPrice floorPrice={"2.25"} />
+                <CollectionMarketCap marketCap={"2.25"} />
+                <CollectionHolding holding={"2.25"} />
+              </div>
+              <div class="h-[0.0625rem] w-full bg-white5 dark:bg-black8" />
+            </li>
+          </Link>
         );
       })}
     </ul>
