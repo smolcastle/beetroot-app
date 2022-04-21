@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
+import Charts from "../components/Charts";
+import DropDown from "../components/DropDown";
 
 const testData = [
   "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0",
@@ -223,17 +225,29 @@ function NFTList() {
 function Titles() {
   return (
     <div className="flex dark:bg-black2 bg-white0 h-10 py-2 px-4 mb-1 items-center">
-      <div className="flex flex-1 dark:text-white3 text-black5 text-sm font-medium capitalize ml-20">
-        {"NFTs"}
-      </div>
-      <div className="dark:text-white3 text-black5 text-sm font-medium capitalize w-28">
-        {"Floor Price"}
-      </div>
-      <div className="dark:text-white3 text-black5 text-sm font-medium capitalize w-28">
-        {"Buy Price"}
-      </div>
-      <div className="dark:text-white3 text-black5 text-sm font-medium capitalize w-24">
-        {"Gas Fee"}
+      <DropDown
+        title={"NFTs"}
+        sortTitle={"Id"}
+        containerStyle={"flex flex-1"}
+        boxStyle={"ml-20"}
+      />
+      <DropDown
+        title={"Floor Price"}
+        sortTitle={"Floor"}
+        boxStyle={"w-32 text-left"}
+      />
+      <DropDown
+        title={"Buy Price"}
+        sortTitle={"Buy"}
+        boxStyle={"w-32 text-left"}
+      />
+      <DropDown
+        title={"Gas Fee"}
+        sortTitle={"Gas"}
+        boxStyle={"w-32 text-left"}
+      />
+      <div className="dark:text-white3 text-black5 text-sm font-medium capitalize w-32 mr-2">
+        {"24H Volume"}
       </div>
     </div>
   );
@@ -263,7 +277,7 @@ function NFTTokenId({ id }) {
 
 function BuyPrice({ price }) {
   return (
-    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-28">
+    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-32">
       {`Ξ ${price}`}
     </div>
   );
@@ -271,7 +285,7 @@ function BuyPrice({ price }) {
 
 function FloorPrice({ price }) {
   return (
-    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-28">
+    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-32">
       {`Ξ ${price}`}
     </div>
   );
@@ -279,7 +293,7 @@ function FloorPrice({ price }) {
 
 function GasFee({ gasfee }) {
   return (
-    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-24 mr-4">
+    <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-32">
       {gasfee}
     </div>
   );
@@ -301,6 +315,7 @@ function NFTTable() {
               <BuyPrice price={"213.25"} />
               <FloorPrice price={"164.24"} />
               <GasFee gasfee={"0.000254"} />
+              <Charts />
             </div>
             <div class="h-[0.0625rem] w-full bg-white5 dark:bg-black8" />
           </li>
