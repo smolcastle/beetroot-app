@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { getCollections } from "../actions/actions";
+import { getFloorPrices } from "../actions/actions";
 import { Blockies } from "../components/Blockies";
 import Lists from "../components/List";
 import Navigation from "../components/Navigation";
@@ -62,12 +62,10 @@ const Header = () => {
 
 const Home = () => {
   const tab = useSelector((state) => state.tabs.selectedTab);
-
   const dispatch = useDispatch();
-
   // useEffect(() => {
-  //     dispatch(getCollections())
-  // }, [])
+  //   dispatch(getFloorPrices());
+  // }, []);
 
   return (
     <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">

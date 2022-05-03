@@ -3,33 +3,6 @@ import { useLocation } from "react-router-dom";
 import Charts from "../components/Charts";
 import DropDown from "../components/DropDown";
 
-const testData = [
-  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-  "https://lh3.googleusercontent.com/_3F3VyE01AHDOX3Zzity_Sw7BxjrO1j-kwO0_8deZWc4ZJn3c4JEMJ9g26-4RHCBYzayRnakEvLGbvWnYwL8pwOytNfm118nm0poyQ=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/5C-jEO3zoQL7y663URfke3-Kh_DuuB00Uz7NCksa5THizfo4k2KkITECka6N0lBYA5reP-rPVs82iVFhVAvt4_rvtFbCuR_Rb-aw29o=s0",
-  "https://lh3.googleusercontent.com/mxggmgA6wDDXNfSOGM1vY7fyO-JIFZQ56lmgLFsY0mNmpE9GAFWUbvuaxJU5OABi6lhS1HY3etvOoiG1GtNPFvi8IaFA3Q1opgMVLw=s0",
-];
-
 function CollectionImage({ image }) {
   return (
     <div className="flex w-16">
@@ -44,7 +17,7 @@ function CollectionImage({ image }) {
 
 function CollectionName({ name }) {
   return (
-    <div className="w-48 dark:text-white3 text-black5 text-base font-bold capitalize justify-center items-center text-center">
+    <div className="w-48 dark:text-white3 text-black5 text-base font-bold capitalize justify-center items-center ml-4">
       {name}
     </div>
   );
@@ -56,34 +29,34 @@ function Info() {
       <div className="flex flex-1" />
       <div className="flex flex-col justify-center items-center border-[1px] w-44 h-16 border-white1 dark:border-black4 rounded-l-xl">
         <div className="dark:text-white3 text-black5 text-base font-bold capitalize">
-          {"10.0K"}
+          {"14 Items"}
         </div>
-        <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
-          {"items"}
-        </div>
+        {/* <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
+          {"Your Items"}
+        </div> */}
       </div>
-      <div className="flex flex-col justify-center items-center border-y-[1px] w-44 h-16 border-white1 dark:border-black4">
+      {/* <div className="flex flex-col justify-center items-center border-y-[1px] w-44 h-16 border-white1 dark:border-black4">
         <div className="dark:text-white3 text-black5 text-base font-bold capitalize">
           {"6.4K"}
         </div>
         <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
           {"owners"}
         </div>
-      </div>
-      <div className="flex flex-col justify-center items-center border-y-[1px] border-l-[1px] w-44 h-16 border-white1 dark:border-black4">
+      </div> */}
+      {/* <div className="flex flex-col justify-center items-center border-y-[1px] border-l-[1px] w-44 h-16 border-white1 dark:border-black4">
         <div className="dark:text-white3 text-black5 text-base font-bold capitalize">
-          {"109.5"}
+          {"Ξ 109.5"}
         </div>
         <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
           {"floor price"}
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col justify-center items-center border-[1px] w-44 h-16 border-white1 dark:border-black4 rounded-r-xl">
         <div className="dark:text-white3 text-black5 text-base font-bold capitalize">
-          {"491.9K"}
+          {"Ξ 491.9K"}
         </div>
         <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
-          {"volume traded"}
+          {"Holding Value"}
         </div>
       </div>
     </div>
@@ -92,17 +65,14 @@ function Info() {
 
 function TopInfoSection() {
   const {
-    state: { name, image },
+    state: {
+      collection: { name, image_url },
+    },
   } = useLocation();
   return (
     <div className="flex h-24 px-16 items-center dark:bg-black2 bg-white0 mb-2">
-      <CollectionImage
-        image={
-          image ||
-          "https://lh3.googleusercontent.com/rLkzGqVwAhXHOTj8FPA9VlJut2ZhcxCaKf3koBH3knHPXU-IyTRKb9DHLFGnHoycIAGZiloBWZXe7jvX0FtDvKkU1NyeAFx9nsPAGA=s300"
-        }
-      />
-      <CollectionName name={name || "tubby cats by tubby collective"} />
+      <CollectionImage image={image_url} />
+      <CollectionName name={name} />
       <Info />
     </div>
   );
@@ -137,20 +107,20 @@ function Switch({ tabular, setTabular }) {
 
 function TabsSection() {
   const [tabIndex, setTab] = useState(1);
-  const [tabular, setTabular] = useState(false);
+  const [tabular, setTabular] = useState(true);
   return (
     <div className="h-screen w-full dark:bg-black2 bg-white0">
       <div className="flex pt-4">
         <div className="flex flex-1" />
         <div className="flex">
           <TabHeading
-            title={"Holdings"}
+            title={"My Items"}
             index={1}
             onPress={setTab}
             isSelected={tabIndex == 1}
           />
           <TabHeading
-            title={"Profit / Loss"}
+            title={"Activity"}
             index={2}
             onPress={setTab}
             isSelected={tabIndex == 2}
@@ -190,28 +160,33 @@ function TabHeading({ title, index, onPress, isSelected }) {
 
 function NFTList() {
   const {
-    state: { name },
+    state: {
+      collection: { items },
+    },
   } = useLocation();
   return (
     <ul
       role="list"
       class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 p-8"
     >
-      {testData.map((image) => {
+      {Object.values(items).map((item) => {
+        const { token_symbol, eth_value } = item;
         return (
           <li class="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y overflow-hidden">
             <div class="flex-1 flex flex-col">
               <img
                 class="w-full h-64 flex-shrink-0 object-fill"
-                src={image}
+                src={
+                  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0"
+                }
                 alt=""
               />
               <div className="flex justify-between py-4 px-4">
                 <div className="dark:text-white3 text-black5 text-sm font-medium capitalize">
-                  {"#1249"}
+                  {`#${token_symbol}`}
                 </div>
                 <div className="dark:text-white3 text-black5 text-sm font-medium capitalize">
-                  {"Ξ 0.2713"}
+                  {`Ξ ${eth_value}`}
                 </div>
               </div>
             </div>
@@ -232,8 +207,8 @@ function Titles() {
         boxStyle={"ml-20"}
       />
       <DropDown
-        title={"Floor Price"}
-        sortTitle={"Floor"}
+        title={"Value"}
+        sortTitle={"Value"}
         boxStyle={"w-32 text-left"}
       />
       <DropDown
@@ -241,11 +216,11 @@ function Titles() {
         sortTitle={"Buy"}
         boxStyle={"w-32 text-left"}
       />
-      <DropDown
+      {/* <DropDown
         title={"Gas Fee"}
         sortTitle={"Gas"}
         boxStyle={"w-32 text-left"}
-      />
+      /> */}
       <div className="dark:text-white3 text-black5 text-sm font-medium capitalize w-32 mr-2">
         {"24H Volume"}
       </div>
@@ -268,7 +243,7 @@ function NFTImage({ image }) {
 function NFTTokenId({ id }) {
   return (
     <div className="flex flex-1 w-full">
-      <h3 className="dark:text-white3 text-black5 text-sm font-medium line-clamp-2 w-5/6 text-center capitalize w-28">
+      <h3 className="dark:text-white3 text-black5 text-sm font-medium line-clamp-2 w-5/6 capitalize w-28 ml-8">
         {id}
       </h3>
     </div>
@@ -300,21 +275,31 @@ function GasFee({ gasfee }) {
 }
 
 function NFTTable() {
+  const {
+    state: {
+      collection: { items },
+    },
+  } = useLocation();
   return (
     <ul role="list">
       <Titles />
-      {testData.map((image, index) => {
+      {Object.values(items).map((item, index) => {
+        const { token_symbol, eth_value } = item;
         return (
           <li
             key={index}
             className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden hover:bg-white4 dark:hover:bg-black3 cursor-pointer"
           >
             <div className="flex flex-1 items-center justify-around relative">
-              <NFTImage image={image} />
-              <NFTTokenId id={"#1249"} />
-              <BuyPrice price={"213.25"} />
+              <NFTImage
+                image={
+                  "https://lh3.googleusercontent.com/aJeB3DFRf8oxX4XPiTULe7y0ZVb_njSI2iaZTmMkI7RVFJpeLw6QBLEm5VdMIczr3EXpJYChbM-GEPNq4dSLjkw5MEZPaMvhUGR5OA=s0"
+                }
+              />
+              <NFTTokenId id={`#${token_symbol}`} />
               <FloorPrice price={"164.24"} />
-              <GasFee gasfee={"0.000254"} />
+              <BuyPrice price={eth_value} />
+              {/* <GasFee gasfee={"0.000254"} /> */}
               <Charts />
             </div>
             <div class="h-[0.0625rem] w-full bg-white5 dark:bg-black8" />

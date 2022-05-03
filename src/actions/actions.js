@@ -1,9 +1,9 @@
-import { getCollectionsService } from "../services/services";
+import { getFloorPriceService } from "../services/services";
 
-export function getCollections() {
+export function getFloorPrices() {
   return async (dispatch) => {
-    const collections = await getCollectionsService();
-    dispatch({ type: "UPDATE_COLLECTIONS", collections });
+    const prices = await getFloorPriceService();
+    dispatch({ type: "UPDATE_FLOOR_PRICES", prices });
   };
 }
 

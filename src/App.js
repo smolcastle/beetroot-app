@@ -1,18 +1,20 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 // import './App.css'
-import Home from './pages/Home';
-import Provider from './utils/Provider';
+import Home from "./pages/Home";
+import Provider from "./utils/Provider";
 
 function App() {
-  Provider.init(useDispatch())
+  console.log("apppppp");
+
+  Provider.init(useDispatch());
   // useEffect(() => {
   //   if (Provider.web3Modal.cachedProvider) {
   //     Provider.connect()
   //   }
   // }, [])
 
-  return <Home />
+  return <Home />;
 }
 
 export default App;

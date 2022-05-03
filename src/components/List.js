@@ -1,26 +1,15 @@
 import { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import col from "../pages/test.json";
 import UserInfo from "./UserInfo";
 
 function CollectionImage({ img_url }) {
   return (
-    <div className="flex w-12 items-end">
+    <div className="flex w-12 items-end ml-8">
       <img
         className="w-10 h-10 bg-black3 rounded-full flex-shrink-0"
         src={img_url}
         alt=""
       />
-    </div>
-  );
-}
-
-function CollectionRank({ rank }) {
-  return (
-    <div className="flex w-12 items-end">
-      <h3 className="dark:text-white3 text-black5 text-sm font-medium line-clamp-2 w-5/6 text-center capitalize">
-        {rank}
-      </h3>
     </div>
   );
 }
@@ -96,24 +85,24 @@ function Titles() {
   );
 }
 
-export default function Lists() {
-  const collections = [...col];
-
+export default function Lists({ collections }) {
   return (
     <ul role="list" className="px-96">
       <Titles />
       {collections.map((collection, index) => {
-        const { name, owned_asset_count, featured_image_url } = collection;
+        const { name, image_url, address, items } = collection;
         return (
-          <Link to={"/collection"} state={{ name, image: featured_image_url }}>
+          <Link to={"/collection"} state={{ collection }}>
             <li
               key={index}
               className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden hover:bg-white4 dark:hover:bg-black3 cursor-pointer"
             >
               <div className="flex flex-1 items-center justify-around relative">
-                <CollectionRank rank={index} />
-                <CollectionImage img_url={featured_image_url} />
-                <CollectionName name={name} items={index} />
+                <CollectionImage img_url={image_url} />
+                <CollectionName
+                  name={name || address}
+                  items={Object.values(items).length}
+                />
                 <CollectionFloorPrice floorPrice={"2.25"} />
                 <CollectionMarketCap marketCap={"2.25"} />
                 <CollectionHolding holding={"2.25"} />
