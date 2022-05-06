@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Charts from "../components/Charts";
 import DropDown from "../components/DropDown";
+import Price from "../components/Price";
 
 function CollectionImage({ image }) {
   return (
@@ -53,7 +54,7 @@ function Info() {
       </div> */}
       <div className="flex flex-col justify-center items-center border-[1px] w-44 h-16 border-white1 dark:border-black4 rounded-r-xl">
         <div className="dark:text-white3 text-black5 text-base font-bold capitalize">
-          {"Ξ 491.9K"}
+          <Price price={"491.9K"} />
         </div>
         <div class="text-black6 dark:text-white6 font-normal text-sm capitalize">
           {"Holding Value"}
@@ -186,7 +187,7 @@ function NFTList() {
                   {`#${token_symbol}`}
                 </div>
                 <div className="dark:text-white3 text-black5 text-sm font-medium capitalize">
-                  {`Ξ ${eth_value}`}
+                  <Price price={eth_value} />
                 </div>
               </div>
             </div>
@@ -253,7 +254,7 @@ function NFTTokenId({ id }) {
 function BuyPrice({ price }) {
   return (
     <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-32">
-      {`Ξ ${price}`}
+      <Price price={price} />
     </div>
   );
 }
@@ -261,7 +262,7 @@ function BuyPrice({ price }) {
 function FloorPrice({ price }) {
   return (
     <div className="dark:text-white3 text-black5 text-sm font-medium capitalize justify-center items-center w-32">
-      {`Ξ ${price}`}
+      <Price price={price} />
     </div>
   );
 }

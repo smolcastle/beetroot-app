@@ -2,7 +2,7 @@ import { COLLECTIONS } from "../utils/constants";
 
 export function getCollectionsList(data) {
   const collections = {};
-  data.forEach((trade) => {
+  data?.forEach((trade) => {
     const { address, token_standard, to_address, from_address, token_symbol } =
       trade;
     if (
@@ -19,9 +19,7 @@ export function getCollectionsList(data) {
         collections[address].items = {};
       }
       if (to_address === "70222") {
-        collections[address].items = {
-          [token_symbol]: trade,
-        };
+        collections[address].items[token_symbol] = trade;
       }
       if (from_address === "70222") {
         delete collections[address].items[token_symbol];

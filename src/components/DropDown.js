@@ -25,7 +25,7 @@ export default function DropDown({
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-4 text-black4 ml-1"
+              className="h-5 w-4 dark:text-white3 text-black5 ml-1"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -49,8 +49,8 @@ export default function DropDown({
             leaveTo="opacity-0 translate-y-1"
           >
             <Popover.Panel className="absolute z-10 left-1/4 transform -translate-x-1/2 mt-6 px-2 w-48 max-w-xs sm:px-0">
-              <div className="rounded-lg shadow-lg overflow-hidden">
-                <div className="relative grid gap-6 bg-white0 px-3 py-4">
+              <div className="rounded-lg dark:rounded-none shadow-lg overflow-hidden">
+                <div className="relative grid gap-6 dark:bg-black2 bg-white0 px-3 py-4 dark:border-[1px] border-white1 dark:border-black4">
                   {solutions.map((item) => (
                     <a
                       key={item.name}

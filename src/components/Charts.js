@@ -28,6 +28,7 @@ const options = {
     },
     visible: false,
   },
+  tooltip: { enabled: false },
   series: [
     {
       data: [8, 2, 2, 4, 3, 6, 9, 10, 4, 5, 8, 3],

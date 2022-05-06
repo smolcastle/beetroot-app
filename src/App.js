@@ -5,8 +5,6 @@ import Home from "./pages/Home";
 import Provider from "./utils/Provider";
 
 function App() {
-  console.log("apppppp");
-
   Provider.init(useDispatch());
   // useEffect(() => {
   //   if (Provider.web3Modal.cachedProvider) {
