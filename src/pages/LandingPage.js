@@ -78,7 +78,7 @@ function LandingPage() {
         </div>
         <div className="flex flex-col justify-center items-center z-10 font-righteous text-white text-[24px] md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl leading-[2.2rem] md:leading-[3rem] lg:leading-[4rem] xl:leading-[5rem] 2xl:leading-[6rem] md:mt-5 lg:mt-10 xl:mt-18">
           <div className="flex flex-row items-center">
-            {"Introducting "}
+            {"Introducing "}
             <div className="text-yellow ml-4">{"beetroot.ai"}</div>
           </div>
           <div className="flex items-center text-center md:hidden">
