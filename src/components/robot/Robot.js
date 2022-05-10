@@ -72,7 +72,7 @@ export default class Robot extends React.Component {
     let { droidX, mouseX, toTheRight } = this.state;
 
     return (
-      <div>
+      <div className="hidden 2xl:block">
         <div
           className="bb8"
           style={{ WebkitTransform: `translateX(${droidX}px)` }}
