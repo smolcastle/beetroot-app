@@ -2,4 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Termina";
+    src: url("./fonts/Termina.otf");
+  }
+
 
