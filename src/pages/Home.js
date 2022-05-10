@@ -65,7 +65,7 @@ const Home = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     // dispatch(getFloorPrices());
-    dispatch(getEthPrice());
+    // dispatch(getEthPrice());
   }, []);
 
   return (
@@ -77,8 +77,8 @@ const Home = () => {
             <LandingPage />
           </Route> */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/pnl" element={<PnL />} />
-          <Route path="/collection" element={<CollectionDetail />} />
+          {/* <Route path="/pnl" element={<PnL />} />
+          <Route path="/collection" element={<CollectionDetail />} /> */}
         </Routes>
       </div>
     </main>
