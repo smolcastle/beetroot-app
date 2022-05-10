@@ -38,6 +38,7 @@ const options = {
   plotOptions: {
     series: {
       marker: {
+        radius: 0,
         enabled: false,
       },
     },

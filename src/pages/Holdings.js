@@ -8,7 +8,7 @@ import { WindMillLoading } from "react-loadingg";
 
 const TRADES_QUERY = gql`
   {
-    getTrades(address: "0xFFb6D97Bd1E7B7bd08595096d15037401A1f416B") {
+    getTrades(address: "0xf896527c49b44aab3cf22ae356fa3af8e331f280") {
       transfer_id
       tx_id
       from_address

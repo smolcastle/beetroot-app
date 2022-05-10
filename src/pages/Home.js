@@ -70,13 +70,13 @@ const Home = () => {
 
   return (
     <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">
-      <Header />
+      {/* <Header /> */}
       <div className="h-full overflow-hidden">
         <Routes>
           {/* <Route path="/">
             <LandingPage />
           </Route> */}
-          <Route path="/" element={<Holdings />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/pnl" element={<PnL />} />
           <Route path="/collection" element={<CollectionDetail />} />
         </Routes>
