@@ -6,6 +6,7 @@ import Robot from "../components/robot/Robot";
 import { WindMillLoading } from "react-loadingg";
 import dw from "../img/d_w.png";
 import tw from "../img/t_w.png";
+import robo from "../img/robo.png";
 import Music from "../components/Music";
 
 function Line({ width, marginRight, marginTop }) {
@@ -72,6 +73,11 @@ function LandingPage() {
     <div className="h-full w-full bg-gradient-to-b from-nord-dark1 to-nord-light flex flex-col relative px-[50px] py-[24px] md:py-0 md:px-0">
       <div className="absolute bg-mobile_mesh md:bg-mesh bg-contain left-4 inset-y-1 right-1 md:top-32 md:bottom-12 md:left-32 md:right-0 bg-no-repeat" />
       <Music />
+      <img
+        className="md:hidden absolute left-[-70px] bottom-[-40px] w-48 h-56 object-contain rotate-[25deg]"
+        src={robo}
+        alt=""
+      />
       <div className="flex absolute right-0 md:left-16 md:right-auto bottom-[24px] md:bottom-12 z-10 items-center">
         <img
           className="w-6 md:w-7 h-4 md:h-5 rounded-full flex-shrink-0 mr-4 md:mr-6 object-contain cursor-pointer"
@@ -97,7 +103,7 @@ function LandingPage() {
             <HeaderBtn title={"Connect"} />
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center z-10 font-righteous text-white text-[24px] md:text-3xl lg:text-4xl xl:text-5xl leading-[2.2rem] md:leading-[3rem] lg:leading-[4rem] xl:leading-[5rem] md:mt-5 lg:mt-10">
+        <div className="flex flex-col justify-center items-center z-10 font-righteous text-white text-[24px] md:text-3xl lg:text-4xl 2xl:text-5xl leading-[2.2rem] md:leading-[3rem] lg:leading-[4rem] 2xl:leading-[5rem] md:mt-5 lg:mt-10">
           <div className="flex flex-row items-center">
             {"Introducing "}
             <div className="text-yellow ml-4">{"beetroot.ai"}</div>
@@ -126,14 +132,14 @@ function LandingPage() {
             onClick={() =>
               window.open("https://0nqh1nqio8z.typeform.com/to/pnMAiA72")
             }
-            class="bg-green bg-opacity-[0.36] text-white text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] h-[40px] md:h-[46px] lg:h-[52px] xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-[52px] lg:mt-[60px] leading-[20px]"
+            class="bg-green bg-opacity-[0.36] text-white text-[16px] md:text-[18px] lg:text-[20px] 2xl:text-[22px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-[52px] lg:mt-[60px] leading-[20px]"
           >
             {"Join the waitlist"}
           </button>
         </div>
-        <div className="flex mb-[16%] md:mb-[15%] lg:mb-[14%] xl:mb-[12.5%] 2xl:mb-[11%] mt-auto justify-center font-termina">
+        <div className="flex mb-[16%] md:mb-[15%] lg:mb-[14%] xl:mb-[8%] 2xl:mb-[11%] mt-auto justify-center font-termina">
           <div className="flex flex-col items-end">
-            <div className="text-[20px] md:text-[25px] lg:text-[30px] xl:text-[35px] text-yellow items-center">
+            <div className="text-[20px] md:text-[25px] lg:text-[30px] xl:text-[30px] 2xl:text-[35px] text-yellow items-center">
               {"Coming soon"}
             </div>
             <svg
