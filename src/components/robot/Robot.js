@@ -1,6 +1,9 @@
 import React from "react";
 import "./robot.scss";
 
+const width30 = window.innerWidth * 0.3;
+const width70 = window.innerWidth - width30;
+
 export default class Robot extends React.Component {
   constructor(props) {
     super(props);
@@ -16,9 +19,11 @@ export default class Robot extends React.Component {
 
   // Keep track of the mouse position.
   handleMouseMove(event) {
-    this.setState({
-      mouseX: event.pageX,
-    });
+    if (event.pageX > width30 && event.pageX < width70) {
+      this.setState({
+        mouseX: event.pageX,
+      });
+    }
   }
 
   // Get moving!

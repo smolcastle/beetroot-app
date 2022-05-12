@@ -8,28 +8,31 @@ import { WindMillLoading } from "react-loadingg";
 
 const TRADES_QUERY = gql`
   {
-    getTrades(address: "0xf896527c49b44aab3cf22ae356fa3af8e331f280") {
-      transfer_id
-      tx_id
-      from_address
-      to_address
-      token_id
-      value
-      block_number
-      eth_value
-      gas_price
-      gas_used
-      receiver
-      sender
-      time_stamp
-      tx_cost
-      tx_hash
+    getTrades(address: "0xffb6d97bd1e7b7bd08595096d15037401a1f416b") {
+      trades {
+        transfer_id
+        tx_id
+        from_address
+        to_address
+        token_id
+        value
+        block_number
+        eth_value
+        gas_price
+        gas_used
+        receiver
+        sender
+        time_stamp
+        tx_cost
+        tx_hash
+        label_id
+        token_standard
+        token_symbol
+        address
+        name
+        display_name
+      }
       label_id
-      token_standard
-      token_symbol
-      address
-      name
-      display_name
     }
   }
 `;
@@ -38,10 +41,13 @@ export default function Holdings() {
   const { data, loading, error } = useQuery(TRADES_QUERY);
   let collections = [];
   if (!loading) {
-    collections = getCollectionsList(data?.getTrades);
+    collections = getCollectionsList(
+      data?.getTrades?.trades,
+      data?.getTrades?.label_id
+    );
   } else {
     return (
-      <div className="flex flex-1 h-full flex-col justify-center pb-20">
+      <div className="flex flex-1 h-full flex-col justify-center pb-20 font-rubik">
         <div className="relative">
           <WindMillLoading size={"large"} color={"#88C0D0"} />
         </div>
@@ -54,7 +60,7 @@ export default function Holdings() {
   console.log(data);
 
   return (
-    <div class="flex flex-row w-full h-full pl-0 md:p-2 md:space-y-4">
+    <div class="flex flex-row w-full h-full pl-0 md:p-2 md:space-y-4 font-rubik">
       <PortfolioValue />
       <Lists collections={collections} />
     </div>
