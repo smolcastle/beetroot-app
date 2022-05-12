@@ -10,6 +10,7 @@ module.exports = {
       fontFamily: {
         righteous: ["Righteous", "sans-serif"],
         termina: ["Termina", "sans-serif"],
+        rubik: ["Rubik", "sans-serif"],
       },
       backgroundImage: {
         bg: "url('/src/img/bg.png')",

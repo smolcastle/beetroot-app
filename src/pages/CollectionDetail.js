@@ -374,7 +374,10 @@ function NFTTable({ searchString }) {
         const { token_symbol, eth_value } = item;
         return (
           <div key={index}>
-            <li className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden hover:bg-white4 dark:hover:bg-black3 cursor-pointer">
+            <li
+              onClick={() => console.log(item)}
+              className="dark:bg-black2 bg-white0 h-16 flex flex-col overflow-hidden hover:bg-white4 dark:hover:bg-black3 cursor-pointer"
+            >
               <div className="flex flex-1 items-center justify-around relative">
                 <NFTRank rank={index + 1} />
                 <NFTImage

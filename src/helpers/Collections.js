@@ -1,14 +1,17 @@
 import { COLLECTIONS } from "../utils/constants";
 
-export function getCollectionsList(data) {
+export function getCollectionsList(data, label_id) {
   const collections = {};
   data?.forEach((trade) => {
-    const { address, token_standard, to_address, from_address, token_symbol } =
-      trade;
-    if (
-      COLLECTIONS[address] &&
-      (token_standard === "ERC721" || token_standard === "ERC1155")
-    ) {
+    const {
+      address,
+      token_standard,
+      to_address,
+      from_address,
+      token_symbol,
+      tx_id,
+    } = trade;
+    if (COLLECTIONS[address]) {
       if (!collections[address]) {
         collections[address] = {
           address,
@@ -17,12 +20,16 @@ export function getCollectionsList(data) {
             "https://lh3.googleusercontent.com/Y8yUsNKfprQ-n0gJ9hnoU0wrApIu06BNoiyY6F89uabke3LpBYY0QzJMJp11-C_dT6SjmeapQkkZF-9xhvo7eKOxMJUjrUyenvVZXw=s300",
         };
         collections[address].items = {};
+        collections[address].trade = [];
       }
-      if (to_address === "70222") {
-        collections[address].items[token_symbol] = trade;
-      }
-      if (from_address === "70222") {
-        delete collections[address].items[token_symbol];
+      collections[address].trade.push(trade);
+      if (token_standard === "ERC721" || token_standard === "ERC1155") {
+        if (to_address === label_id) {
+          collections[address].items[token_symbol] = trade;
+        }
+        if (from_address === label_id) {
+          delete collections[address].items[token_symbol];
+        }
       }
     }
   });

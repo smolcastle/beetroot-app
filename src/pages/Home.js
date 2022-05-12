@@ -65,7 +65,7 @@ const Home = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     // dispatch(getFloorPrices());
-    // dispatch(getEthPrice());
+    dispatch(getEthPrice());
   }, []);
 
   return (
