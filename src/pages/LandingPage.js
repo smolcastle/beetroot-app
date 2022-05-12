@@ -69,8 +69,8 @@ function LandingPage() {
 
   return (
     // <div className="h-screen w-screen bg-gradient-to-b from-nord-dark1 via-nord-dark2 via-nord-dark3 to-nord-dark4 flex relative">
-    <div className="h-screen w-screen bg-gradient-to-b from-nord-dark1 to-nord-light flex flex-col relative px-[50px] py-[24px] md:py-0 md:px-0">
-      <div className="absolute bg-mesh bg-contain left-4 inset-y-1 right-1 md:top-32 md:bottom-12 md:left-32 md:right-0 bg-no-repeat" />
+    <div className="h-full w-full bg-gradient-to-b from-nord-dark1 to-nord-light flex flex-col relative px-[50px] py-[24px] md:py-0 md:px-0">
+      <div className="absolute bg-mobile_mesh md:bg-mesh bg-contain left-4 inset-y-1 right-1 md:top-32 md:bottom-12 md:left-32 md:right-0 bg-no-repeat" />
       <Music />
       <div className="flex absolute right-0 md:left-16 md:right-auto bottom-[24px] md:bottom-12 z-10 items-center">
         <img
