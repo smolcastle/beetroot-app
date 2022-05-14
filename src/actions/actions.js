@@ -26,3 +26,43 @@ export function getEthPrice() {
     dispatch({ type: "UPDATE_ETH_PRICE", price });
   };
 }
+
+export function updateMessages(messages) {
+  return {
+    type: "UPDATE_MESSAGES",
+    messages,
+  };
+}
+
+export function updateMessage(message) {
+  return {
+    type: "UPDATE_MESSAGE",
+    message,
+  };
+}
+
+export function resetMessages() {
+  return {
+    type: "RESET_MESSAGES",
+  };
+}
+
+export function updateQueueIds(queue_ids) {
+  return {
+    type: "UPDATE_QUEUE_IDS",
+    queue_ids,
+  };
+}
+
+export function updateSignatureData(signatureData) {
+  return {
+    type: "UPDATE_SIGNING_DATA",
+    signatureData,
+  };
+}
+
+export function resetSignatureData() {
+  return {
+    type: "RESET_SIGNING_DATA",
+  };
+}

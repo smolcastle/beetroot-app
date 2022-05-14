@@ -17,8 +17,9 @@ module.exports = {
         chart: "url('/src/img/chart.png')",
         mesh: "url('/src/img/mesh.png')",
         mobile_mesh: "url('/src/img/mesh_m.png')",
-        play: "url('/src/img/play.png')",
-        playing: "url('/src/img/playing.png')",
+        play: "url('https://firebasestorage.googleapis.com/v0/b/beetroot-2192b.appspot.com/o/play.png?alt=media&token=67c51a6d-fdc4-4cec-b1b9-4b5096cf87f3')",
+        playing:
+          "url('https://firebasestorage.googleapis.com/v0/b/beetroot-2192b.appspot.com/o/playing.png?alt=media&token=4960e9dc-5a6c-4002-865e-f194f47cf93e')",
       },
     },
     colors: {

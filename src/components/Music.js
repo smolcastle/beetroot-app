@@ -1,11 +1,12 @@
 import React from "react";
-import song from "../utils/song.mp3";
 
 class Music extends React.PureComponent {
   state = {
     play: false,
   };
-  audio = new Audio(song);
+  audio = new Audio(
+    "https://firebasestorage.googleapis.com/v0/b/beetroot-2192b.appspot.com/o/song.mp3?alt=media&token=50d50162-be82-4f14-9a8d-bf73af128a0b"
+  );
 
   componentDidMount() {
     this.audio.addEventListener("ended", () => this.setState({ play: false }));

@@ -16,6 +16,8 @@ import CollectionDetail from "./CollectionDetail";
 import Holdings from "./Holdings";
 import LandingPage from "./LandingPage";
 import PnL from "./PnL";
+import Channel from "../components/Chat/Channel";
+import Chat from "./Chat";
 
 const WalletButton = () => {
   const address = useSelector((state) => state.wallet.address);
@@ -70,13 +72,13 @@ const Home = () => {
 
   return (
     <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">
-      {/* <Header /> */}
+      <Header />
       <div className="h-full overflow-hidden">
         <Routes>
           {/* <Route path="/">
             <LandingPage />
           </Route> */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Chat />} />
           {/* <Route path="/pnl" element={<PnL />} />
           <Route path="/collection" element={<CollectionDetail />} /> */}
         </Routes>

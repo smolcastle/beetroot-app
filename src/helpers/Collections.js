@@ -37,3 +37,28 @@ export function getCollectionsList(data, label_id) {
     (collection) => Object.values(collection.items).length > 0
   );
 }
+
+export function isFunction(functionToCheck) {
+  var getType = {};
+  return (
+    functionToCheck &&
+    getType.toString.call(functionToCheck) === "[object Function]"
+  );
+}
+
+export function truncate(fullStr, strLen, separator) {
+  if (fullStr.length <= strLen) return fullStr;
+
+  separator = separator || "...";
+
+  var sepLen = separator.length,
+    charsToShow = strLen - sepLen,
+    frontChars = Math.ceil(charsToShow / 2),
+    backChars = Math.floor(charsToShow / 3);
+
+  return (
+    fullStr.substr(0, frontChars) +
+    separator +
+    fullStr.substr(fullStr.length - backChars)
+  );
+}
