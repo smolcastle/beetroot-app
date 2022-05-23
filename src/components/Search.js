@@ -17,7 +17,7 @@ const SearchIcon = () => {
   );
 };
 
-export default function Search({ searchString, setSearchString }) {
+export default function Search({ searchString, setSearchString, placeholder }) {
   return (
     <div class="flex items-center h-8 w-64 bg-white4 dark:bg-black3 rounded-md shadow-sm overflow-hidden">
       <SearchIcon />
@@ -28,7 +28,7 @@ export default function Search({ searchString, setSearchString }) {
         autoComplete="off"
         id="search"
         class="w-96 h-full sm:text-sm outline-none text-black5 dark:text-white3 placeholder:text-black6 dark:placeholder:text-white6 bg-white4 dark:bg-black3"
-        placeholder="Search Collection"
+        placeholder={placeholder || "Search Collection"}
         onChange={(e) => setSearchString(e.target.value)}
       />
     </div>

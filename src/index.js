@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import reportWebVitals from "./reportWebVitals";
 import { configureStore } from "./store/configureStore";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import "./utils/firebase";
 
 const client = new ApolloClient({
   uri: "http://localhost/graphql",

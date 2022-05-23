@@ -37,3 +37,39 @@ export function getCollectionsList(data, label_id) {
     (collection) => Object.values(collection.items).length > 0
   );
 }
+
+export function isFunction(functionToCheck) {
+  var getType = {};
+  return (
+    functionToCheck &&
+    getType.toString.call(functionToCheck) === "[object Function]"
+  );
+}
+
+export function truncate(fullStr, strLen, separator) {
+  if (fullStr.length <= strLen) return fullStr;
+
+  separator = separator || "...";
+
+  var sepLen = separator.length,
+    charsToShow = strLen - sepLen,
+    frontChars = Math.ceil(charsToShow / 2),
+    backChars = Math.floor(charsToShow / 3);
+
+  return (
+    fullStr.substr(0, frontChars) +
+    separator +
+    fullStr.substr(fullStr.length - backChars)
+  );
+}
+
+export function getDateTime(timestamp) {
+  let dateObj = new Date(timestamp * 1000);
+  let month = dateObj.getUTCMonth() + 1; //months from 1-12
+  let day = dateObj.getUTCDate();
+  let year = dateObj.getUTCFullYear();
+  let hours = dateObj.getHours();
+  let minutes = dateObj.getMinutes();
+
+  return hours + ":" + minutes + " - " + day + "/" + month;
+}
