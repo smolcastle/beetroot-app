@@ -18,6 +18,7 @@ import LandingPage from "./LandingPage";
 import PnL from "./PnL";
 import Channel from "../components/Chat/Channel";
 import Chat from "./Chat";
+import LoaderOverlay from "../components/LoaderOverlay";
 
 const WalletButton = () => {
   const address = useSelector((state) => state.wallet.address);
@@ -68,6 +69,9 @@ const Home = () => {
   useEffect(() => {
     // dispatch(getFloorPrices());
     dispatch(getEthPrice());
+    // setTimeout(() => {
+
+    // }, 2000);
   }, []);
 
   return (
@@ -83,6 +87,7 @@ const Home = () => {
           <Route path="/collection" element={<CollectionDetail />} /> */}
         </Routes>
       </div>
+      <LoaderOverlay />
     </main>
   );
 };

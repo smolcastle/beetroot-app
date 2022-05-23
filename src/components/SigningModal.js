@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 export default function SigningModal({
   signMessage,
@@ -6,6 +7,7 @@ export default function SigningModal({
   setSignModalState,
   dispatch,
 }) {
+  const { chainId } = useSelector((state) => state.wallet);
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -29,7 +31,7 @@ export default function SigningModal({
             <div className="relative p-6 flex-auto">
               <button
                 onClick={() => {
-                  signMessage(sender, dispatch);
+                  signMessage(sender, dispatch, chainId);
                   setSignModalState(false);
                 }}
                 type="button"

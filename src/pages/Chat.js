@@ -17,26 +17,30 @@ import {
 } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  hideLoader,
   resetMessages,
+  showLoader,
   updateMessage,
   updateMessages,
   updateQueueIds,
   updateSignatureData,
 } from "../actions/actions";
 import Search from "../components/Search";
-import { isFunction, truncate } from "../helpers/Collections";
+import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
 import Provider from "../utils/Provider";
 import SigningModal from "../components/SigningModal";
 import { ethers } from "ethers";
+import { Trade } from "./Trade";
+import { generateNonce, SiweMessage } from "siwe";
 
 const arr = ["a", "b", "c", "d"];
 
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
-  console.log(
-    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
-  );
+  if (!messageText?.trim().length) {
+    return;
+  }
   // Add a new message entry to the Firebase database.
   try {
     await addDoc(collection(getFirestore(), "messages"), {
@@ -80,13 +84,11 @@ async function getAllQueues(sender, dispatch) {
     queue_ids[doc.data().queue_id] = true;
   });
   dispatch(updateQueueIds(Object.keys(queue_ids).length ? queue_ids : null));
+  dispatch(hideLoader());
 }
 
 // Loads chat messages history and listens for upcoming ones.
 function listenMessages(sender, receiver, dispatch) {
-  console.log(
-    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
-  );
   // Create the query to load the last 12 messages and listen for new ones.
   const recentMessagesQuery = query(
     collection(getFirestore(), "messages"),
@@ -103,7 +105,6 @@ function listenMessages(sender, receiver, dispatch) {
     const messages = [];
     querySnapshot.forEach((doc) => {
       messages.push(doc.data());
-      console.log(doc.data());
       //   dispatch(updateMessage(doc.data()));
     });
     dispatch(updateMessages(messages.length ? messages : null));
@@ -118,40 +119,53 @@ async function getSignatureData(sender, dispatch) {
   if (signatureDataSnap.exists()) {
     const signatureData = signatureDataSnap.data();
     const recoveredAddress = ethers.utils.verifyMessage(
-      "beetroot",
-      signatureData.signedMessage
+      signatureData.message,
+      signatureData.signature
     );
     if (recoveredAddress === sender) {
       dispatch(updateSignatureData(signatureData));
       getAllQueues(sender, dispatch);
     } else {
+      dispatch(hideLoader());
       alert("Signature did not match");
     }
   } else {
+    dispatch(hideLoader());
     console.log("No such document!");
   }
 }
 
-async function signMessage(sender, dispatch) {
+async function signMessage(sender, dispatch, chainId) {
   try {
-    const signedMessage = await Provider.signMessage("beetroot");
-    const recoveredAddress = ethers.utils.verifyMessage(
-      "beetroot",
-      signedMessage
-    );
+    dispatch(showLoader());
+    const nonce = generateNonce();
+    const message = new SiweMessage({
+      domain: window.location.host,
+      address: sender,
+      statement: "Sign in with Ethereum to the app.",
+      uri: window.location.origin,
+      version: "1",
+      chainId,
+      nonce,
+    });
+    const msgStr = message.prepareMessage();
+    const signature = await Provider.signMessage(msgStr);
+    const recoveredAddress = ethers.utils.verifyMessage(msgStr, signature);
     if (recoveredAddress === sender) {
       const signingsRef = collection(getFirestore(), "signings");
       await setDoc(doc(signingsRef, sender), {
         address: sender,
-        signedMessage,
-        message: "beetroot",
+        signature,
+        message: msgStr,
         timestamp: serverTimestamp(),
       });
       getSignatureData(sender, dispatch);
     } else {
+      dispatch(hideLoader());
       alert("Signature did not match");
     }
   } catch (error) {
+    dispatch(hideLoader());
     console.error("Error writing new message to Firebase Database", error);
   }
 }
@@ -269,7 +283,7 @@ function Users({ users, sender, dispatch, setReceiver, setModalState }) {
         {"Start New Chat"}
       </button>
       {Object.keys(users)
-        .reverse()
+        // .reverse()
         ?.map((item, index) => {
           const addresses = item.split("_");
           const receiver =
@@ -344,7 +358,6 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
           </div>
         )}
         {messages?.map(({ text, name, timestamp }, index) => {
-          console.log(timestamp);
           return (
             <div>
               <li
@@ -357,9 +370,11 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
                   <div className="text-white3 text-[12px] capitalize p-2">
                     {text}
                   </div>
-                  <div className="text-white3 text-[12px] capitalize p-2">
-                    {new Date(timestamp.seconds).getTime().toString()}
-                  </div>
+                  {timestamp?.seconds && (
+                    <div className="text-white3 text-[11px] capitalize p-2">
+                      {getDateTime(timestamp?.seconds)}
+                    </div>
+                  )}
                 </div>
               </li>
             </div>
@@ -383,19 +398,29 @@ export default function Chat() {
   const [modal, setModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
   const sender = useSelector((state) => state.wallet.address);
+  const chainId = useSelector((state) => state.wallet.chainId);
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (sender && (!signatureData || !signatureData?.signedMessage)) {
+    if (sender && (!signatureData || !signatureData?.signature)) {
+      dispatch(showLoader());
       getSignatureData(sender, dispatch);
     }
   }, [sender]);
 
+  if (chainId != 4) {
+    return (
+      <div className="text-black1 text-base font-medium capitalize mt-8 flex justify-center">
+        {"Wrong Network connect to rinkby network"}
+      </div>
+    );
+  }
+
   if (!sender) {
     return (
-      <div className="text-black1 text-sm font-medium capitalize mt-8 flex justify-center">
+      <div className="text-black1 text-base font-medium capitalize mt-8 flex justify-center">
         {"Connect your wallet first"}
       </div>
     );
@@ -404,10 +429,7 @@ export default function Chat() {
   return (
     <div className="flex flex-1 flex-col h-full p-2">
       <div className="flex flex-1 w-full h-full">
-        {signatureData &&
-        signatureData?.signedMessage &&
-        queue_ids &&
-        sender ? (
+        {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
             <Users
               users={queue_ids}
@@ -425,7 +447,9 @@ export default function Chat() {
               dispatch={dispatch}
             />
             <div className="w-[1px] bg-black7 opacity-20" />
-            <div className="flex flex-[6] flex-col p-8" />
+            <div className="flex flex-[6] flex-col p-2">
+              <Trade sender={sender} receiver={receiver} />
+            </div>
           </>
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center flex-col">
@@ -434,7 +458,7 @@ export default function Chat() {
             </div>
             <button
               onClick={() => {
-                if (signatureData && signatureData?.signedMessage) {
+                if (signatureData && signatureData?.signature) {
                   setModalState(true);
                 } else {
                   setSignModalState(true);

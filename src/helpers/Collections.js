@@ -62,3 +62,14 @@ export function truncate(fullStr, strLen, separator) {
     fullStr.substr(fullStr.length - backChars)
   );
 }
+
+export function getDateTime(timestamp) {
+  let dateObj = new Date(timestamp * 1000);
+  let month = dateObj.getUTCMonth() + 1; //months from 1-12
+  let day = dateObj.getUTCDate();
+  let year = dateObj.getUTCFullYear();
+  let hours = dateObj.getHours();
+  let minutes = dateObj.getMinutes();
+
+  return hours + ":" + minutes + " - " + day + "/" + month;
+}
