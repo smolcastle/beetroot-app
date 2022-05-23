@@ -63,6 +63,15 @@ const Header = () => {
   );
 };
 
+const Content = () => {
+  return (
+    <div className="h-full overflow-hidden">
+      <Header />
+      <Chat />
+    </div>
+  );
+};
+
 const Home = () => {
   const tab = useSelector((state) => state.tabs.selectedTab);
   const dispatch = useDispatch();
@@ -76,17 +85,12 @@ const Home = () => {
 
   return (
     <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">
-      <Header />
-      <div className="h-full overflow-hidden">
-        <Routes>
-          {/* <Route path="/">
-            <LandingPage />
-          </Route> */}
-          <Route path="/" element={<Chat />} />
-          {/* <Route path="/pnl" element={<PnL />} />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/chat" element={<Content />} />
+        {/* <Route path="/pnl" element={<PnL />} />
           <Route path="/collection" element={<CollectionDetail />} /> */}
-        </Routes>
-      </div>
+      </Routes>
       <LoaderOverlay />
     </main>
   );
