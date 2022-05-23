@@ -6,11 +6,11 @@ import Provider from "./utils/Provider";
 
 function App() {
   Provider.init(useDispatch());
-  // useEffect(() => {
-  //   if (Provider.web3Modal.cachedProvider) {
-  //     Provider.connect()
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (Provider.web3Modal.cachedProvider) {
+      Provider.connect();
+    }
+  }, []);
 
   return <Home />;
 }
