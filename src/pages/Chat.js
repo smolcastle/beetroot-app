@@ -410,18 +410,18 @@ export default function Chat() {
     }
   }, [sender]);
 
-  if (chainId != 4) {
-    return (
-      <div className="text-black1 text-base font-medium capitalize mt-8 flex justify-center">
-        {"Wrong Network connect to rinkby network"}
-      </div>
-    );
-  }
-
   if (!sender) {
     return (
       <div className="text-black1 text-base font-medium capitalize mt-8 flex justify-center">
         {"Connect your wallet first"}
+      </div>
+    );
+  }
+
+  if (chainId != 4) {
+    return (
+      <div className="text-black1 text-base font-medium capitalize mt-8 flex justify-center">
+        {"Wrong Network connect to rinkby network"}
       </div>
     );
   }
