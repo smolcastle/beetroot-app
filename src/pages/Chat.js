@@ -427,8 +427,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col h-full p-2">
-      <div className="flex flex-1 w-full h-full">
+    <div className="flex flex-1 flex-col p-2 min-h-0">
+      <div className="flex flex-1 h-full">
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
             <Users
