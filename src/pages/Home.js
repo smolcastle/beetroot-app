@@ -65,7 +65,7 @@ const Header = () => {
 
 const Content = () => {
   return (
-    <div className="h-full overflow-hidden">
+    <div className="flex flex-1 flex-col h-full">
       <Header />
       <Chat />
     </div>
