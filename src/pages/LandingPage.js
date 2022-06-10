@@ -135,7 +135,7 @@ function LandingPage() {
         </div>
         <div className="flex flex-col justify-center items-center z-10 font-inter text-gray2  md:text-3xl lg:text-4xl 2xl:text-5xl leading-[2.2rem] md:leading-[3rem] lg:leading-[4rem] 2xl:leading-[5rem] md:mt-5 lg:mt-10">
           <div className="flex flex-row text-center items-center z-10 font-bold text-[24px] xs:text-[36px] md:text-[48px] lg:text-[64px] xl:text-[72px]">
-            {"Beetroot, Negotiate Deals and"}
+            {"Negotiate Deals,"}
             <br/>
             {"Swap your NFTs"}
           </div>
@@ -153,7 +153,7 @@ function LandingPage() {
             onClick={() =>
               window.open("https://0nqh1nqio8z.typeform.com/to/pnMAiA72")
             }
-            className="bg-beetroot1 font-termina font-extralight text-white text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px] hover:animate-jello"
+            className="bg-beetroot1 font-termina font-extralight text-white text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px]"
           >
             {"Join the waitlist"}
           </button>
