@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   darkMode: "class",
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -6,11 +8,16 @@ module.exports = {
   //   content: ["./**/*.html"],
   // },
   theme: {
+    screens: {
+      xs: '380px',
+      ...defaultTheme.screens,
+    },
     extend: {
       fontFamily: {
         righteous: ["Righteous", "sans-serif"],
         termina: ["Termina", "sans-serif"],
         rubik: ["Rubik", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
       backgroundImage: {
         bg: "url('/src/img/bg.png')",
@@ -21,9 +28,11 @@ module.exports = {
         playing:
           "url('https://firebasestorage.googleapis.com/v0/b/beetroot-2192b.appspot.com/o/playing.png?alt=media&token=4960e9dc-5a6c-4002-865e-f194f47cf93e')",
       },
+      
     },
     colors: {
       gray1: "#cacaca",
+      gray2: "#565454",
       beetroot1: "#70263d",
       black: "#000000",
       black1: "#242933",
@@ -51,12 +60,40 @@ module.exports = {
       yellow: "#E8B81C",
       green: "#A3BE8C",
       pink: "#B48EAD",
-      "nord-dark1": "#2E3440",
-      "nord-dark2": "#3B4252",
+      "nord-dark1": "#D7DFEC",
+      "nord-dark2": "#9FB6D9",
       "nord-dark3": "#434C5E",
       "nord-dark4": "#4C566A",
-      "nord-light": "#5E81AC",
+      "nord-light": "#F7FFF4",
     },
+    animation:{
+        jello: 'jello 0.9s both',
+    },
+      keyframes:{
+        jello: {
+        '0%': {
+                  transform: 'scale3d(1, 1, 1)'
+        },
+        '30%': {
+                  transform: 'scale3d(1.25, 0.75, 1)'
+        },
+        '40%': {
+                  transform: 'scale3d(0.75, 1.25, 1)'
+        },
+        '50%': {
+                  transform: 'scale3d(1.15, 0.85, 1)'
+        },
+        '65%': {
+                  transform: 'scale3d(0.95, 1.05, 1)'
+        },
+        '75%': {
+                  transform: 'scale3d(1.05, 0.95, 1)'
+        },
+        '100%': {
+                  transform: 'scale3d(1, 1, 1)'
+        },
+      }
+    }
   },
   plugins: [
     require("@tailwindcss/aspect-ratio"),

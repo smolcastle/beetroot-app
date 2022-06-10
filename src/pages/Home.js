@@ -46,16 +46,16 @@ const Logo = () => {
 
 const Header = () => {
   return (
-    <div class="flex items-center h-16 bg-white0 dark:bg-black2 shadow-sm px-6 flex-shrink-0">
+    <div className="flex items-center h-16 bg-white0 dark:bg-black2 shadow-sm px-6 flex-shrink-0">
       <Logo />
-      <div class="w-16" />
+      <div className="w-16" />
 
-      <div class="flex flex-[6_6_0%]" />
+      <div className="flex flex-[6_6_0%]" />
       <div className="w-[40rem] flex justify-between">
         <Navigation />
         <div className="flex flex-row items-center mr-4">
           <ThemeBtn />
-          <div class="w-4" />
+          <div className="w-4" />
           <WalletButton />
         </div>
       </div>
@@ -84,7 +84,7 @@ const Home = () => {
   }, []);
 
   return (
-    <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 h-screen">
+    <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 w-screen h-screen">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Content />} />
