@@ -31,7 +31,7 @@ class Music extends React.PureComponent {
         <button
           type="button"
           onClick={this.togglePlay}
-          className="absolute bottom-[25%] md:bottom-[30px] left-[41%] md:left-auto md:right-[30px] bg-contain h-[50px] md:h-20 w-[100px] md:w-40 bg-playing bg-no-repeat"
+          className="z-20 lg:absolute mt-10 ml-3 bottom-[8%] xs:bottom-[25%]  lg:left-auto lg:bottom-[30px] lg:right-[30px] lg:translate-x-0 bg-contain h-[50px] xs:h-20 w-[100px] xs:w-40 bg-playing bg-no-repeat"
         />
       );
     }
@@ -39,7 +39,7 @@ class Music extends React.PureComponent {
       <button
         type="button"
         onClick={this.togglePlay}
-        className="absolute bottom-[25%] md:bottom-[30px] left-[45%] md:left-auto md:right-[30px] bg-contain h-[50px] md:h-20 w-[50px] md:w-20 bg-play bg-no-repeat"
+        className="lg:absolute mt-5 sm:mt-10 bottom-[8%] xs:bottom-[25%] lg:left-auto lg:bottom-[30px] lg:right-[30px] lg:translate-x-0 bg-contain h-[50px] xs:h-20 w-[50px] xs:w-20 bg-play bg-no-repeat"
       />
     );
   }
