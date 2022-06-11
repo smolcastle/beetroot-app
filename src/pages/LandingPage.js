@@ -151,13 +151,12 @@ function LandingPage() {
           <button
             type="button"
             onClick={() =>
-              window.open("https://0nqh1nqio8z.typeform.com/to/pnMAiA72")
+              window.open("https://forms.gle/H2BQF67whA81wXyW9")
             }
             className="bg-beetroot1 font-termina font-extralight text-white text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px]"
           >
             {"Join the waitlist"}
           </button>
-          <Music />
         </div>
       </div>
       <div className="absolute h-1/4 sm:h-2/6 xl:h-2/5 w-full bottom-0 ">
@@ -173,7 +172,7 @@ function LandingPage() {
             alt=""
           />
           <img
-            className="absolute right-0 lg:right-40 sm:right-5 h-full"
+            className="absolute right-0 lg:right-20 sm:right-5 h-full"
             src={mascot}
             alt=""
           />
