@@ -47,7 +47,7 @@ function ConnectBtn({ title }) {
   return (
     <button
       type="button"
-      className="py-2 bg-beetroot1 text-white h-10 md:text-[10px] lg:text-[12px] md:w-24 lg:w-32 mr-4 font-termina eye_cursor"
+      className="py-2 bg-beetroot1 text-white0 h-10 md:text-[10px] lg:text-[12px] md:w-24 lg:w-32 mr-4 font-termina eye_cursor"
     >
       {title}
     </button>
@@ -153,7 +153,7 @@ function LandingPage() {
             onClick={() =>
               window.open("https://forms.gle/H2BQF67whA81wXyW9")
             }
-            className="bg-beetroot1 font-termina font-extralight text-white text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px]"
+            className="bg-beetroot1 font-termina font-extralight text-white0 text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px]"
           >
             {"Join the waitlist"}
           </button>
