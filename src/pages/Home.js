@@ -19,6 +19,7 @@ import PnL from "./PnL";
 import Channel from "../components/Chat/Channel";
 import Chat from "./Chat";
 import LoaderOverlay from "../components/LoaderOverlay";
+import Chats from "./Chats";
 
 const WalletButton = () => {
   const address = useSelector((state) => state.wallet.address);
@@ -29,7 +30,7 @@ const WalletButton = () => {
     <button
       onClick={Provider.connect}
       type="button"
-      class="py-2 bg-f2 dark:bg-f2 text-black3 dark:text-black3 h-10 text-base font-medium shadow-sm rounded-md w-40"
+        className="py-2 text-white0 text-[12px] w-20 h-10 md:text-[12px] md:w-24 lg:w-40 mr-4 font-termina"
     >
       {"Connect Wallet"}
     </button>
@@ -88,6 +89,7 @@ const Home = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Content />} />
+        <Route path="/chats" element={<Chats WalletButton={WalletButton} />} />
         {/* <Route path="/pnl" element={<PnL />} />
           <Route path="/collection" element={<CollectionDetail />} /> */}
       </Routes>
