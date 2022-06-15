@@ -43,6 +43,7 @@ module.exports = {
       black6: "#7B88A1",
       black7: "#292E39",
       black8: "#3E4553",
+      black10: "#000000AA",
       white0: "#FFFFFF",
       white1: "#D8DEE9",
       white2: "#E5E9F0",

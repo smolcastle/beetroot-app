@@ -3,15 +3,14 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC_Aj2v9xpG43t6IIfCkK1PhU6DfMfTORI",
-  authDomain: "beetroot-2192b.firebaseapp.com",
-  projectId: "beetroot-2192b",
-  storageBucket: "beetroot-2192b.appspot.com",
-  messagingSenderId: "932312680028",
-  appId: "1:932312680028:web:797f45f60a46ce52d58899",
-  measurementId: "G-SG3C9M5W4W",
+  apiKey: "AIzaSyB83zPjCDj7EJ-75FQi-IbT6MReWxrCI0o",
+  authDomain: "project1-bca06.firebaseapp.com",
+  projectId: "project1-bca06",
+  storageBucket: "project1-bca06.appspot.com",
+  messagingSenderId: "901480506991",
+  appId: "1:901480506991:web:46a667743be6d83a560f9a",
+  measurementId: "G-4EMY0950GJ"
 };
-
 const firebase = initializeApp(firebaseConfig);
 
 export default firebase;

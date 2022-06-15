@@ -23,7 +23,7 @@ function ChatBtn({ title }) {
     );
 }
 
-const Chats = ({WalletButton}) => {
+const Chats = ({}) => {
   const [counter, setCounter] = useState(0);
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
@@ -75,7 +75,6 @@ const pushDate = (messageDate) => {
             <NavBtn title={"ORDER HISTORY"} />
             <NavBtn title={"PORTFOLIO"} />
             <NavBtn title={"PROFIT/LOSS"} />
-            <WalletButton />
           </div>
         </div>
         <div className="w-screen h-4/5 flex justify-evenly mt-10">
