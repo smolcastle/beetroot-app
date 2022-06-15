@@ -33,6 +33,7 @@ import SigningModal from "../components/SigningModal";
 import { ethers } from "ethers";
 import { Trade } from "./Trade";
 import { generateNonce, SiweMessage } from "siwe";
+import Order from "./Order";
 
 const arr = ["a", "b", "c", "d"];
 
@@ -231,12 +232,12 @@ function User({
     >
       <li
         index={index}
-        class={`flex h-16 justify-center items-center rounded-lg shadow divide-y overflow-hidden mb-2 text-center ${
-          isSelected ? "bg-white3" : "bg-white"
+        class={`flex h-12 justify-center items-center bg-white10 shadow divide-y overflow-hidden mb-2 text-center ${
+          isSelected ? "bg-white10" : " "
         }`}
       >
         <div class="flex-1 flex flex-col">
-          <div className="flex flex-row justify-center items-center text-black5 text-[12px] capitalize">
+          <div className="flex flex-row justify-center items-center text-white0 text-[12px] capitalize">
             {truncate(receiver, 16)}
             <button
               type={"button"}
@@ -264,23 +265,24 @@ function User({
   );
 }
 
-function Users({ users, sender, dispatch, setReceiver, setModalState }) {
+function Users({ users, sender, dispatch, setReceiver, setModalState, modal }) {
   const [selected, setSelected] = useState(0);
+
   return (
-    <ul role="list" class="flex flex-[1] flex-col pl-3 pr-6 py-8">
-      <button
+    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
+      {/* <button
         onClick={() => getAllQueues(sender, dispatch)}
         type="button"
         class="flex bg-green text-black3 h-8 text-sm shadow-sm rounded-md mb-6 justify-center items-center"
       >
         {"Refresh Chats"}
-      </button>
+      </button> */}
       <button
         onClick={() => setModalState(true)}
         type="button"
-        class="flex bg-f2 text-black3 h-8 text-sm shadow-sm rounded-md mb-6 justify-center items-center"
+        class="flex mb-6 justify-center items-center border-themepink border-2 border-solid w-full bg-white10 text-themepink h-12 rounded-sm cursor-pointer"
       >
-        {"Start New Chat"}
+        {"New"}
       </button>
       {Object.keys(users)
         // .reverse()
@@ -321,16 +323,18 @@ function SendMessageSection({
         saveMessage(message, sender, receiver, dispatch);
       }}
     >
-      <div className="flex w-full h-16 p-[6px] bg-black3 justify-center items-center">
+      <div className="flex w-full h-14 p-[6px] justify-evenly items-center">
         <input
           value={message}
           type="text"
           name="search"
           autoComplete="off"
           id="search"
-          class="w-full h-full outline-none text-black5 placeholder:text-black6 bg-white4 pl-4"
-          placeholder={"Write a message"}
+          class="w-[90%] h-full outline-none text-white0 placeholder:text-white0 rounded-sm bg-white10 pl-4"
+          placeholder={"Start Typing..."}
           onChange={(e) => setMsgString(e.target.value)}
+          onKeyPress={(event) => {
+            event.key === "Enter" && saveMessage();}}
         />
         <button
           onClick={() => {
@@ -338,9 +342,14 @@ function SendMessageSection({
             saveMessage(message, sender, receiver, dispatch);
           }}
           type="button"
-          class="bg-f2 text-black3 dark:text-black3 h-12 text-base font-medium shadow-sm rounded-md w-24 ml-2"
+          class="h-12"
         >
-          {"Send"}
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="18" fill="#D9D9D9" fillOpacity="0.1"/>
+            <g opacity="0.8">
+            <path d="M29.2972 17.4755L11.1682 8.44869C10.9864 8.36279 10.764 8.38423 10.6023 8.5346C10.4406 8.66368 10.3597 8.87851 10.4203 9.09348L11.7744 14.66C11.8755 15.0468 12.1382 15.3478 12.502 15.4552L19.0301 17.5616C19.4141 17.6905 19.4141 18.2708 19.0301 18.3998L12.4818 20.506C12.1181 20.6135 11.8553 20.9144 11.7542 21.3012L10.4203 26.8892C10.3597 27.1042 10.4404 27.3406 10.6021 27.4695C10.7032 27.5554 10.8245 27.5984 10.9457 27.5984C11.0265 27.5984 11.1074 27.577 11.168 27.534L29.297 18.5072C29.4789 18.4213 29.6001 18.2063 29.6001 17.9913C29.6003 17.7763 29.479 17.5615 29.2972 17.4755L29.2972 17.4755Z" fill="#9B9B9B"/>
+            </g>
+          </svg>
         </button>
       </div>
     </form>
@@ -350,24 +359,29 @@ function SendMessageSection({
 function Messages({ message, setMsgString, sender, receiver, dispatch }) {
   const messages = useSelector((state) => state.messages?.messages);
   return (
-    <ul role="list" class="flex flex-[4] flex-col py-2 w-full h-full">
-      <div className="flex flex-1 flex-col-reverse overflow-scroll px-4">
+    <ul role="list" class="flex flex-[5] flex-col scroll-hide pb-2 bg-white10 w-full h-full">
+    <div className='chat-name h-10 bg-white10 text-white0 pt-2 pl-2 text-[14px]'>
+      {receiver}
+    </div>
+      <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
         {messages === null && (
-          <div className="text-black1 text-xl font-medium capitalize mt-8 flex justify-center mb-24">
+          <div className="text-white0 text-lg font-medium capitalize mt-8 flex justify-center mb-24">
             {"This is the beginning of chat, send a message"}
           </div>
         )}
         {messages?.map(({ text, name, timestamp }, index) => {
           return (
             <div>
-              <li
+              {/* <li
                 key={index}
-                class={`flex flex-row text-center divide-y overflow-hidden w-full px-2 pb-2 ${
+                class={`flex overflow-hidden w-full px-2 pb-2 ${
                   name === sender ? "justify-end" : "justify-start"
                 }`}
-              >
-                <div class="flex flex-col max-w-[80%] bg-nord-dark3 rounded-md shadow justify-center px-4">
-                  <div className="text-white3 text-[12px] capitalize p-2">
+              > */}
+                <div class={`flex flex-col text-[12px] h-auto ${
+                  name === sender ? "items-end" : "items-start"
+                } `}>
+                  <div className="min-w-min max-w-xs bg-white10 p-2 break-words2 text-white0 rounded-sm">
                     {text}
                   </div>
                   {timestamp?.seconds && (
@@ -376,10 +390,11 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
                     </div>
                   )}
                 </div>
-              </li>
+              {/* </li> */}
             </div>
           );
         })}
+        
       </div>
       <SendMessageSection
         message={message}
@@ -427,8 +442,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col p-2 min-h-0">
-      <div className="flex flex-1 h-full">
+    <div className="flex flex-1 flex-col p-2 min-h-0 bg-globaltheme">
+      <div className="flex flex-1 h-full mt-5 mb-10 ml-20">
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
             <Users
@@ -437,6 +452,7 @@ export default function Chat() {
               dispatch={dispatch}
               setReceiver={setReceiver}
               setModalState={setModalState}
+              modal={modal}
             />
             <div className="w-[1px] bg-black7 opacity-20" />
             <Messages
@@ -447,8 +463,9 @@ export default function Chat() {
               dispatch={dispatch}
             />
             <div className="w-[1px] bg-black7 opacity-20" />
-            <div className="flex flex-[6] flex-col p-2">
-              <Trade sender={sender} receiver={receiver} />
+            <div className="flex flex-[6] flex-col">
+              {/* <Trade sender={sender} receiver={receiver} /> */}
+              <Order sender={sender} truncate={truncate}/>
             </div>
           </>
         ) : (

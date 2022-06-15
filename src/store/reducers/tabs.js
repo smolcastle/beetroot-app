@@ -1,8 +1,10 @@
 const initialState = {
   selectedTab: 0,
   tabs: [
-    { name: "Holdings", to: "/", index: 0 },
-    { name: "Profit / Loss", to: "/pnl", index: 1 },
+    { name: "Chats", to: "/", index: 0 },
+    { name: "Order History", to: "/", index: 1 },
+    { name: "Portfolio", to: "/", index: 2 },
+    { name: "Profit / Loss", to: "/pnl", index: 3 },
   ],
 };
 
