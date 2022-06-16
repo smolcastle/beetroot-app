@@ -63,6 +63,7 @@ module.exports = {
       pink: "#B48EAD",
       globaltheme: "#1F1818",
       themepink: "#CA7C86",
+      overlaybg: "#5B3A3E",
       "nord-dark1": "#D7DFEC",
       "nord-dark2": "#9FB6D9",
       "nord-dark3": "#434C5E",

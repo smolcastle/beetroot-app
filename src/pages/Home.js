@@ -20,18 +20,21 @@ import Channel from "../components/Chat/Channel";
 import Chat from "./Chat";
 // import Chats from "./Chats";
 import LoaderOverlay from "../components/LoaderOverlay";
+import {truncate } from "../helpers/Collections";
 import logo2 from '../img/logo2.png' 
 
 const WalletButton = () => {
   const address = useSelector((state) => state.wallet.address);
 
-  if (address) return <Blockies address={address} />;
+  // if (address) return <Blockies address={address} />;
+  if (address) return <p className="text-white0">{truncate(address, 16)}</p> ;
+
 
   return (
     <button
       onClick={Provider.connect}
       type="button"
-        className="py-2 text-white0 text-[12px] w-20 h-10 md:text-[12px] md:w-24 lg:w-40 mr-4 font-termina"
+        className="py-2 text-white0 font-medium w-20 h-10 md:text-[16px] md:w-24 lg:w-40 h-12 mr-4 font-termina"
     >
       {"Connect Wallet"}
     </button>
