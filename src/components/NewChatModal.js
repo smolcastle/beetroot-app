@@ -7,9 +7,11 @@ export default function NewChatModal({
   setModalState,
   getAllQueues,
   setSelected,
+  index
 }) {
   const [receiver, setReceiver] = useState("");
   const [message, setMessage] = useState("");
+  console.log(index)
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -58,6 +60,7 @@ export default function NewChatModal({
                     saveMessage(message, sender, receiver, dispatch);
                     setModalState(false);
                     getAllQueues(sender, dispatch);
+                    setSelected(index+1)
                   }
                 }}
                 type="button"

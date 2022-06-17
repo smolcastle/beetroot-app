@@ -265,7 +265,7 @@ function User({
   );
 }
 
-function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected }) {
+function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal }) {
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
@@ -290,6 +290,7 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
           const receiver =
             addresses[0] === sender ? addresses[1] : addresses[0];
           return (
+            <>
             <User
               key={item}
               sender={sender}
@@ -300,6 +301,19 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
               setSelected={setSelected}
               setReceiver={setReceiver}
             />
+            {modal && (
+              <NewChatModal
+                saveMessage={saveMessage}
+                sender={sender}
+                dispatch={dispatch}
+                setModalState={setModalState}
+                getAllQueues={getAllQueues}
+                setSelected = {setSelected}
+                isSelected={selected === index}
+                index={index}
+              />
+            )}
+            </>
           );
         })}
     </ul>
@@ -460,6 +474,8 @@ export default function Chat() {
               modal={modal}
               selected={selected}
               setSelected={setSelected}
+              setSignModalState={setSignModalState}
+              signModal={signModal}
             />
             <div className="w-[1px] bg-black7 opacity-20" />
             <Messages
@@ -498,23 +514,13 @@ export default function Chat() {
           </div>
         )}
       </div>
-      {modal && (
-        <NewChatModal
-          saveMessage={saveMessage}
-          sender={sender}
-          dispatch={dispatch}
-          setModalState={setModalState}
-          getAllQueues={getAllQueues}
-          
-        />
-      )}
+      
       {signModal && (
         <SigningModal
           signMessage={signMessage}
           sender={sender}
           setSignModalState={setSignModalState}
           dispatch={dispatch}
-          setSelected = {setSelected}
         />
       )}
     </div>
