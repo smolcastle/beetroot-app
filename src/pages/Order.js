@@ -13,8 +13,8 @@ const Order = ({sender, truncate}) => {
         </div>
         <div className="flex flex-col h-[70%] w-[80%] justify-evenly">
             <p className='text-white0 text-sm'>Your Offer</p>
-            <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2'>
-                <button onClick={() => setOpenTrade(true)}>
+            <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2 '>
+                <button onClick={() => setOpenTrade(true)} className=" w-min">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12" cy="12" r="12" fill="white"/>
                         <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>
@@ -28,7 +28,7 @@ const Order = ({sender, truncate}) => {
             </svg>
             <p className='text-white0 text-sm'>Your Ask</p>
             <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2'>
-                <button onClick={() => setOpenTrade(true)}>
+                <button onClick={() => setOpenTrade(true)} className='w-min'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12" cy="12" r="12" fill="white"/>
                         <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>

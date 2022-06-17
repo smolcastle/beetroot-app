@@ -33,6 +33,7 @@ module.exports = {
     colors: {
       gray1: "#cacaca",
       gray2: "#565454",
+      gray3: "#D9D9D9",
       beetroot1: "#70263d",
       black: "#000000",
       black1: "#242933",
