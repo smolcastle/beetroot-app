@@ -10,12 +10,25 @@ import React, { useState } from 'react'
 //     </svg>
 //     )}
 // }
+ 
 
 const NewTradeModal = ({setOpenTrade, sender}) => {
-    const boxes= 16
+    const boxes= 6
     // const [check, showCheck] = useState(false)
     const [showNFT, setShowNFT] = useState(true)
     const [showEther, setShowEther] = useState(false)
+    const [nftBox, setNftBox] = useState('')
+    const [etherBox, setEtherBox] = useState('')
+    const [wEtherBox, setWEtherBox] = useState('')
+    const [tokenId, setTokenId] = useState('')
+  
+    function onAdd(){
+    console.log(nftBox);
+    console.log(tokenId);
+    console.log(etherBox);
+    console.log(wEtherBox);
+    }
+
   return (
     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-screen h-screen bg-black10 fixed inset-0 z-50 outline-none focus:outline-none">
         <div className="relative w-1/2 h-4/5 my-4 mx-auto max-w-3xl">
@@ -39,9 +52,42 @@ const NewTradeModal = ({setOpenTrade, sender}) => {
             {showNFT && (
               <>
             <div className='flex w-full justify-between mt-10'>
-                <input className='w-[50%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...'></input>
-                <input placeholder='Token ID' className='w-[45%] p-2 focus:outline-none'></input>
+                <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)} ></input>
+                <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
+                <button className="bg-themepink text-white0 py-2 px-4 rounded-sm"
+                type="button"
+                onClick={() => onAdd()}>
+                {"Add"}
+              </button>
             </div>
+            <div className='flex w-full justify-between mt-2'>
+                <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)}></input>
+                <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
+                <button className="bg-themepink text-white0 py-2 px-4 rounded-sm"
+                type="button"
+                onClick={() =>onAdd()}>
+                {"Add"}
+              </button>
+            </div>
+            <div className='flex w-full justify-between mt-2'>
+                <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)}></input>
+                <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
+                <button className="bg-themepink text-white0 py-2 px-4 rounded-sm"
+                type="button"
+                onClick={() => onAdd()}>
+                {"Add"}
+              </button>
+            </div>
+            <div className='flex w-full justify-between mt-2'>
+                <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)}></input>
+                <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
+                <button className="bg-themepink text-white0 py-2 px-4 rounded-sm"
+                type="button"
+                onClick={() => onAdd()}>
+                {"Add"}
+              </button>
+            </div>
+            
             <div className='my-10 text-white0'>
                 <h2>NFTs found in {sender}'s wallet:</h2>
             </div>
@@ -59,14 +105,35 @@ const NewTradeModal = ({setOpenTrade, sender}) => {
                 <div className='flex flex-col w-full items-center mt-20'>
                   <div className='flex w-[80%] justify-start'>
                     <p className='text-white0 w-[30%]'>Ether (ETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10'></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer'>Add</button>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
                   </div>
                   <div className='flex w-[80%] justify-start my-10'>
                     <p className='text-white0 w-[30%]'>Wrapped Ether (WETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10'></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer'>Add</button>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
                   </div>
+                  <div className='flex w-[80%] justify-start'>
+                    <p className='text-white0 w-[30%]'>Ether (ETH)</p>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
+                  </div>
+                  <div className='flex w-[80%] justify-start my-10'>
+                    <p className='text-white0 w-[30%]'>Wrapped Ether (WETH)</p>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
+                  </div>
+                  <div className='flex w-[80%] justify-start'>
+                    <p className='text-white0 w-[30%]'>Ether (ETH)</p>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
+                  </div>
+                  <div className='flex w-[80%] justify-start my-10'>
+                    <p className='text-white0 w-[30%]'>Wrapped Ether (WETH)</p>
+                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
+                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={() => onAdd()}>Add</button>
+                  </div>
+                 
                 </div>
               </>
             )}
