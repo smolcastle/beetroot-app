@@ -34,6 +34,7 @@ import { ethers } from "ethers";
 import { Trade } from "./Trade";
 import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
+import seaport from "../utils/seaport";
 
 const arr = ["a", "b", "c", "d"];
 
