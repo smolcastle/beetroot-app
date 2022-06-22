@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 // import newOrder from '../utils/seaport'
 
-const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations, setConsiderations, askTrade, offerTrade}) => {
+const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, considerations, setConsiderations, askTrade, offerTrade}) => {
     const boxes= 6
     // const [check, showCheck] = useState(false)
     const [showNFT, setShowNFT] = useState(true)
@@ -27,26 +27,32 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
         )
       }
       if(showEther){
-        setOffers([...offers, etherBox, wEtherBox])
-        /*
-        for ether:
-
-        {
-          "itemType": "0",
-          "token": null,
-          "startAmount": "value * (10**18)",
-          "endAmount": "value * (10 ** 18)"
+        if(etherBox !== ""){
+          setOffers(
+            [
+              ...offers,
+              {
+                "itemType": "0",
+                "token": null,
+                "startAmount": `${etherBox} * (10**18)`,
+                "endAmount": "1"
+              }
+            ]
+          )
         }
-
-        for wether
-
-        {
-          "itemType": "1",
-          "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-          "startAmount": "value * (10**18)",
-          "endAmount": "value * (10 ** 18)"
+        if(wEtherBox !== ""){
+          setOffers(
+            [
+              ...offers,
+              {
+                "itemType": "0",
+                "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
+                "startAmount": `${wEtherBox} * (10**18)`,
+                "endAmount": "1"
+              }
+            ]
+          )
         }
-        */
       }
   }
     function onAdd2(){
@@ -60,13 +66,38 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
               "identifierOrCriteria": tokenId,
               "startAmount": "1",
               "endAmount": "1",
-              "recipient": // add user's address here.
+              "recipient": sender
             }
           ]
         )
       }
       if(showEther){
-        setConsiderations([...considerations, etherBox, wEtherBox])
+        if(etherBox !== ""){
+          setConsiderations(
+            [
+              ...considerations,
+              {
+                "itemType": "0",
+                "token": null,
+                "startAmount": `${etherBox} * (10**18)`,
+                "endAmount": "1"
+              }
+            ]
+          )
+        }
+        if(wEtherBox !== ""){
+          setConsiderations(
+            [
+              ...considerations,
+              {
+                "itemType": "0",
+                "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
+                "startAmount": `${wEtherBox} * (10**18)`,
+                "endAmount": "1"
+              }
+            ]
+          )
+        }
       }
   }
 
@@ -143,7 +174,11 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
 
 
             <div className='my-10 text-white0'>
+              {offerTrade ? (
                 <h2>NFTs found in {sender}'s wallet:</h2>
+              ) : (
+                <h2>NFTs found in {receiver}'s wallet:</h2>
+              )}
             </div>
             <div className='grid grid-cols-6 gap-4 grid-flow-row auto-rows-max'>
                 {Array.from(Array(boxes)).map((c) => {
@@ -167,27 +202,6 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                     <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
                     <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
                   </div>
-                  <div className='flex w-[80%] justify-start'>
-                    <p className='text-white0 w-[30%]'>Ether (ETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setEtherBox(e.target.value)}></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
-                  </div>
-                  <div className='flex w-[80%] justify-start my-10'>
-                    <p className='text-white0 w-[30%]'>Wrapped Ether (WETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
-                  </div>
-                  <div className='flex w-[80%] justify-start'>
-                    <p className='text-white0 w-[30%]'>Ether (ETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setEtherBox(e.target.value)}></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
-                  </div>
-                  <div className='flex w-[80%] justify-start my-10'>
-                    <p className='text-white0 w-[30%]'>Wrapped Ether (WETH)</p>
-                    <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
-                    <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
-                  </div>
-
                 </div>
               </>
             )}
