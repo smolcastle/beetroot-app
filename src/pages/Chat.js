@@ -489,7 +489,7 @@ export default function Chat() {
             <div className="w-[1px] bg-black7 opacity-20" />
             <div className="flex flex-[6] flex-col">
               {/* <Trade sender={sender} receiver={receiver} /> */}
-              <Order sender={sender} truncate={truncate}/>
+              <Order sender={sender} receiver={receiver} truncate={truncate}/>
             </div>
           </>
         ) : (

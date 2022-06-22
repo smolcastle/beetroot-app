@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import NewTradeModal from '../components/NewTradeModal'
 import seaport from '../utils/seaport'
 
-const Order = ({sender, truncate}) => {
+const Order = ({sender, truncate, receiver}) => {
     const [openTrade, setOpenTrade] = useState(false)
     const [offerTrade, setOfferTrade] = useState(false)
     const [askTrade, setAskTrade] = useState(false)
@@ -55,7 +55,8 @@ const Order = ({sender, truncate}) => {
         </div>
     </div>
     {openTrade && (
-        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations} offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} setOffers={setOffers} offers={offers}/>
+        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations} 
+        offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
     )}
     </>
   )
