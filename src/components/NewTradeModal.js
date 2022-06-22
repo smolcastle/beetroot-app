@@ -28,6 +28,25 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
       }
       if(showEther){
         setOffers([...offers, etherBox, wEtherBox])
+        /*
+        for ether:
+
+        {
+          "itemType": "0",
+          "token": null,
+          "startAmount": "value * (10**18)",
+          "endAmount": "value * (10 ** 18)"
+        }
+
+        for wether
+
+        {
+          "itemType": "1",
+          "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
+          "startAmount": "value * (10**18)",
+          "endAmount": "value * (10 ** 18)"
+        }
+        */
       }
   }
     function onAdd2(){
@@ -42,7 +61,6 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
               "startAmount": "1",
               "endAmount": "1",
               "recipient": // add user's address here.
-
             }
           ]
         )
