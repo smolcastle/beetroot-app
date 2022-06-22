@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
 import NewTradeModal from '../components/NewTradeModal'
+import seaport from '../utils/seaport'
 
 const Order = ({sender, truncate}) => {
     const [openTrade, setOpenTrade] = useState(false)
+    const [offerTrade, setOfferTrade] = useState(false)
+    const [askTrade, setAskTrade] = useState(false)
+    const [offers, setOffers] = useState([])
+    const [considerations, setConsiderations] = useState([])
   return (
     <>
     <div className='trade flex-[4] mx-10'>
@@ -14,7 +19,7 @@ const Order = ({sender, truncate}) => {
         <div className="flex flex-col h-[70%] w-[80%] justify-evenly">
             <p className='text-white0 text-sm'>Your Offer</p>
             <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2 '>
-                <button onClick={() => setOpenTrade(true)} className=" w-min">
+                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className=" w-min">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12" cy="12" r="12" fill="white"/>
                         <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>
@@ -28,7 +33,7 @@ const Order = ({sender, truncate}) => {
             </svg>
             <p className='text-white0 text-sm'>Your Ask</p>
             <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2'>
-                <button onClick={() => setOpenTrade(true)} className='w-min'>
+                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-min'>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12" cy="12" r="12" fill="white"/>
                         <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>
@@ -36,11 +41,21 @@ const Order = ({sender, truncate}) => {
                     </svg>
                 </button>
             </div>
-            <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'>Create Order</button>
+            <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'
+            onClick={() => seaport.createOrder({
+                conduitKey: 0,
+                offer: offers,
+                consideration: considerations,
+                counter: '',
+                allowPartialFills: false,
+                restrictedByZone: false,
+                fees: 0 })
+            }>{"Create Order"}
+            </button>
         </div>
     </div>
     {openTrade && (
-        <NewTradeModal setOpenTrade={setOpenTrade} sender={sender} />
+        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations} offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} setOffers={setOffers} offers={offers}/>
     )}
     </>
   )
