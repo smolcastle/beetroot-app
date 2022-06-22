@@ -10,10 +10,21 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
     const [etherBox, setEtherBox] = useState('')
     const [wEtherBox, setWEtherBox] = useState('')
     const [tokenId, setTokenId] = useState('')
-  
+
     function onAdd(){
       if(showNFT){
-        setOffers([...offers, nftBox, tokenId])
+        setOffers(
+          [
+            ...offers,
+            {
+              "itemType": "2",
+              "token": nftBox,
+              "identifierOrCriteria": tokenId,
+              "startAmount": "1",
+              "endAmount": "1"
+            }
+          ]
+        )
       }
       if(showEther){
         setOffers([...offers, etherBox, wEtherBox])
@@ -21,7 +32,20 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
   }
     function onAdd2(){
       if(showNFT){
-        setConsiderations([...considerations, nftBox, tokenId])
+        setConsiderations(
+          [
+            ...considerations,
+            {
+              "itemType": "2",
+              "token": nftBox,
+              "identifierOrCriteria": tokenId,
+              "startAmount": "1",
+              "endAmount": "1",
+              "recipient": // add user's address here.
+
+            }
+          ]
+        )
       }
       if(showEther){
         setConsiderations([...considerations, etherBox, wEtherBox])
@@ -34,7 +58,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
   useEffect(() => {
     console.log("Considerations" ,considerations)
   }, [considerations])
-    
+
 
   return (
     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-screen h-screen bg-black10 fixed inset-0 z-50 outline-none focus:outline-none">
@@ -51,7 +75,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                     <rect x="13.1812" y="21.666" width="1.2" height="12" transform="rotate(-135 13.1812 21.666)" fill="#2D2D2D"/>
                 </svg>
               </button>
-            
+
             <div className='flex font-termina text-white0 w-full justify-center'>
                 <button className={`mx-10 py-2 px-6 ${showNFT ? 'bg-themepink' : ''}`} onClick={() => {setShowNFT(true); setShowEther(false)}}>NFT</button>
                 <button className={`mx-10 py-2 px-6 ${showEther ? 'bg-themepink' : ''}`} onClick={() => {setShowNFT(false); setShowEther(true)}}>Token/Ether</button>
@@ -67,7 +91,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                 {"Add"}
               </button>
             </div>
-  
+
             <div className='flex w-full justify-between mt-10'>
                 <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)} ></input>
                 <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
@@ -77,7 +101,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                 {"Add"}
               </button>
             </div>
-            
+
             <div className='flex w-full justify-between mt-10'>
                 <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)} ></input>
                 <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
@@ -87,7 +111,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                 {"Add"}
               </button>
             </div>
-            
+
             <div className='flex w-full justify-between mt-10'>
                 <input className='w-[40%] p-2 focus:outline-none' placeholder='Search NFT here / Contract Address ...' onChange={(e) => setNftBox(e.target.value)} ></input>
                 <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
@@ -97,9 +121,9 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                 {"Add"}
               </button>
             </div>
-            
-            
-            
+
+
+
             <div className='my-10 text-white0'>
                 <h2>NFTs found in {sender}'s wallet:</h2>
             </div>
@@ -145,7 +169,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
                     <input type='text' placeholder='Amount' className='outline-none placeholder:text-black1 p-1 bg-gray3 w-[40%] mx-10' onChange={(e) => setWEtherBox(e.target.value)}></input>
                     <button className='border-themepink border-2 px-2 border-solid bg-black rounded-sm text-themepink font-termina cursor-pointer' onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>Add</button>
                   </div>
-                 
+
                 </div>
               </>
             )}
@@ -157,7 +181,7 @@ const NewTradeModal = ({setOpenTrade, sender, setOffers, offers, considerations,
               </button>
           </div>
           </div>
-          
+
         </div>
       </div>
   )
