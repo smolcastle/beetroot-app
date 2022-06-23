@@ -8,6 +8,18 @@ const Order = ({sender, truncate, receiver}) => {
     const [askTrade, setAskTrade] = useState(false)
     const [offers, setOffers] = useState([])
     const [considerations, setConsiderations] = useState([])
+
+    async function createOrder() {
+        const orderActions = await seaport.createOrder({
+            conduitKey: 0,
+            offer: offers,
+            consideration: considerations,
+            counter: '',
+            allowPartialFills: false,
+            restrictedByZone: false,
+        });
+        console.log(orderActions);
+    }
   return (
     <>
     <div className='trade flex-[4] mx-10'>
@@ -43,14 +55,7 @@ const Order = ({sender, truncate, receiver}) => {
             </div>
             <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'
             onClick={
-                () => seaport.createOrder({
-                    conduitKey: 0,
-                    offer: offers,
-                    consideration: considerations,
-                    counter: '',
-                    allowPartialFills: false,
-                    restrictedByZone: false,
-                })
+                () => createOrder()
             }>{"Create Order"}
             </button>
         </div>
