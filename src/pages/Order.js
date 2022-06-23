@@ -11,10 +11,8 @@ const Order = ({sender, truncate, receiver}) => {
 
     async function createOrder() {
         const orderActions = await seaport.createOrder({
-            conduitKey: 0,
             offer: offers,
             consideration: considerations,
-            counter: '',
             allowPartialFills: false,
             restrictedByZone: false,
         });
