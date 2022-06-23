@@ -7,7 +7,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
     const [showNFT, setShowNFT] = useState(true)
     const [showEther, setShowEther] = useState(false)
     const [nftBox, setNftBox] = useState('')
-    const [etherBox, setEtherBox] = useState('')
+    const [etherBox, setEtherBox] = useState(0)
     const [wEtherBox, setWEtherBox] = useState('')
     const [tokenId, setTokenId] = useState('')
 
@@ -31,7 +31,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...offers,
               {
-                "amount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
+                "amount":(Number(etherBox)*(10**18)).toString(),
               }
             ]
           )
@@ -43,7 +43,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               ...offers,
               {
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "amount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
+                "amount": Number(wEtherBox)*(10**18).toString(),
               }
             ]
           )
@@ -70,7 +70,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...considerations,
               {
-                "amount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
+                "amount": (Number(etherBox)*(10**18)).toString(),
                 "recipient": sender
               }
             ]
@@ -82,7 +82,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               ...considerations,
               {
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "amount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
+                "amount": Number(wEtherBox)*(10**18).toString(),
+                "recipient": sender
               }
             ]
           )
