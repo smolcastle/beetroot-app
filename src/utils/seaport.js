@@ -1,24 +1,22 @@
 import { Seaport } from "@opensea/seaport-js";
 import { ethers } from "ethers";
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+function sp(){
+    if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
 
-const seaport = new Seaport(provider);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const seaport = new Seaport(provider);
+        return seaport
+    }
+    else{
+        const provider = ethers.getDefaultProvider();
+        const seaport = new Seaport(provider);
+        return seaport
+    }
+}
 
-// const input = {
-//     conduitKey: 0,
-//     zone: ethers.constants.AddressZero,
-//     startTime: Math.floor(Date.now() / 1000).toString(),
-//     endTime: this.startTime + 7,
-//     offer: '',
-//     consideration: '',
-//     counter: '',
-//     allowPartialFills: false,
-//     restrictedByZone: false,
-//     fees: 0,
-// }
 
-// const newOrder = seaport.createOrder(input, input.conduitKey)
+let seaport = sp()
 
 export default seaport
     
