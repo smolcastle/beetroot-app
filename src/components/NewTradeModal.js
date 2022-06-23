@@ -35,7 +35,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
                 "itemType": "0",
                 "token": null,
                 "startAmount": `${etherBox} * (10**18)`,
-                "endAmount": "1"
+                "endAmount": `${etherBox} * (10**18)`
               }
             ]
           )
@@ -48,7 +48,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
                 "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
                 "startAmount": `${wEtherBox} * (10**18)`,
-                "endAmount": "1"
+                "endAmount": `${wEtherBox} * (10**18)`,
               }
             ]
           )
@@ -94,7 +94,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
                 "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
                 "startAmount": `${wEtherBox} * (10**18)`,
-                "endAmount": `${etherBox} * (10**18)`,
+                "endAmount": `${wEtherBox} * (10**18)`,
                 "recipient": sender
               }
             ]
