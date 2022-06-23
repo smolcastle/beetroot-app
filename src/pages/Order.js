@@ -10,6 +10,7 @@ const Order = ({sender, truncate, receiver}) => {
     const [considerations, setConsiderations] = useState([])
 
     async function createOrder() {
+        console.log(seaport.config);
         const orderActions = await seaport.createOrder({
             offer: offers,
             consideration: considerations,
@@ -53,7 +54,9 @@ const Order = ({sender, truncate, receiver}) => {
             </div>
             <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'
             onClick={
-                () => createOrder()
+                async () => {
+                    await createOrder()
+                }
             }>{"Create Order"}
             </button>
         </div>

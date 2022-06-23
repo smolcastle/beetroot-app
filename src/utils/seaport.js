@@ -3,7 +3,10 @@ import { ethers } from "ethers";
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-const seaport = new Seaport(provider);
+const seaport = new Seaport(provider, {
+    ascendingAmountFulfillmentBuffer: 300,
+    balanceAndApprovalChecksOnOrderCreation: true
+});
 
 // const input = {
 //     conduitKey: 0,
@@ -21,4 +24,3 @@ const seaport = new Seaport(provider);
 // const newOrder = seaport.createOrder(input, input.conduitKey)
 
 export default seaport
-    
