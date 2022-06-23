@@ -42,20 +42,21 @@ const Order = ({sender, truncate, receiver}) => {
                 </button>
             </div>
             <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'
-            onClick={() => seaport.createOrder({
-                conduitKey: 0,
-                offer: offers,
-                consideration: considerations,
-                counter: '',
-                allowPartialFills: false,
-                restrictedByZone: false,
-                fees: 0 })
+            onClick={
+                () => seaport.createOrder({
+                    conduitKey: 0,
+                    offer: offers,
+                    consideration: considerations,
+                    counter: '',
+                    allowPartialFills: false,
+                    restrictedByZone: false,
+                })
             }>{"Create Order"}
             </button>
         </div>
     </div>
     {openTrade && (
-        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations} 
+        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}
         offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
     )}
     </>
