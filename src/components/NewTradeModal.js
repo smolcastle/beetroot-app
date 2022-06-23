@@ -20,9 +20,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             {
               "itemType": "2",
               "token": nftBox,
-              "identifierOrCriteria": tokenId,
-              "startAmount": "1",
-              "endAmount": "1"
+              "identifier": tokenId
             }
           ]
         )
@@ -33,10 +31,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...offers,
               {
-                "itemType": "0",
-                "token": null,
-                "startAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
-                "endAmount": etherBox.toString().padEnd(etherBox.length + 18, "0")
+                "amount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
               }
             ]
           )
@@ -47,10 +42,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...offers,
               {
-                "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "startAmount":wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
-                "endAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
+                "amount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
               }
             ]
           )
@@ -65,9 +58,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             {
               "itemType": "2",
               "token": nftBox,
-              "identifierOrCriteria": tokenId,
-              "startAmount": "1",
-              "endAmount": "1",
+              "identifier": tokenId,
               "recipient": sender
             }
           ]
@@ -79,10 +70,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...considerations,
               {
-                "itemType": "0",
-                "token": null,
-                "startAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
-                "endAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
+                "amount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
                 "recipient": sender
               }
             ]
@@ -93,11 +81,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...considerations,
               {
-                "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "startAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
-                "endAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
-                "recipient": sender
+                "amount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
               }
             ]
           )
