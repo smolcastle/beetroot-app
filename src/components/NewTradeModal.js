@@ -11,6 +11,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
     const [wEtherBox, setWEtherBox] = useState('')
     const [tokenId, setTokenId] = useState('')
 
+
     function onAdd(){
       if(showNFT){
         setOffers(
@@ -34,11 +35,12 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               {
                 "itemType": "0",
                 "token": null,
-                "startAmount": `${etherBox} * (10**18)`,
-                "endAmount": `${etherBox} * (10**18)`
+                "startAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
+                "endAmount": etherBox.toString().padEnd(etherBox.length + 18, "0")
               }
             ]
           )
+
         }
         if(wEtherBox !== ""){
           setOffers(
@@ -47,8 +49,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               {
                 "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "startAmount": `${wEtherBox} * (10**18)`,
-                "endAmount": `${wEtherBox} * (10**18)`,
+                "startAmount":wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
+                "endAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
               }
             ]
           )
@@ -79,8 +81,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               {
                 "itemType": "0",
                 "token": null,
-                "startAmount": `${etherBox} * (10**18)`,
-                "endAmount": `${etherBox} * (10**18)`,
+                "startAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
+                "endAmount": etherBox.toString().padEnd(etherBox.length + 18, "0"),
                 "recipient": sender
               }
             ]
@@ -93,8 +95,8 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               {
                 "itemType": "0",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "startAmount": `${wEtherBox} * (10**18)`,
-                "endAmount": `${wEtherBox} * (10**18)`,
+                "startAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
+                "endAmount": wEtherBox.toString().padEnd(wEtherBox.length + 18, "0"),
                 "recipient": sender
               }
             ]
