@@ -19,10 +19,9 @@ const Order = ({sender, truncate, receiver}) => {
         });
         console.log(orderActions)
 
-        const data = await orderActions.actions[0].transactionMethods.buildTransaction()
-        await seaport.signer.sendTransaction(data)
+        await orderActions.executeAllActions();
     }
-    
+
   return (
     <>
     <div className='trade flex-[4] mx-10'>
