@@ -18,7 +18,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
           [
             ...offers,
             {
-              "itemType": "2",
+              "itemType": 2,
               "token": nftBox,
               "identifier": tokenId
             }
@@ -56,7 +56,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
           [
             ...considerations,
             {
-              "itemType": "2",
+              "itemType": 2,
               "token": nftBox,
               "identifier": tokenId,
               "recipient": sender

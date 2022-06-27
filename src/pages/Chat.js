@@ -266,7 +266,7 @@ function User({
   );
 }
 
-function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal }) {
+function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
@@ -308,6 +308,7 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
                 sender={sender}
                 dispatch={dispatch}
                 setModalState={setModalState}
+                setNewModalState={setNewModalState}
                 getAllQueues={getAllQueues}
                 setSelected = {setSelected}
                 isSelected={selected === index}
@@ -427,6 +428,7 @@ export default function Chat() {
   const [receiver, setReceiver] = useState("");
   const [selected, setSelected] = useState(0);
   const [modal, setModalState] = useState(false);
+  const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
   const sender = useSelector((state) => state.wallet.address);
   const chainId = useSelector((state) => state.wallet.chainId);
@@ -455,7 +457,7 @@ export default function Chat() {
     return (
       <div class="h-screen w-screen bg-globaltheme">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
-          {"Wrong Network connect to Rinkeby network"}
+          {"Wrong Network connect to Rinkeby Network"}
         </div>
       </div>
     );
@@ -500,7 +502,7 @@ export default function Chat() {
             <button
               onClick={() => {
                 if (signatureData && signatureData?.signature) {
-                  setModalState(true);
+                  setNewModalState(true);
                 } else {
                   setSignModalState(true);
                 }
@@ -524,6 +526,15 @@ export default function Chat() {
           dispatch={dispatch}
         />
       )}
+      {newModal &&
+                  <NewChatModal
+                  saveMessage={saveMessage}
+                  sender={sender}
+                  dispatch={dispatch}
+                  newModal={newModal}
+                  setNewModalState={setNewModalState}
+                  getAllQueues={getAllQueues}
+                />}
     </div>
   );
 }
