@@ -7,7 +7,8 @@ export default function NewChatModal({
   setModalState,
   getAllQueues,
   setSelected,
-  index
+  index, 
+  newModal, setNewModalState
 }) {
   const [receiver, setReceiver] = useState("");
   const [message, setMessage] = useState("");
@@ -23,7 +24,7 @@ export default function NewChatModal({
               <button
                 className="text-themepink font-bold uppercase px-4 py-2 text-sm mr-1 mb-1 ml-20 mt-[1px]"
                 type="button"
-                onClick={() => setModalState(false)}
+                onClick={() => (newModal ? setNewModalState(false) : setModalState(false))}
               >
                 Close
               </button>
@@ -57,7 +58,7 @@ export default function NewChatModal({
                 onClick={() => {
                   if (receiver.length) {
                     saveMessage(message, sender, receiver, dispatch);
-                    setModalState(false);
+                    (newModal ? setNewModalState(false) : setModalState(false))
                     getAllQueues(sender, dispatch);
                     setSelected(index+1)
                   }
