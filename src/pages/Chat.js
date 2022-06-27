@@ -233,12 +233,12 @@ function User({
     >
       <li
         index={index}
-        class={`flex h-12 justify-center items-center bg-white10 shadow divide-y overflow-hidden mb-2 text-center ${
-          isSelected ? "text-green" : "text-white0 "
+        class={`flex h-12 justify-center items-center shadow text-white0 divide-y overflow-hidden mb-2 text-center ${
+          isSelected ? "bg-white30" : " bg-white10"
         }`}
       >
         <div class="flex-1 flex flex-col">
-          <div className="flex flex-row justify-center items-center text-[12px] capitalize">
+          <div className="flex flex-row justify-center items-center text-[16px] capitalize">
             {truncate(receiver, 16)}
             <button
               type={"button"}
@@ -280,7 +280,7 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
       <button
         onClick={() => setModalState(true)}
         type="button"
-        class="flex mb-6 justify-center items-center border-themepink border-2 border-solid w-full bg-white10 text-themepink h-12 rounded-sm cursor-pointer"
+        class="flex mb-6 justify-center items-center text-white0 text-[16px] w-full bg-green1 h-12 rounded-sm cursor-pointer"
       >
         {"New"}
       </button>
@@ -345,8 +345,8 @@ function SendMessageSection({
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full outline-none text-black placeholder:text-black rounded-sm bg-white0 pl-4"
-          placeholder={"Start Typing..."}
+          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-white0/[0.6]  pl-4"
+          placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
             event.key === "Enter" && saveMessage();}}
@@ -359,13 +359,12 @@ function SendMessageSection({
           type="button"
           class="h-12"
         >
-         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" rx="18" fill="white"/>
-          <g opacity="0.8">
-          <path d="M29.2972 17.4755L11.1682 8.44869C10.9864 8.36279 10.764 8.38423 10.6023 8.5346C10.4406 8.66368 10.3597 8.87851 10.4203 9.09348L11.7744 14.66C11.8755 15.0468 12.1382 15.3478 12.502 15.4552L19.0301 17.5616C19.4141 17.6905 19.4141 18.2708 19.0301 18.3998L12.4818 20.506C12.1181 20.6135 11.8553 20.9144 11.7542 21.3012L10.4203 26.8892C10.3597 27.1042 10.4404 27.3406 10.6021 27.4695C10.7032 27.5554 10.8245 27.5984 10.9457 27.5984C11.0265 27.5984 11.1074 27.577 11.168 27.534L29.297 18.5072C29.4789 18.4213 29.6001 18.2063 29.6001 17.9913C29.6003 17.7763 29.479 17.5615 29.2972 17.4755L29.2972 17.4755Z" fill="#CA7C86"/>
-          </g>
-         </svg>
-
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="18" fill="#D9D9D9"/>
+            <g opacity="0.8">
+            <path d="M29.2975 17.4755L11.1685 8.44869C10.9866 8.36279 10.7643 8.38423 10.6026 8.5346C10.4409 8.66368 10.3599 8.87851 10.4206 9.09348L11.7747 14.66C11.8758 15.0468 12.1384 15.3478 12.5023 15.4552L19.0303 17.5616C19.4144 17.6905 19.4144 18.2708 19.0303 18.3998L12.4821 20.506C12.1183 20.6135 11.8556 20.9144 11.7545 21.3012L10.4205 26.8892C10.3599 27.1042 10.4407 27.3406 10.6024 27.4695C10.7035 27.5554 10.8247 27.5984 10.946 27.5984C11.0267 27.5984 11.1077 27.577 11.1683 27.534L29.2973 18.5072C29.4792 18.4213 29.6004 18.2063 29.6004 17.9913C29.6005 17.7763 29.4793 17.5615 29.2974 17.4755L29.2975 17.4755Z" fill="#CA7C86"/>
+            </g>
+          </svg>
         </button>
       </div>
     </form>
@@ -376,7 +375,7 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
   const messages = useSelector((state) => state.messages?.messages);
   return (
     <ul role="list" class="flex flex-[5] flex-col scroll-hide pb-2 bg-white10 w-full h-full">
-    <div className='chat-name h-10 bg-white10 text-green pt-2 pl-2 text-[14px]'>
+    <div className='chat-name h-10 bg-white10 text-white0 pt-2 pl-2 text-[16px]'>
       {receiver}
     </div>
       <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
@@ -394,10 +393,12 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
                   name === sender ? "justify-end" : "justify-start"
                 }`}
               > */}
-                <div class={`flex flex-col text-[12px] h-auto ${
-                  name === sender ? "items-end text-white0" : "items-start text-green"
+                <div class={`flex flex-col text-[12px] h-auto text-white0 ${
+                  name === sender ? "items-end" : "items-start"
                 } `}>
-                  <div className="min-w-min max-w-xs bg-white10 p-2 break-words2 rounded-sm">
+                  <div className={`min-w-min max-w-xs p-2 break-words2 bg-white10 rounded-sm ${
+                  name === sender ? "bg-greentint" : "bg-pinktint"
+                }`}>
                     {text}
                   </div>
                   {timestamp?.seconds && (

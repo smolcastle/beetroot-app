@@ -10,15 +10,18 @@ const Order = ({sender, truncate, receiver}) => {
     const [considerations, setConsiderations] = useState([])
 
     async function createOrder() {
-        console.log(seaport.config);
-        const orderActions = await seaport.createOrder({
+        // console.log(seaport.config);
+        const orderActions = await seaport.seaport.createOrder({
             offer: offers,
             consideration: considerations,
             allowPartialFills: false,
             restrictedByZone: false,
         });
-        console.log(orderActions);
+        console.log(orderActions)
+
+        await orderActions.executeAllActions();
     }
+
   return (
     <>
     <div className='trade flex-[4] mx-10'>
@@ -52,7 +55,7 @@ const Order = ({sender, truncate, receiver}) => {
                     </svg>
                 </button>
             </div>
-            <button className='border-themepink border-2 border-solid w-1/2 bg-black rounded-sm text-themepink h-10 font-termina cursor-pointer'
+            <button className='w-full bg-pink80 rounded-sm text-pinktint10 h-10 font-inter cursor-pointer'
             onClick={
                 async () => {
                     await createOrder()
