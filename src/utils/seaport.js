@@ -11,7 +11,7 @@ function sp(){
     else{
         const provider = ethers.getDefaultProvider();
         const seaport = new Seaport(provider);
-        return { seaport: seaport, signer: provider.getSigner() }
+        return { seaport: seaport }
     }
 }
 
