@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import NewTradeModal from '../components/NewTradeModal'
 import seaport from '../utils/seaport'
+import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc } from 'firebase/firestore'
 
 const Order = ({sender, truncate, receiver}) => {
     const [openTrade, setOpenTrade] = useState(false)
@@ -8,7 +9,22 @@ const Order = ({sender, truncate, receiver}) => {
     const [askTrade, setAskTrade] = useState(false)
     const [offers, setOffers] = useState([])
     const [considerations, setConsiderations] = useState([])
+    const [showOption, setShowOption] = useState(1)
+    const [orders, setOrders] = useState([])
+    const [fulfill, setFulfill] = useState(false)
 
+    async function saveOrder(order) {
+        try {
+          await addDoc(collection(getFirestore(), "orders"), {
+            name: sender,
+            to: receiver,
+            order: order,
+            timestamp: serverTimestamp(),
+          });
+        } catch (error) {
+          console.error("Error writing new order to Firebase Database", error);
+        }
+      }
     async function createOrder() {
         // console.log(seaport.config);
         const orderActions = await seaport.seaport.createOrder({
@@ -17,19 +33,44 @@ const Order = ({sender, truncate, receiver}) => {
             allowPartialFills: false,
             restrictedByZone: false,
         });
-        console.log(orderActions)
-
-        await orderActions.executeAllActions();
+        const order = await orderActions.executeAllActions();
+        console.log(order)
+        saveOrder(order)
     }
+    
+    
+    async function GetPendingOrders (){
+        const data = await getDocs(collection(getFirestore(), 'orders'))
+        setOrders(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
+    }
+    useEffect(() => {
+        GetPendingOrders()
+    }, [])
+
+    async function fulfillFunc(orderid){
+        const docRef = doc(getFirestore(), 'orders', orderid)
+        const data = await getDoc(docRef)
+        const order = await data.get("order")
+        console.log(order)
+        const { executeAllActions: executeAllFulfillActions } = await seaport.seaport.fulfillOrder({
+            order,
+            accountAddress: receiver,
+          });
+
+        const transaction = await executeAllFulfillActions()
+        console.log(transaction)
+    }
+    
 
   return (
     <>
     <div className='trade flex-[4] mx-10'>
         <div className='trade-links flex w-2/5 justify-between cursor:pointer text-white0'>
-            <button>Create</button>
-            <button>Pending</button>
-            <button>Completed</button>
+            <button onClick={() => setShowOption(1)} className={`${showOption == 1 ? "text-themepink" : ""}`}>Create</button>
+            <button onClick={() => setShowOption(2)} className={`${showOption == 2 ? "text-themepink" : ""}`}>Pending</button>
+            <button onClick={() => setShowOption(3)} className={`${showOption == 3 ? "text-themepink" : ""}`}>Completed</button>
         </div>
+            {showOption == 1 && <>
         <div className="flex flex-col h-[70%] w-[80%] justify-evenly">
             <p className='text-white0 text-sm'>Your Offer</p>
             <div className='w-full bg-black h-[25%] flex flex-col justify-between p-2 '>
@@ -62,7 +103,24 @@ const Order = ({sender, truncate, receiver}) => {
                 }
             }>{"Create Order"}
             </button>
-        </div>
+        </div></>}        
+        {showOption == 2 && <>
+            <div>
+                {orders.map((order) => {
+                    if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
+                    return (
+                        <div>
+                            <h1 className='text-white0'>Order Created by: {order.name}</h1>
+                            <h1 className='text-white0'>For: {order.to}</h1>
+                            <h1 className='text-white0'>Offers: </h1>
+                            <h1 className='text-white0'>Considerations: </h1>
+                            {(order.to == sender) && <button className='bg-pinktint' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
+                        </div>
+                    )}
+                })}
+            </div>
+
+            </>}
     </div>
     {openTrade && (
         <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}

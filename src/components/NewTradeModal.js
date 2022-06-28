@@ -1,3 +1,4 @@
+import { parseEther } from 'ethers/lib/utils'
 import React, { useState, useEffect } from 'react'
 // import newOrder from '../utils/seaport'
 
@@ -31,7 +32,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...offers,
               {
-                "amount":(Number(etherBox)*(10**18)).toString(),
+                "amount":parseEther(etherBox).toString(),
               }
             ]
           )
@@ -43,7 +44,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               ...offers,
               {
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "amount": Number(wEtherBox)*(10**18).toString(),
+                "amount": parseEther(wEtherBox),
               }
             ]
           )
@@ -70,7 +71,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             [
               ...considerations,
               {
-                "amount": (Number(etherBox)*(10**18)).toString(),
+                "amount": parseEther(etherBox).toString(),
                 "recipient": sender
               }
             ]
@@ -82,7 +83,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
               ...considerations,
               {
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "amount": Number(wEtherBox)*(10**18).toString(),
+                "amount": parseEther(wEtherBox),
                 "recipient": sender
               }
             ]
