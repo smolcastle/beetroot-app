@@ -51,7 +51,7 @@ const WalletButton = () => {
 
 const Header = () => {
   return (
-    <div className="flex items-center h-24 bg-globaltheme shadow-sm px-6 flex-shrink-0">
+    <div className="flex items-center h-24 bg-chatbg shadow-sm px-6 flex-shrink-0">
       <img
           className="w-10 h-10 xs:w-12 xs:h-12 lg:w-16 lg:h-16 object-contain"
           src={logo2}

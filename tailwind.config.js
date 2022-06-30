@@ -69,6 +69,7 @@ module.exports = {
       pinktint: "#DFA6B980",
       pinktint10: "#F9EDF1",
       globaltheme: "#1F1818",
+      chatbg: "#13080B",
       themepink: "#CA7C86",
       overlaybg: "#5B3A3E",
       "nord-dark1": "#D7DFEC",

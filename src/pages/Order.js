@@ -27,7 +27,7 @@ const Order = ({sender, truncate, receiver}) => {
             <button>Pending</button>
             <button>Completed</button>
         </div>
-        <div className="flex flex-col h-[70%] w-[80%] justify-evenly">
+        <div className="flex flex-col h-[75%] w-[90%] justify-evenly">
             <div className='w-full bg-white10 h-[25%] flex flex-col justify-between p-4 '>
                 <p className='text-themepink text-sm text-[16px]'>{truncate(sender, 16)} {"(You)"}</p>
                 <div className="flex justify-between w-[50%]">
@@ -64,6 +64,16 @@ const Order = ({sender, truncate, receiver}) => {
                     <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10'></button>
                 </div>
             </div>
+            <div class="flex w-full justify-between">
+                <div className='flex flex-col w-[60%] text-[16px]'>
+                    <input placeholder='set counterparty address (for private trade)' className='bg-white10 text-themepink placeholder:text-themepink outline-none p-2'></input>
+                    <p className='text-white0 text-[11px] mt-3'>(leave empty for anyone to accept the swap)</p>
+                </div>
+                <div className='flex flex-col w-[35%] text-[16px]'>
+                    <input placeholder='21/03/23' className='bg-white10 text-themepink placeholder:text-themepink outline-none p-2'></input>
+                    <p className='text-white0 text-[11px] mt-3'>(leave empty for default expiry in 1 week)</p>
+                </div>
+            </div>
             <button className='w-full bg-pink80 rounded-sm text-pinktint10 h-10 font-inter cursor-pointer'
             onClick={
                 async () => {
@@ -71,6 +81,7 @@ const Order = ({sender, truncate, receiver}) => {
                 }
             }>{"Create Order"}
             </button>
+            
         </div>
     </div>
     {openTrade && (

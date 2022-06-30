@@ -446,7 +446,7 @@ export default function Chat() {
 
   if (!sender) {
     return (
-      <div class="h-screen w-screen bg-globaltheme">
+      <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Connect your wallet first"}
         </div>
@@ -456,7 +456,7 @@ export default function Chat() {
 
   if (chainId != 4) {
     return (
-      <div class="h-screen w-screen bg-globaltheme">
+      <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Wrong Network connect to Rinkeby Network"}
         </div>
@@ -465,7 +465,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col p-2 min-h-0 bg-globaltheme">
+    <div className="flex flex-1 flex-col p-2 min-h-0 bg-chatbg">
       <div className="flex flex-1 h-full mt-5 mb-10 ml-20">
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
