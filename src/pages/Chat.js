@@ -49,7 +49,7 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
       name: sender,
       text: messageText,
       uid: sender,
-      receiver,
+      receiver: receiver.toLowerCase(),
       queue_id:
         sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
       profilePicUrl: "https://i.pravatar.cc/150?img=3",
@@ -124,7 +124,9 @@ async function getSignatureData(sender, dispatch) {
       signatureData.message,
       signatureData.signature
     );
-    if (recoveredAddress === sender) {
+    console.log(recoveredAddress)
+    console.log(sender)
+    if (recoveredAddress.toLowerCase() === sender) {
       dispatch(updateSignatureData(signatureData));
       getAllQueues(sender, dispatch);
     } else {
@@ -152,7 +154,7 @@ async function signMessage(sender, dispatch, chainId) {
     });
     const msgStr = message.prepareMessage();
     const signature = await Provider.signMessage(msgStr);
-    const recoveredAddress = ethers.utils.verifyMessage(msgStr, signature);
+    const recoveredAddress = (ethers.utils.verifyMessage(msgStr, signature)).toLowerCase();
     if (recoveredAddress === sender) {
       const signingsRef = collection(getFirestore(), "signings");
       await setDoc(doc(signingsRef, sender), {
@@ -164,7 +166,7 @@ async function signMessage(sender, dispatch, chainId) {
       getSignatureData(sender, dispatch);
     } else {
       dispatch(hideLoader());
-      alert("Signature did not match");
+      alert("Signature didn't match");
     }
   } catch (error) {
     dispatch(hideLoader());
@@ -411,7 +413,20 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
             </div>
           );
         })}
-        
+        {/* <div className="bg-white10 w-full p-2">
+          <p className="text-themepink">
+            You have received a transcation request from 0x...abcd. Accept or Reject
+          </p>
+        </div>
+        <div className="bg-white10 w-full p-2 text-themepink">
+          <h1>Track your Transaction </h1>
+          <div>
+            <li>Order created by</li>
+            <li>Order accepted by you</li>
+            <li>Order Processing</li>
+            <li>Order Successful</li>
+          </div>
+        </div> */}
       </div>
       <SendMessageSection
         message={message}
@@ -431,7 +446,7 @@ export default function Chat() {
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
-  const sender = useSelector((state) => state.wallet.address);
+  const sender = useSelector((state) => state.wallet.address.toLowerCase());
   const chainId = useSelector((state) => state.wallet.chainId);
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);

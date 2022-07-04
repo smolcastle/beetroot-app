@@ -32,14 +32,14 @@ export default function NewChatModal({
             <div className="relative p-6 flex-auto">
               <div className="flex w-full h-12 border-[1px] justify-center items-center mb-4">
                 <input
-                  value={receiver}
+                  value={receiver.toLowerCase()}
                   type="text"
                   name="search"
                   autoComplete="off"
                   id="search"
                   class="w-full h-full outline-none text-white0 placeholder:text-white0 bg-white10 pl-4"
                   placeholder={"Enter recipient's address"}
-                  onChange={(e) => setReceiver(e.target.value)}
+                  onChange={(e) => setReceiver((e.target.value).toLowerCase())}
                 />
               </div>
               <div className="flex w-full h-12 border-[1px] justify-center items-center mb-4">
