@@ -160,11 +160,6 @@ const Order = ({sender, truncate, receiver}) => {
                     if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
                     return (
                         <div className='flex justify-around rounded-lg p-4 bg-white10 mb-5'>
-                            {/* <h1 className='text-white0'>Order Created by: {order.name}</h1>
-                            <h1 className='text-white0'>For: {order.to}</h1>
-                            <h1 className='text-white0'>Offers: </h1>
-                            <h1 className='text-white0'>Considerations: </h1>
-                            {(order.to == sender) && <button className='bg-pinktint' onClick={() => fulfillFunc(order.id)}>Fulfill</button>} */}
                             <div>
                                 <h1 className='text-white0'>You: {truncate(order.to, 16)}</h1>
                                 <h1 className='my-2 text-white0'>Created: {getDateTime(order.timestamp?.seconds)}</h1>
