@@ -7,7 +7,7 @@ export default function NewChatModal({
   setModalState,
   getAllQueues,
   setSelected,
-  index, 
+  index,
   newModal, setNewModalState
 }) {
   const [receiver, setReceiver] = useState("");
@@ -56,7 +56,7 @@ export default function NewChatModal({
               </div>
               <button
                 onClick={() => {
-                  if (receiver.substring(0, 2) == "0x" && receiver.substring(2).length == 40) {
+                  if (receiver.match(/^(0x)[0-9a-fA-F]{40}$/)) {
                     saveMessage(message, sender, receiver, dispatch);
                     (newModal ? setNewModalState(false) : setModalState(false))
                     getAllQueues(sender, dispatch);
@@ -69,7 +69,7 @@ export default function NewChatModal({
                 type="button"
                 disabled={!receiver.length }
                 class={`flex bg-themepink text-black h-10 w-full font-bold text-base shadow-sm rounded-sm justify-center items-center ${
-                  !receiver.length 
+                  !receiver.length
                     ? "cursor-not-allowed"
                     : ""
                 }`}
