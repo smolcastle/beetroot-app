@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NewTradeModal from '../components/NewTradeModal'
 import seaport from '../utils/seaport'
+import { getDateTime } from '../helpers/Collections'
 import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc } from 'firebase/firestore'
 
 const Order = ({sender, truncate, receiver}) => {
@@ -158,12 +159,26 @@ const Order = ({sender, truncate, receiver}) => {
                 {orders.map((order) => {
                     if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
                     return (
-                        <div>
-                            <h1 className='text-white0'>Order Created by: {order.name}</h1>
+                        <div className='flex justify-around rounded-lg p-4 bg-white10 mb-5'>
+                            {/* <h1 className='text-white0'>Order Created by: {order.name}</h1>
                             <h1 className='text-white0'>For: {order.to}</h1>
                             <h1 className='text-white0'>Offers: </h1>
                             <h1 className='text-white0'>Considerations: </h1>
-                            {(order.to == sender) && <button className='bg-pinktint' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
+                            {(order.to == sender) && <button className='bg-pinktint' onClick={() => fulfillFunc(order.id)}>Fulfill</button>} */}
+                            <div>
+                                <h1 className='text-white0'>You: {truncate(order.to, 16)}</h1>
+                                <h1 className='my-2 text-white0'>Created: {getDateTime(order.timestamp?.seconds)}</h1>
+                                {(order.to == sender) && <button className='bg-green1 rounded-sm p-2 text-white0' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
+                            </div>
+                            <svg className='self-center w-[100px]' width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M24 7.47266L1.09492 7.4409L1.0918 5.41933L18.9984 5.44416L15.8071 2.04263L17.7491 0.809924L24 7.47266Z" fill="white" fill-opacity="0.9"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00087 12.5584L9.19246 15.96L7.25057 17.1927L0.998844 10.5296L23.9042 10.5626L23.9072 12.5842L6.00087 12.5584Z" fill="white" fill-opacity="0.9"/>
+                            </svg>
+                            <div>                                
+                                <h1 className='text-white0'>Them: {truncate(order.name, 16)}</h1>
+                                <h1 className='my-2 text-white0'>Expires in: 1 week</h1>
+                                {(order.to == sender) && <button className='bg-red rounded-sm p-2 text-white0'>Reject</button>}
+                            </div>
                         </div>
                     )}
                 })}

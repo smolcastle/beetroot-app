@@ -56,11 +56,14 @@ export default function NewChatModal({
               </div>
               <button
                 onClick={() => {
-                  if (receiver.length) {
+                  if (receiver.substring(0, 2) == "0x" && receiver.substring(2).length == 40) {
                     saveMessage(message, sender, receiver, dispatch);
                     (newModal ? setNewModalState(false) : setModalState(false))
                     getAllQueues(sender, dispatch);
                     setSelected(index+1)
+                  }
+                  else{
+                    alert('Invalid address')
                   }
                 }}
                 type="button"
