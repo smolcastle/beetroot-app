@@ -43,8 +43,8 @@ const Order = ({sender, truncate, receiver}) => {
         saveOrder(order)
         setIsLoading(false)
     }
-    
-    
+
+
     async function GetPendingOrders (){
         const data = await getDocs(collection(getFirestore(), 'orders'))
         setOrders(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
@@ -60,13 +60,13 @@ const Order = ({sender, truncate, receiver}) => {
         console.log(order)
         const { executeAllActions: executeAllFulfillActions } = await seaport.seaport.fulfillOrder({
             order,
-            accountAddress: receiver,
+            accountAddress: sender,
           });
 
         const transaction = await executeAllFulfillActions()
         console.log(transaction)
     }
-    
+
 
   return (
     <>
@@ -134,25 +134,25 @@ const Order = ({sender, truncate, receiver}) => {
                         }
                     }>{"Create Order"}
                     </button>}
-                    {isLoading && 
+                    {isLoading &&
                     <button className='w-full bg-pink80 text-pinktint10 h-10 cursor-pointer flex justify-center items-center'>
                         <svg className='w-[10%]' version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         viewBox="0 0 100 100" enable-background="new 0 0 0 0" xmlSpace="preserve">
                           <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
-                            <animateTransform 
-                               attributeName="transform" 
-                               attributeType="XML" 
+                            <animateTransform
+                               attributeName="transform"
+                               attributeType="XML"
                                type="rotate"
-                               dur="1s" 
+                               dur="1s"
                                from="0 50 50"
-                               to="360 50 50" 
+                               to="360 50 50"
                                repeatCount="indefinite" />
                         </path>
                       </svg>
                       </button>
                     }
                 </div>
-            </>}       
+            </>}
         {showOption == 2 && <>
             <div>
                 {orders.map((order) => {
@@ -168,7 +168,7 @@ const Order = ({sender, truncate, receiver}) => {
                     )}
                 })}
             </div>
-        </>} 
+        </>}
     </div>
     {openTrade && (
         <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}
