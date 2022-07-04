@@ -32,6 +32,7 @@ const Order = ({sender, truncate, receiver}) => {
     async function createOrder() {
         // console.log(seaport.config);
         setIsLoading(true)
+
         const orderActions = await seaport.seaport.createOrder({
             offer: offers,
             consideration: considerations,
@@ -67,6 +68,10 @@ const Order = ({sender, truncate, receiver}) => {
         console.log(transaction)
     }
     
+        console.log(orderActions)
+
+        await orderActions.executeAllActions();
+    }
 
   return (
     <>
@@ -169,6 +174,14 @@ const Order = ({sender, truncate, receiver}) => {
                 })}
             </div>
         </>} 
+            <button className='w-full bg-pink80 rounded-sm text-pinktint10 h-10 font-inter cursor-pointer'
+            onClick={
+                async () => {
+                    await createOrder()
+                }
+            }>{"Create Order"}
+            </button>
+        </div>
     </div>
     {openTrade && (
         <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}
