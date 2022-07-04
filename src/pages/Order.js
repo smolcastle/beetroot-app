@@ -68,10 +68,6 @@ const Order = ({sender, truncate, receiver}) => {
         console.log(transaction)
     }
     
-        console.log(orderActions)
-
-        await orderActions.executeAllActions();
-    }
 
   return (
     <>
