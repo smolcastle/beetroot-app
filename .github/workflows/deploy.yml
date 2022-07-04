@@ -16,7 +16,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build docker image
-        run: docker-compose build
+        run: docker compose build
       
       - name: Run docker container
-        run: docker-compose up -d
+        run: docker compose up -d
+
+      - name: Delete old containers and images
+        run: docker compose rm && docker rmi $(docker images -aq)
