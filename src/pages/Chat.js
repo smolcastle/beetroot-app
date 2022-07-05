@@ -20,7 +20,6 @@ import {
   hideLoader,
   resetMessages,
   showLoader,
-  updateMessage,
   updateMessages,
   updateQueueIds,
   updateSignatureData,
@@ -31,12 +30,8 @@ import NewChatModal from "../components/NewChatModal";
 import Provider from "../utils/Provider";
 import SigningModal from "../components/SigningModal";
 import { ethers } from "ethers";
-import { Trade } from "./Trade";
 import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
-import seaport from "../utils/seaport";
-
-const arr = ["a", "b", "c", "d"];
 
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
@@ -533,7 +528,7 @@ export default function Chat() {
           </div>
         )}
       </div>
-      
+
       {signModal && (
         <SigningModal
           signMessage={signMessage}
