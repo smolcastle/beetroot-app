@@ -32,17 +32,22 @@ const Order = ({sender, truncate, receiver}) => {
       }
     async function createOrder() {
         // console.log(seaport.config);
-        setIsLoading(true)
-        const orderActions = await seaport.seaport.createOrder({
-            offer: offers,
-            consideration: considerations,
-            allowPartialFills: false,
-            restrictedByZone: false,
-        });
-        const order = await orderActions.executeAllActions();
-        console.log(order)
-        saveOrder(order)
-        setIsLoading(false)
+        if(offers.length == 0 || considerations.length == 0){
+            alert("Order cannot be empty")
+        }
+        else{
+            setIsLoading(true)
+            const orderActions = await seaport.seaport.createOrder({
+                offer: offers,
+                consideration: considerations,
+                allowPartialFills: false,
+                restrictedByZone: false,
+            });
+            const order = await orderActions.executeAllActions();
+            console.log(order)
+            saveOrder(order)
+            setIsLoading(false)
+        }
     }
 
 
