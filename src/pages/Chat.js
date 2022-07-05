@@ -464,11 +464,11 @@ export default function Chat() {
     );
   }
 
-  if (chainId != 4) {
+  if (chainId != 1) {
     return (
       <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
-          {"Wrong Network connect to Rinkeby Network"}
+          {"Please connect to Ethereum Mainnet"}
         </div>
       </div>
     );
