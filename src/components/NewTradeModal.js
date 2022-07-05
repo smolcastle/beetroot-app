@@ -1,9 +1,11 @@
 import { parseEther } from 'ethers/lib/utils'
 import React, { useState, useEffect } from 'react'
-// import newOrder from '../utils/seaport'
+import { ethers } from "ethers";
+import erc721ABI from "../abis/erc721.json";
+import seaport from '../utils/seaport';
 
 const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, considerations, setConsiderations, askTrade, offerTrade}) => {
-    const boxes= 6
+    const boxes = 6
     // const [check, showCheck] = useState(false)
     const [showNFT, setShowNFT] = useState(true)
     const [showEther, setShowEther] = useState(false)
@@ -12,20 +14,40 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
     const [wEtherBox, setWEtherBox] = useState('')
     const [tokenId, setTokenId] = useState('')
 
-
-    function onAdd(){
+    async function onAdd() {
       if(showNFT){
-        setOffers(
-          [
-            ...offers,
-            {
-              "itemType": 2,
-              "token": nftBox,
-              "identifier": tokenId
-            }
-          ]
-        )
+
+        const erc721Contract = new ethers.Contract(
+          nftBox,
+          erc721ABI,
+          seaport.signer
+        );
+
+        try {
+          // will throw if tokenId doesn't exist.
+          const owner = await erc721Contract.ownerOf(tokenId);
+          if (owner != await seaport.signer.getAddress()) {
+            alert("You are not the owner");
+            return;
+          }
+
+          setOffers(
+            [
+              ...offers,
+              {
+                "itemType": 2,
+                "token": nftBox,
+                "identifier": tokenId
+              }
+            ]
+          )
+        } catch (error) {
+          console.log(error);
+          alert("NFT doesn't exist");
+        }
+
       }
+
       if(showEther){
         if(etherBox !== ""){
           setOffers(
@@ -51,8 +73,23 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
         }
       }
   }
-    function onAdd2(){
-      if(showNFT){
+
+  async function onAdd2(){
+    if(showNFT){
+      const erc721Contract = new ethers.Contract(
+        nftBox,
+        erc721ABI,
+        seaport.signer
+      );
+
+      try {
+        // will throw if tokenId doesn't exist.
+        // we are not checking for owner here as the offerer can choose
+        // the order to be fulfilled by anyone.
+        // TODO: discuss and check if we should do an owner check here if
+        // user selects the fulfillment to be done by a particular address.
+        await erc721Contract.tokenURI(tokenId);
+
         setConsiderations(
           [
             ...considerations,
@@ -64,32 +101,36 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
             }
           ]
         )
+      } catch (error) {
+        console.log(error);
+        alert("NFT details not correct");
       }
-      if(showEther){
-        if(etherBox !== ""){
-          setConsiderations(
-            [
-              ...considerations,
-              {
-                "amount": parseEther(etherBox).toString(),
-                "recipient": sender
-              }
-            ]
-          )
-        }
-        if(wEtherBox !== ""){
-          setConsiderations(
-            [
-              ...considerations,
-              {
-                "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
-                "amount": parseEther(wEtherBox),
-                "recipient": sender
-              }
-            ]
-          )
-        }
+    }
+    if(showEther){
+      if(etherBox !== ""){
+        setConsiderations(
+          [
+            ...considerations,
+            {
+              "amount": parseEther(etherBox).toString(),
+              "recipient": sender
+            }
+          ]
+        )
       }
+      if(wEtherBox !== ""){
+        setConsiderations(
+          [
+            ...considerations,
+            {
+              "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
+              "amount": parseEther(wEtherBox),
+              "recipient": sender
+            }
+          ]
+        )
+      }
+    }
   }
 
   useEffect(() => {
@@ -127,7 +168,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
                 <input placeholder='Token ID' className='w-[35%] p-2 focus:outline-none' onChange={(e) => setTokenId(e.target.value)}></input>
                 <button className="bg-themepink text-white0 py-2 px-4 rounded-sm"
                 type="button"
-                onClick={ offerTrade ? () => onAdd() : () => onAdd2()}>
+                onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()}>
                 {"Add"}
               </button>
             </div>
