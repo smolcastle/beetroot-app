@@ -16,18 +16,15 @@ import React from 'react'
 
 function RainbowWal() {
     const { chains, provider } = configureChains(
-        [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
-        [
-          alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }),
-          publicProvider()
-        ]
+        [ chain.rinkeby ],
+        [ publicProvider() ]
       );
-      
+
       const { connectors } = getDefaultWallets({
         appName: 'My RainbowKit App',
         chains
       });
-      
+
       const wagmiClient = createClient({
         autoConnect: true,
         connectors,
