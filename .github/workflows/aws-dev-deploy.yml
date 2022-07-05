@@ -39,7 +39,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy
+    name: dev-deploy
     runs-on: ubuntu-latest
 
     steps:

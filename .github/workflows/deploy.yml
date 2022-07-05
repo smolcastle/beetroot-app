@@ -28,6 +28,8 @@ name: Deploy main branch to Amazon ECS - production
 
 on:
   pull_request:
+    types:
+      - closed
     branches:
       - "main"
 
@@ -39,7 +41,8 @@ env:
 
 jobs:
   deploy:
-    name: Deploy
+    name: main-deploy
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
