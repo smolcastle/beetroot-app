@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-// import './App.css'
 import Home from "./pages/Home";
 import Provider from "./utils/Provider";
 

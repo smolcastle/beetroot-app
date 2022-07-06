@@ -426,10 +426,6 @@ class ProviderClass {
   };
 
   resetApp = async () => {
-    // const { web3 } = this.state;
-    // if (web3 && web3.currentProvider && web3.currentProvider.close) {
-    //   await web3.currentProvider.close();
-    // }
     try {
       await this.web3Modal.clearCachedProvider();
       this.dispatch({ type: "RESET_WALLET_INFO" });
@@ -438,20 +434,6 @@ class ProviderClass {
       console.log(e);
     }
   };
-
-  // getAccountAssets = async () => {
-  //     const { address, chainId } = this.state;
-  //     this.setState({ fetching: true });
-  //     try {
-  //       // get account balances
-  //       const assets = await apiGetAccountAssets(address, chainId);
-
-  //       await this.setState({ fetching: false, assets });
-  //     } catch (error) {
-  //       console.error(error); // tslint:disable-line
-  //       await this.setState({ fetching: false });
-  //     }
-  //   };
 }
 
 const Provider = new ProviderClass();

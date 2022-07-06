@@ -24,7 +24,6 @@ import {
   updateQueueIds,
   updateSignatureData,
 } from "../actions/actions";
-import Search from "../components/Search";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
 import Provider from "../utils/Provider";
@@ -169,34 +168,6 @@ async function signMessage(sender, dispatch, chainId) {
   }
 }
 
-function TopSection({ sender, receiver, setReceiver, dispatch }) {
-  return (
-    <div class="flex-1 flex flex-col">
-      <div className="text-black1 text-sm font-medium capitalize my-8">{`Your Address - ${sender}`}</div>
-      <div className="text-black1 text-xl font-medium capitalize my-8">
-        {"Enter address you want to chat with"}
-        <Search
-          searchString={receiver}
-          setSearchString={setReceiver}
-          placeholder={"Enter Receiver Address"}
-        />
-        <button
-          onClick={() => {
-            if (receiver) {
-              resetMessages();
-              listenMessages(sender, receiver, dispatch);
-            }
-          }}
-          type="button"
-          class="bg-f2 text-black3 dark:text-black3 h-8 text-base font-medium shadow-sm rounded-md w-24 ml-4 mt-4"
-        >
-          {"Start Chat"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function User({
   sender,
   receiver,
@@ -267,13 +238,6 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
-      {/* <button
-        onClick={() => getAllQueues(sender, dispatch)}
-        type="button"
-        class="flex bg-green text-black3 h-8 text-sm shadow-sm rounded-md mb-6 justify-center items-center"
-      >
-        {"Refresh Chats"}
-      </button> */}
       <button
         onClick={() => setModalState(true)}
         type="button"
@@ -384,12 +348,6 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
         {messages?.map(({ text, name, timestamp }, index) => {
           return (
             <div>
-              {/* <li
-                key={index}
-                class={`flex overflow-hidden w-full px-2 pb-2 ${
-                  name === sender ? "justify-end" : "justify-start"
-                }`}
-              > */}
                 <div class={`flex flex-col text-[12px] h-auto text-white0 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
@@ -404,24 +362,9 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
                     </div>
                   )}
                 </div>
-              {/* </li> */}
             </div>
           );
         })}
-        {/* <div className="bg-white10 w-full p-2">
-          <p className="text-themepink">
-            You have received a transcation request from 0x...abcd. Accept or Reject
-          </p>
-        </div>
-        <div className="bg-white10 w-full p-2 text-themepink">
-          <h1>Track your Transaction </h1>
-          <div>
-            <li>Order created by</li>
-            <li>Order accepted by you</li>
-            <li>Order Processing</li>
-            <li>Order Successful</li>
-          </div>
-        </div> */}
       </div>
       <SendMessageSection
         message={message}
