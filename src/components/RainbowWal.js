@@ -1,18 +1,13 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import {
-  getDefaultWallets,
-  RainbowKitProvider,
+  getDefaultWallets
 } from '@rainbow-me/rainbowkit';
 import {
   chain,
   configureChains,
-  createClient,
-  WagmiConfig,
+  createClient
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-
-import React from 'react'
 
 function RainbowWal() {
     const { chains, provider } = configureChains(
@@ -31,7 +26,8 @@ function RainbowWal() {
         provider
       })
 
-      return {wagmiClient, chains}
+      console.log(provider)
+      return {wagmiClient, chains, provider}
 }
 
 export default RainbowWal

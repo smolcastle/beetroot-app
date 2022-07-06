@@ -1,6 +1,7 @@
 import WalletConnect from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import { ethers } from "ethers";
+import RainbowWal from "../components/RainbowWal";
 import Web3Modal from "web3modal";
 import {
   hideLoader,
@@ -12,37 +13,38 @@ import contractABI from "../abis/contract.json";
 import erc721ABI from "../abis/erc721.json";
 import erc1155ABI from "../abis/erc1155.json";
 import weth from "../abis/weth.json";
+import { useContract, useProvider, useSigner } from 'wagmi'
 
-const infuraId = process.env.REACT_APP_INFURA_ID;
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnect,
-    options: {
-      infuraId,
-    },
-  },
-  coinbasewallet: {
-    package: CoinbaseWalletSDK,
-    options: {
-      appName: "My Awesome App",
-      infuraId,
-    },
-  },
-};
+// const infuraId = process.env.REACT_APP_INFURA_ID;
+// const providerOptions = {
+//   walletconnect: {
+//     package: WalletConnect,
+//     options: {
+//       infuraId,
+//     },
+//   },
+//   coinbasewallet: {
+//     package: CoinbaseWalletSDK,
+//     options: {
+//       appName: "My Awesome App",
+//       infuraId,
+//     },
+//   },
+// };
 
 class ProviderClass {
   constructor() {
     if (!ProviderClass.instance) {
       this.dispatch = () => {};
-      this.web3Modal = new Web3Modal({
-        network: "mainnet",
-        cacheProvider: true,
-        providerOptions,
-      });
+      // this.web3Modal = new Web3Modal({
+      //   network: "mainnet",
+      //   cacheProvider: true,
+      //   providerOptions,
+      // });
       this.eProvider = null;
       this.address = null;
       this.signer = null;
-      this.chainId = null;
+      // this.chainId = null;
       this.tradeContractAddress = "0xcc15396272c2ffe333580e53c21aa5cc2b667b95";
       this.tradeContract = null;
       this.erc721Contract = null;
@@ -396,8 +398,8 @@ class ProviderClass {
       this.getERC1155Contract();
       this.getWETHContract();
       this.dispatch({ type: "UPDATE_ADDRESS", address: this.address });
-      const { chainId } = await this.eProvider.getNetwork();
-      this.dispatch({ type: "UPDATE_CHAIN_ID", chainId });
+      // const { chainId } = await this.eProvider.getNetwork();
+      // this.dispatch({ type: "UPDATE_CHAIN_ID", chainId });
     } catch (e) {
       console.log("error - ", e);
     }
@@ -431,7 +433,7 @@ class ProviderClass {
     //   await web3.currentProvider.close();
     // }
     try {
-      await this.web3Modal.clearCachedProvider();
+      // await this.web3Modal.clearCachedProvider();
       this.dispatch({ type: "RESET_WALLET_INFO" });
       this.dispatch(resetSignatureData());
     } catch (e) {

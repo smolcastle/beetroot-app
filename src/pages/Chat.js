@@ -31,10 +31,9 @@ import NewChatModal from "../components/NewChatModal";
 import Provider from "../utils/Provider";
 import SigningModal from "../components/SigningModal";
 import { ethers } from "ethers";
-import { Trade } from "./Trade";
 import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
-import seaport from "../utils/seaport";
+import { useAccount } from "wagmi";
 
 const arr = ["a", "b", "c", "d"];
 
@@ -114,18 +113,16 @@ function listenMessages(sender, receiver, dispatch) {
   return unsubscribe;
 }
 
-async function getSignatureData(sender, dispatch) {
+async function getSignatureData(sender , dispatch) {
   const signRef = doc(getFirestore(), "signings", sender);
   const signatureDataSnap = await getDoc(signRef);
-
+  console.log(signRef)
   if (signatureDataSnap.exists()) {
     const signatureData = signatureDataSnap.data();
     const recoveredAddress = ethers.utils.verifyMessage(
       signatureData.message,
       signatureData.signature
     );
-    console.log(recoveredAddress)
-    console.log(sender)
     if (recoveredAddress.toLowerCase() === sender) {
       dispatch(updateSignatureData(signatureData));
       getAllQueues(sender, dispatch);
@@ -272,13 +269,6 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
-      {/* <button
-        onClick={() => getAllQueues(sender, dispatch)}
-        type="button"
-        class="flex bg-green text-black3 h-8 text-sm shadow-sm rounded-md mb-6 justify-center items-center"
-      >
-        {"Refresh Chats"}
-      </button> */}
       <button
         onClick={() => setModalState(true)}
         type="button"
@@ -389,12 +379,6 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
         {messages?.map(({ text, name, timestamp }, index) => {
           return (
             <div>
-              {/* <li
-                key={index}
-                class={`flex overflow-hidden w-full px-2 pb-2 ${
-                  name === sender ? "justify-end" : "justify-start"
-                }`}
-              > */}
                 <div class={`flex flex-col text-[12px] h-auto text-white0 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
@@ -409,24 +393,9 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
                     </div>
                   )}
                 </div>
-              {/* </li> */}
             </div>
           );
         })}
-        {/* <div className="bg-white10 w-full p-2">
-          <p className="text-themepink">
-            You have received a transcation request from 0x...abcd. Accept or Reject
-          </p>
-        </div>
-        <div className="bg-white10 w-full p-2 text-themepink">
-          <h1>Track your Transaction </h1>
-          <div>
-            <li>Order created by</li>
-            <li>Order accepted by you</li>
-            <li>Order Processing</li>
-            <li>Order Successful</li>
-          </div>
-        </div> */}
       </div>
       <SendMessageSection
         message={message}
@@ -446,11 +415,18 @@ export default function Chat() {
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
-  const sender = useSelector((state) => state.wallet.address.toLowerCase());
-  const chainId = useSelector((state) => state.wallet.chainId);
+  // const sender = useSelector((state) => state.wallet.address.toLowerCase());
+  // const [sender, setSender] = useState("")
+  const address = useAccount()
+  const result = address.address
+  const sender = (result || '').toLowerCase();
+
+  // const chainId = useSelector((state) => state.wallet.chainId);
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);
   const dispatch = useDispatch();
+
+  console.log(sender)
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
@@ -458,6 +434,7 @@ export default function Chat() {
       getSignatureData(sender, dispatch);
     }
   }, [sender]);
+
 
   if (!sender) {
     return (
@@ -469,15 +446,15 @@ export default function Chat() {
     );
   }
 
-  if (chainId != 4) {
-    return (
-      <div class="h-screen w-screen bg-chatbg">
-        <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
-          {"Wrong Network connect to Rinkeby Network"}
-        </div>
-      </div>
-    );
-  }
+  // if (chainId != 4) {
+  //   return (
+  //     <div class="h-screen w-screen bg-chatbg">
+  //       <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
+  //         {"Wrong Network connect to Rinkeby Network"}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-1 flex-col p-2 min-h-0 bg-chatbg">
@@ -533,7 +510,7 @@ export default function Chat() {
           </div>
         )}
       </div>
-      
+
       {signModal && (
         <SigningModal
           signMessage={signMessage}

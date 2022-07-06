@@ -87,7 +87,7 @@ function LandingPage() {
     // <div className="h-screen w-screen bg-gradient-to-b from-nord-dark1 via-nord-dark2 via-nord-dark3 to-nord-dark4 flex relative">
     <div className="h-full w-screen bg-gradient-to-r from-nord-light via-nord-dark1 to-nord-dark2 flex flex-col relative md:py-0 md:px-0">
       {/* <div className="absolute inset-y-1 right-1 md:top-32 md:bottom-12 md:right-0" /> */}
-      
+
         <div className="flex absolute lg:left-2/4 lg:-translate-x-2/4 w-4/12 sm:w-1/6 xl:w-1/12 lg:w-2/12 justify-evenly sm:left-1/12 sm:-translate-x-5/6 bottom-[24px] sm:bottom-10 z-10 items-center">
           <img
               className="w-8 h-8 xs:w-10 xs:h-10 object-contain cursor-pointer hover:scale-110 eye_cursor"
@@ -113,18 +113,18 @@ function LandingPage() {
             />
           </div>
           <div className="md:hidden" onClick={() => setShowMenu(!showMenu)}>
-            {showMenu ? 
+            {showMenu ?
               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mr-5 stroke-beetroot1 z-30" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>  
-            : 
+              </svg>
+            :
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-5 stroke-beetroot1 z-30" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             }
           </div>
           <div className= {
-              showMenu ? "flex flex-col md:flex md:flex-row md:relative flex-1 justify-end items-center md:pr-5 lg:pr-8 xl:pr-12" 
+              showMenu ? "flex flex-col md:flex md:flex-row md:relative flex-1 justify-end items-center md:pr-5 lg:pr-8 xl:pr-12"
               :
                "hidden md:flex flex-1 justify-end items-center md:pr-5 lg:pr-8 xl:pr-12"} >
             <HeaderBtn title={"Chats"} />
