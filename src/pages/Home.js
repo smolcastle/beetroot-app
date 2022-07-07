@@ -3,26 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { getEthPrice, getFloorPrices } from "../actions/actions";
 import Navigation from "../components/Navigation";
-import Provider from "../utils/Provider";
 import LandingPage from "./LandingPage";
 import Chat from "./Chat";
 import LoaderOverlay from "../components/LoaderOverlay";
 import {truncate } from "../helpers/Collections";
 import logo2 from '../img/logo2.png'
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const WalletButton = () => {
-  const address = useSelector((state) => state.wallet.address);
-
-  if (address) return <p className="text-white0">{truncate(address, 16)}</p> ;
-
   return (
-    <button
-      onClick={Provider.connect}
-      type="button"
-        className="py-2 text-white0 font-medium w-20 h-10 md:text-[16px] md:w-24 lg:w-40 h-12 mr-4 font-termina"
-    >
-      {"Connect Wallet"}
-    </button>
+      <ConnectButton showBalance={false} />
   );
 };
 
@@ -45,6 +35,7 @@ const Header = () => {
           </svg>
         <Navigation />
         <div className="flex flex-row items-center mr-4">
+          {/* <ThemeBtn /> */}
           <div className="w-4" />
           <WalletButton />
         </div>
@@ -66,7 +57,11 @@ const Home = () => {
   const tab = useSelector((state) => state.tabs.selectedTab);
   const dispatch = useDispatch();
   useEffect(() => {
+    // dispatch(getFloorPrices());
     dispatch(getEthPrice());
+    // setTimeout(() => {
+
+    // }, 2000);
   }, []);
 
   return (

@@ -31,6 +31,11 @@ import SigningModal from "../components/SigningModal";
 import { ethers } from "ethers";
 import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
+import { useAccount } from "wagmi";
+import { useNetwork, useSwitchNetwork } from 'wagmi'
+
+
+const arr = ["a", "b", "c", "d"];
 
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
@@ -108,18 +113,15 @@ function listenMessages(sender, receiver, dispatch) {
   return unsubscribe;
 }
 
-async function getSignatureData(sender, dispatch) {
+async function getSignatureData(sender , dispatch) {
   const signRef = doc(getFirestore(), "signings", sender);
   const signatureDataSnap = await getDoc(signRef);
-
   if (signatureDataSnap.exists()) {
     const signatureData = signatureDataSnap.data();
     const recoveredAddress = ethers.utils.verifyMessage(
       signatureData.message,
       signatureData.signature
     );
-    console.log(recoveredAddress)
-    console.log(sender)
     if (recoveredAddress.toLowerCase() === sender) {
       dispatch(updateSignatureData(signatureData));
       getAllQueues(sender, dispatch);
@@ -133,7 +135,7 @@ async function getSignatureData(sender, dispatch) {
   }
 }
 
-async function signMessage(sender, dispatch, chainId) {
+async function signMessage(sender, dispatch, chainId, signer) {
   try {
     dispatch(showLoader());
     const nonce = generateNonce();
@@ -147,7 +149,7 @@ async function signMessage(sender, dispatch, chainId) {
       nonce,
     });
     const msgStr = message.prepareMessage();
-    const signature = await Provider.signMessage(msgStr);
+    const signature = await Provider.signMessage(msgStr, signer);
     const recoveredAddress = (ethers.utils.verifyMessage(msgStr, signature)).toLowerCase();
     if (recoveredAddress === sender) {
       const signingsRef = collection(getFirestore(), "signings");
@@ -384,11 +386,15 @@ export default function Chat() {
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
-  const sender = useSelector((state) => state.wallet.address.toLowerCase());
-  const chainId = useSelector((state) => state.wallet.chainId);
+  const address = useAccount()
+  const result = address.address
+  const sender = (result || '').toLowerCase();
+
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);
   const dispatch = useDispatch();
+
+  const { chain } = useNetwork()
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
@@ -396,6 +402,7 @@ export default function Chat() {
       getSignatureData(sender, dispatch);
     }
   }, [sender]);
+
 
   if (!sender) {
     return (
@@ -407,7 +414,8 @@ export default function Chat() {
     );
   }
 
-  if (chainId != 1) {
+
+  if (chain.id != 1) {
     return (
       <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
@@ -444,7 +452,6 @@ export default function Chat() {
             />
             <div className="w-[1px] bg-black7 opacity-20" />
             <div className="flex flex-[6] flex-col">
-              {/* <Trade sender={sender} receiver={receiver} /> */}
               <Order sender={sender} receiver={receiver} truncate={truncate}/>
             </div>
           </>
@@ -478,6 +485,7 @@ export default function Chat() {
           sender={sender}
           setSignModalState={setSignModalState}
           dispatch={dispatch}
+          chainId={chain.id}
         />
       )}
       {newModal &&
