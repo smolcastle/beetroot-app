@@ -2,52 +2,20 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { getEthPrice, getFloorPrices } from "../actions/actions";
-import { Blockies } from "../components/Blockies";
-import Lists from "../components/List";
 import Navigation from "../components/Navigation";
-import Search from "../components/Search";
-import SideNav from "../components/SideNav";
-import SortOptions from "../components/SortOptions";
-import ThemeBtn from "../components/ThemeBtn";
-import PortfolioValue from "../components/PortfolioValue";
-import { getCollectionsService } from "../services/services";
-import Provider from "../utils/Provider";
-import CollectionDetail from "./CollectionDetail";
-import Holdings from "./Holdings";
 import LandingPage from "./LandingPage";
-import PnL from "./PnL";
-import Channel from "../components/Chat/Channel";
 import Chat from "./Chat";
-// import Chats from "./Chats";
 import LoaderOverlay from "../components/LoaderOverlay";
 import {truncate } from "../helpers/Collections";
-import logo2 from '../img/logo2.png' 
+import logo2 from '../img/logo2.png'
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const WalletButton = () => {
-  const address = useSelector((state) => state.wallet.address);
-
-  // if (address) return <Blockies address={address} />;
-  if (address) return <p className="text-white0">{truncate(address, 16)}</p> ;
-
-
   return (
-    <button
-      onClick={Provider.connect}
-      type="button"
-        className="py-2 text-white0 font-medium w-20 h-10 md:text-[16px] md:w-24 lg:w-40 h-12 mr-4 font-termina"
-    >
-      {"Connect Wallet"}
-    </button>
+      <ConnectButton showBalance={false} />
   );
 };
 
-// const Logo = () => {
-//   return (
-//     <div class="dark:text-white3 text-black5 font-medium text-4xl flex items-center">
-//       {"Beetroot"}
-//     </div>
-//   );
-// };
 
 const Header = () => {
   return (
@@ -101,9 +69,6 @@ const Home = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Content />} />
-        {/* <Route path="/chats" element={<Chats />} /> */}
-        {/* <Route path="/pnl" element={<PnL />} />
-          <Route path="/collection" element={<CollectionDetail />} /> */}
       </Routes>
       <LoaderOverlay />
     </main>

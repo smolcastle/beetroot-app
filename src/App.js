@@ -1,18 +1,30 @@
+
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-// import './App.css'
 import Home from "./pages/Home";
-import Provider from "./utils/Provider";
+import {
+  RainbowKitProvider,
+  lightTheme
+} from '@rainbow-me/rainbowkit';
+import {
+  WagmiConfig,
+} from 'wagmi';
+import RainbowWal from "./components/RainbowWal";
+
+const rainbow = RainbowWal()
 
 function App() {
-  Provider.init(useDispatch());
-  useEffect(() => {
-    if (Provider.web3Modal.cachedProvider) {
-      Provider.connect();
-    }
-  }, []);
 
-  return <Home />;
+  return (
+  <WagmiConfig client={rainbow.wagmiClient}>
+      <RainbowKitProvider chains={rainbow.chains} theme={lightTheme({
+      accentColor: '#983E5B',
+      accentColorForeground: 'white',
+    })}>
+        <Home />
+      </RainbowKitProvider>
+    </WagmiConfig>
+  )
 }
 
 export default App;

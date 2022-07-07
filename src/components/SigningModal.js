@@ -1,13 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useSigner } from "wagmi";
 
 export default function SigningModal({
   signMessage,
   sender,
   setSignModalState,
   dispatch,
+  chainId
 }) {
-  const { chainId } = useSelector((state) => state.wallet);
+
+  const {data: signer} = useSigner();
+
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -31,7 +35,7 @@ export default function SigningModal({
             <div className="relative p-6 flex-auto">
               <button
                 onClick={() => {
-                  signMessage(sender, dispatch, chainId);
+                  signMessage(sender, dispatch, chainId, signer);
                   setSignModalState(false);
                 }}
                 type="button"
