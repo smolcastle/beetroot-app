@@ -9,25 +9,27 @@ import {
 } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 
-function RainbowWal() {
-    const { chains, provider } = configureChains(
-        [ chain.rinkeby ],
-        [ publicProvider() ]
-      );
+const RainbowWal = () => {
 
-      const { connectors } = getDefaultWallets({
-        appName: 'My RainbowKit App',
-        chains
-      });
+  const { chains, provider } = configureChains(
+    [ chain.mainnet ],
+    [ publicProvider()]
+  );
 
-      const wagmiClient = createClient({
-        autoConnect: true,
-        connectors,
-        provider
-      })
+  const { connectors } = getDefaultWallets({
+    appName: 'My RainbowKit App',
+    chains
+  });
 
-      console.log(provider)
-      return {wagmiClient, chains, provider}
+  const wagmiClient = createClient({
+    autoConnect: true,
+    connectors,
+    provider
+  })
+
+  return (
+    {wagmiClient, chains, provider}
+  )
 }
 
 export default RainbowWal

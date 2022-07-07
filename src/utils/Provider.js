@@ -1,8 +1,5 @@
-import WalletConnect from "@walletconnect/web3-provider";
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+
 import { ethers } from "ethers";
-import RainbowWal from "../components/RainbowWal";
-import Web3Modal from "web3modal";
 import {
   hideLoader,
   resetSignatureData,
@@ -13,38 +10,16 @@ import contractABI from "../abis/contract.json";
 import erc721ABI from "../abis/erc721.json";
 import erc1155ABI from "../abis/erc1155.json";
 import weth from "../abis/weth.json";
-import { useContract, useProvider, useSigner } from 'wagmi'
 
-// const infuraId = process.env.REACT_APP_INFURA_ID;
-// const providerOptions = {
-//   walletconnect: {
-//     package: WalletConnect,
-//     options: {
-//       infuraId,
-//     },
-//   },
-//   coinbasewallet: {
-//     package: CoinbaseWalletSDK,
-//     options: {
-//       appName: "My Awesome App",
-//       infuraId,
-//     },
-//   },
-// };
 
 class ProviderClass {
   constructor() {
     if (!ProviderClass.instance) {
       this.dispatch = () => {};
-      // this.web3Modal = new Web3Modal({
-      //   network: "mainnet",
-      //   cacheProvider: true,
-      //   providerOptions,
-      // });
       this.eProvider = null;
       this.address = null;
       this.signer = null;
-      // this.chainId = null;
+      this.chainId = null;
       this.tradeContractAddress = "0xcc15396272c2ffe333580e53c21aa5cc2b667b95";
       this.tradeContract = null;
       this.erc721Contract = null;
@@ -59,7 +34,8 @@ class ProviderClass {
     this.dispatch = dispatch;
   };
 
-  signMessage = async (message) => {
+  signMessage = async (message, signer) => {
+    this.signer = await signer
     return await this.signer?.signMessage(message);
   };
 
@@ -383,27 +359,6 @@ class ProviderClass {
     return balance;
   };
 
-  connect = async () => {
-    try {
-      const provider = await this.web3Modal.connect();
-      await this.subscribeProvider(provider);
-      await provider.enable();
-
-      this.eProvider = new ethers.providers.Web3Provider(provider);
-      this.signer = this.eProvider.getSigner();
-      const accounts = await this.eProvider.listAccounts();
-      this.address = accounts[0];
-      this.getTradeContract();
-      this.getERC721Contract();
-      this.getERC1155Contract();
-      this.getWETHContract();
-      this.dispatch({ type: "UPDATE_ADDRESS", address: this.address });
-      // const { chainId } = await this.eProvider.getNetwork();
-      // this.dispatch({ type: "UPDATE_CHAIN_ID", chainId });
-    } catch (e) {
-      console.log("error - ", e);
-    }
-  };
 
   subscribeProvider = async (provider) => {
     if (!provider.on) return;
@@ -420,7 +375,6 @@ class ProviderClass {
     });
 
     provider.on("networkChanged", async (networkId) => {
-      const { web3 } = this.state;
       const chainId = await provider.request({ method: "eth_chainId" });
       this.dispatch({ type: "UPDATE_CHAIN_ID", chainId, networkId });
       this.getBalance();
@@ -428,12 +382,7 @@ class ProviderClass {
   };
 
   resetApp = async () => {
-    // const { web3 } = this.state;
-    // if (web3 && web3.currentProvider && web3.currentProvider.close) {
-    //   await web3.currentProvider.close();
-    // }
     try {
-      // await this.web3Modal.clearCachedProvider();
       this.dispatch({ type: "RESET_WALLET_INFO" });
       this.dispatch(resetSignatureData());
     } catch (e) {
@@ -441,19 +390,6 @@ class ProviderClass {
     }
   };
 
-  // getAccountAssets = async () => {
-  //     const { address, chainId } = this.state;
-  //     this.setState({ fetching: true });
-  //     try {
-  //       // get account balances
-  //       const assets = await apiGetAccountAssets(address, chainId);
-
-  //       await this.setState({ fetching: false, assets });
-  //     } catch (error) {
-  //       console.error(error); // tslint:disable-line
-  //       await this.setState({ fetching: false });
-  //     }
-  //   };
 }
 
 const Provider = new ProviderClass();

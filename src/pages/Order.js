@@ -162,7 +162,8 @@ const Order = ({sender, truncate, receiver}) => {
                     return (
                         <div className='flex justify-around bg-white10 rounded-lg p-3 mb-4'>
                             <div>
-                                <h1 className='text-white0'>You: {truncate(order.to, 16)}</h1>
+                                {(order.to == sender) && <h1 className='text-white0'>You: {truncate(order.to, 16)}</h1>}
+                                {(order.to != sender) && <h1 className='text-white0'>You: {truncate(order.name, 16)}</h1>}
                                 <h1 className='my-2 text-white0'>Created: {getDateTime(order.timestamp?.seconds)}</h1>
                                 {(order.to == sender) && <button className='bg-green1 rounded-sm p-2 text-white0' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
                             </div>
@@ -171,7 +172,8 @@ const Order = ({sender, truncate, receiver}) => {
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00087 12.5584L9.19246 15.96L7.25057 17.1927L0.998844 10.5296L23.9042 10.5626L23.9072 12.5842L6.00087 12.5584Z" fill="white" fill-opacity="0.9"/>
                             </svg>
                             <div>
-                                <h1 className='text-white0'>Them: {truncate(order.name, 16)}</h1>
+                                {(order.to == sender) && <h1 className='text-white0'>Them: {truncate(order.name, 16)}</h1>}
+                                {(order.to != sender) && <h1 className='text-white0'>Them: {truncate(order.to, 16)}</h1>}
                                 <h1 className='my-2 text-white0'>Expires in: 1 week</h1>
                                 {(order.to == sender) && <button className='bg-red rounded-sm p-2 text-white0'>Reject</button>}
                             </div>
