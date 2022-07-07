@@ -415,7 +415,7 @@ export default function Chat() {
   }
 
 
-  if (chainId != 1) {
+  if (chain.id != 1) {
     return (
       <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
