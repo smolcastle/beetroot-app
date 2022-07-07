@@ -67,20 +67,6 @@ export function resetSignatureData() {
   };
 }
 
-export function updateCreateTradeData(tradeData) {
-  return {
-    type: "UPDATE_CREATE_TRADE_DATA",
-    tradeData,
-  };
-}
-
-export function updateAcceptTradeData(tradeData) {
-  return {
-    type: "UPDATE_ACCEPT_TRADE_DATA",
-    tradeData,
-  };
-}
-
 export function showLoader() {
   return {
     type: "SHOW_LOADER",
