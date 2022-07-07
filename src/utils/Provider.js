@@ -389,7 +389,6 @@ class ProviderClass {
       console.log(e);
     }
   };
-
 }
 
 const Provider = new ProviderClass();

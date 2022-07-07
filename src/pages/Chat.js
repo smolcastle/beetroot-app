@@ -20,12 +20,10 @@ import {
   hideLoader,
   resetMessages,
   showLoader,
-  updateMessage,
   updateMessages,
   updateQueueIds,
   updateSignatureData,
 } from "../actions/actions";
-import Search from "../components/Search";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
 import Provider from "../utils/Provider";
@@ -170,34 +168,6 @@ async function signMessage(sender, dispatch, chainId, signer) {
     dispatch(hideLoader());
     console.error("Error writing new message to Firebase Database", error);
   }
-}
-
-function TopSection({ sender, receiver, setReceiver, dispatch }) {
-  return (
-    <div class="flex-1 flex flex-col">
-      <div className="text-black1 text-sm font-medium capitalize my-8">{`Your Address - ${sender}`}</div>
-      <div className="text-black1 text-xl font-medium capitalize my-8">
-        {"Enter address you want to chat with"}
-        <Search
-          searchString={receiver}
-          setSearchString={setReceiver}
-          placeholder={"Enter Receiver Address"}
-        />
-        <button
-          onClick={() => {
-            if (receiver) {
-              resetMessages();
-              listenMessages(sender, receiver, dispatch);
-            }
-          }}
-          type="button"
-          class="bg-f2 text-black3 dark:text-black3 h-8 text-base font-medium shadow-sm rounded-md w-24 ml-4 mt-4"
-        >
-          {"Start Chat"}
-        </button>
-      </div>
-    </div>
-  );
 }
 
 function User({
@@ -444,11 +414,12 @@ export default function Chat() {
     );
   }
 
-  if (chain.id != 1) {
+
+  if (chainId != 1) {
     return (
       <div class="h-screen w-screen bg-chatbg">
         <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
-          {"Wrong Network connect to Mainnet Network"}
+          {"Please connect to Ethereum Mainnet"}
         </div>
       </div>
     );
