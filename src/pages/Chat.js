@@ -34,9 +34,6 @@ import Order from "./Order";
 import { useAccount } from "wagmi";
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
-
-const arr = ["a", "b", "c", "d"];
-
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
   if (!messageText?.trim().length) {
