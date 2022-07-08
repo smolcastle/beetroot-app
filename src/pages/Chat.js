@@ -32,6 +32,7 @@ import { ethers } from "ethers";
 import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
 import { useAccount } from "wagmi";
+import profile from '../img/profile.png'
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 // Saves a new message to Cloud Firestore.
@@ -200,32 +201,21 @@ function User({
     >
       <li
         index={index}
-        class={`flex h-12 justify-center items-center shadow text-white0 divide-y overflow-hidden mb-2 text-center ${
-          isSelected ? "bg-white30" : " bg-white10"
+        class={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
+          isSelected ? "bg-gray6" : " "
         }`}
       >
-        <div class="flex-1 flex flex-col">
-          <div className="flex flex-row justify-center items-center text-[16px] capitalize">
-            {truncate(receiver, 16)}
-            <button
-              type={"button"}
-              onClick={() => navigator.clipboard.writeText(receiver)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-            </button>
+        <div class="flex-1 flex items-center p-3">
+          <div className="w-[30%]">
+            <img src={profile} className='w-[48px]'></img>
+          </div>
+          <div className="flex flex-col items-start w-[50%] ">
+            <p className="text-[16px]">{truncate(receiver, 10)}</p>
+            <p className="text-[14px] text-parsley">verified</p>
+          </div>
+          <div className="flex flex-col items-end w-[20%]">
+            <div className="bg-gumtint text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
+            <p className=" text-[14px] text-gray3">12:00</p>
           </div>
         </div>
       </li>
@@ -236,14 +226,26 @@ function User({
 function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
 
   return (
-    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-8 bg-white10">
-      <button
+    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 bg-white10">
+      {/* <button
         onClick={() => setModalState(true)}
         type="button"
         class="flex mb-6 justify-center items-center text-white0 text-[16px] w-full bg-green1 h-12 rounded-sm cursor-pointer"
       >
         {"New"}
-      </button>
+      </button> */}
+      <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.1429 15.1432L12.3238 12.3242" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input className="bg-gray6 mx-4 outline-none" placeholder="Search or add contacts"></input>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.09696 11.7358C1.27312 13.3823 2.59735 14.7065 4.24301 14.8899C6.77077 15.1717 9.22916 15.1717 11.7569 14.8899C13.4026 14.7065 14.7268 13.3823 14.9029 11.7358C15.033 10.5203 15.1428 9.2725 15.1428 8.00031C15.1428 6.72814 15.033 5.4803 14.9029 4.26486C14.7268 2.61841 13.4026 1.29417 11.7569 1.11073C9.22916 0.828975 6.77077 0.828975 4.24301 1.11073C2.59735 1.29417 1.27312 2.61841 1.09696 4.26486C0.966926 5.4803 0.857117 6.72814 0.857117 8.00031C0.857117 9.2725 0.966927 10.5203 1.09696 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
+          <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
+          <path d="M10.8572 8H5.14288" stroke="#AB224E" stroke-linecap="round"/>
+        </svg>
+      </div>
       {Object.keys(users)
         // .reverse()
         ?.map((item, index) => {
@@ -282,6 +284,35 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
   );
 }
 
+function TopSection({ sender, receiver, setReceiver, dispatch }) {
+  return (
+    <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+      <div className="w-[15%]">
+        <img src={profile} className='w-[48px]'></img>
+      </div>
+      <div className="flex flex-col items-start w-[20%] ">
+        <div className="flex">
+          <p className="text-[16px] mr-2">{truncate(receiver, 10)}</p>
+          <button
+            type={"button"}
+            onClick={() => navigator.clipboard.writeText(receiver)}
+          >
+         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.009 13.3529C11.0856 12.1296 11.1258 10.8621 11.1258 9.56334C11.1258 9.03718 11.1192 8.51614 11.1063 8.00109C11.0971 7.63659 10.9789 7.28235 10.7631 6.98844C9.94668 5.8765 9.29559 5.1844 8.22401 4.35709C7.92735 4.12804 7.56324 4.00381 7.18854 3.99564C6.8158 3.98752 6.42656 3.9834 6.01086 3.9834C4.75229 3.9834 3.73638 4.0212 2.68593 4.09325C1.78486 4.15506 1.06921 4.87243 1.01276 5.77386C0.936163 6.99714 0.895905 8.26463 0.895905 9.56334C0.895905 10.8621 0.936163 12.1296 1.01276 13.3529C1.06921 14.2542 1.78486 14.9716 2.68593 15.0334C3.73638 15.1054 4.75229 15.1433 6.01086 15.1433C7.26944 15.1433 8.28534 15.1054 9.33578 15.0334C10.2369 14.9716 10.9525 14.2542 11.009 13.3529Z" fill="#EED3DC" stroke="#AB224E"/>
+<path d="M14.9872 10.2269C15.0639 9.00359 15.1041 7.73608 15.1041 6.43738C15.1041 5.91122 15.0975 5.39018 15.0846 4.87512C15.0754 4.51061 14.9572 4.15637 14.7414 3.86246C13.9249 2.75052 13.2738 2.05843 12.2023 1.23111C11.9056 1.00207 11.5415 0.877831 11.1668 0.869668C10.7941 0.861546 10.4049 0.857422 9.98917 0.857422C8.73058 0.857422 7.71469 0.89523 6.66424 0.967281C5.76317 1.02909 5.04751 1.74645 4.99106 2.64788C4.91446 3.87116 4.87421 5.13866 4.87421 6.43738C4.87421 7.73608 4.91447 9.00359 4.99106 10.2269C5.04751 11.1283 5.76317 11.8457 6.66424 11.9075C7.71469 11.9795 8.73058 12.0173 9.98917 12.0173C11.2477 12.0173 12.2637 11.9795 13.3141 11.9075C14.2152 11.8457 14.9309 11.1283 14.9872 10.2269Z" fill="white" stroke="#AB224E"/>
+</svg>
+
+          </button>
+        </div>
+        <p className="text-[14px] text-parsley">verified</p>
+      </div>
+      <div className="flex flex-col items-end w-[20%]">
+
+      </div>
+    </div>
+  );
+}
+
 function SendMessageSection({
   message,
   setMsgString,
@@ -298,14 +329,22 @@ function SendMessageSection({
         saveMessage(message, sender, receiver, dispatch);
       }}
     >
-      <div className="flex w-full h-14 p-[6px] justify-evenly items-center">
+      <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
+      <button>
+      {/* <input type="file" /> */}
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 15.1431C11.9449 15.1431 15.1429 11.9452 15.1429 8.00028C15.1429 4.05539 11.9449 0.857422 8 0.857422C4.05511 0.857422 0.857147 4.05539 0.857147 8.00028C0.857147 11.9452 4.05511 15.1431 8 15.1431Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 11.2174V4.7832" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></button>
+
         <input
           value={message}
           type="text"
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-white0/[0.6]  pl-4"
+          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-4"
           placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
@@ -319,11 +358,10 @@ function SendMessageSection({
           type="button"
           class="h-12"
         >
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="36" height="36" rx="18" fill="#D9D9D9"/>
-            <g opacity="0.8">
-            <path d="M29.2975 17.4755L11.1685 8.44869C10.9866 8.36279 10.7643 8.38423 10.6026 8.5346C10.4409 8.66368 10.3599 8.87851 10.4206 9.09348L11.7747 14.66C11.8758 15.0468 12.1384 15.3478 12.5023 15.4552L19.0303 17.5616C19.4144 17.6905 19.4144 18.2708 19.0303 18.3998L12.4821 20.506C12.1183 20.6135 11.8556 20.9144 11.7545 21.3012L10.4205 26.8892C10.3599 27.1042 10.4407 27.3406 10.6024 27.4695C10.7035 27.5554 10.8247 27.5984 10.946 27.5984C11.0267 27.5984 11.1077 27.577 11.1683 27.534L29.2973 18.5072C29.4792 18.4213 29.6004 18.2063 29.6004 17.9913C29.6005 17.7763 29.4793 17.5615 29.2974 17.4755L29.2975 17.4755Z" fill="#CA7C86"/>
-            </g>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z" fill="white"/>
+            <path d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z" stroke="#AB224E" stroke-linejoin="round"/>
+            <path d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z" fill="#EED3DC" stroke="#AB224E" stroke-linejoin="round"/>
           </svg>
         </button>
       </div>
@@ -334,32 +372,30 @@ function SendMessageSection({
 function Messages({ message, setMsgString, sender, receiver, dispatch }) {
   const messages = useSelector((state) => state.messages?.messages);
   return (
-    <ul role="list" class="flex flex-[5] flex-col scroll-hide pb-2 bg-white10 w-full h-full">
-    <div className='chat-name h-10 bg-white10 text-white0 pt-2 pl-2 text-[16px]'>
-      {receiver}
-    </div>
+    <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full h-[95%]">
+      <TopSection receiver={receiver}/>
       <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
         {messages === null && (
-          <div className="text-white0 text-lg font-medium capitalize mt-8 flex justify-center mb-24">
+          <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
             {"This is the beginning of chat, send a message"}
           </div>
         )}
         {messages?.map(({ text, name, timestamp }, index) => {
           return (
             <div>
-                <div class={`flex flex-col text-[12px] h-auto text-white0 ${
+                <div class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
-                  <div className={`min-w-min max-w-xs p-2 break-words2 bg-white10 rounded-sm ${
-                  name === sender ? "bg-greentint" : "bg-pinktint"
+                  <div className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
+                  name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"
                 }`}>
                     {text}
                   </div>
-                  {timestamp?.seconds && (
+                  {/* {timestamp?.seconds && (
                     <div className="text-white3 text-[11px] capitalize p-2">
                       {getDateTime(timestamp?.seconds)}
                     </div>
-                  )}
+                  )} */}
                 </div>
             </div>
           );
@@ -403,8 +439,8 @@ export default function Chat() {
 
   if (!sender) {
     return (
-      <div class="h-screen w-screen bg-chatbg">
-        <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
+      <div class="h-screen w-screen bg-white0">
+        <div className="text-gum text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Connect your wallet first"}
         </div>
       </div>
@@ -414,8 +450,8 @@ export default function Chat() {
 
   if (chain.id != 1) {
     return (
-      <div class="h-screen w-screen bg-chatbg">
-        <div className="text-white0 text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
+      <div class="h-screen w-screen bg-white0">
+        <div className="text-parsley text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Please connect to Ethereum Mainnet"}
         </div>
       </div>
@@ -423,7 +459,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col p-2 min-h-0 bg-chatbg">
+    <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-newrubrik overflow-hidden">
       <div className="flex flex-1 h-full mt-5 mb-10 ml-20">
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
@@ -439,7 +475,6 @@ export default function Chat() {
               setSignModalState={setSignModalState}
               signModal={signModal}
             />
-            <div className="w-[1px] bg-black7 opacity-20" />
             <Messages
               message={message}
               setMsgString={setMsgString}
@@ -447,7 +482,6 @@ export default function Chat() {
               receiver={receiver}
               dispatch={dispatch}
             />
-            <div className="w-[1px] bg-black7 opacity-20" />
             <div className="flex flex-[6] flex-col">
               <Order sender={sender} receiver={receiver} truncate={truncate}/>
             </div>

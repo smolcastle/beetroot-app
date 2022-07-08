@@ -18,6 +18,7 @@ module.exports = {
         termina: ["Termina", "sans-serif"],
         rubik: ["Rubik", "sans-serif"],
         inter: ["Inter", "sans-serif"],
+        newrubrik: ["New Rubrik Edge", "sans-serif"],
       },
       backgroundImage: {
         bg: "url('/src/img/bg.png')",
@@ -28,12 +29,13 @@ module.exports = {
         playing:
           "url('https://firebasestorage.googleapis.com/v0/b/beetroot-2192b.appspot.com/o/playing.png?alt=media&token=4960e9dc-5a6c-4002-865e-f194f47cf93e')",
       },
-      
+
     },
     colors: {
-      gray1: "#cacaca",
+      gray1: "#333333",
       gray2: "#565454",
-      gray3: "#D9D9D9",
+      gray3: "#828282",
+      gray6: "#F2F2F2",
       beetroot1: "#70263d",
       black: "#000000",
       black1: "#242933",
@@ -72,6 +74,10 @@ module.exports = {
       chatbg: "#13080B",
       themepink: "#CA7C86",
       overlaybg: "#5B3A3E",
+      gum: "#AB224E",
+      gumtint: "#EED3DC",
+      parsley: "#4E7B36",
+      parsleytint: "#DCE5D7",
       "nord-dark1": "#D7DFEC",
       "nord-dark2": "#9FB6D9",
       "nord-dark3": "#434C5E",
