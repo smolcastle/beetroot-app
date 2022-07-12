@@ -18,7 +18,9 @@ module.exports = {
         termina: ["Termina", "sans-serif"],
         rubik: ["Rubik", "sans-serif"],
         inter: ["Inter", "sans-serif"],
-        newrubrik: ["New Rubrik Edge", "sans-serif"],
+        rubrik: ["New Rubrik Edge", "sans-serif"],
+        rubrikL: ["New Rubrik Edge Light", "sans-serif"],
+        questa: ["Questa Slab", "sans-serif"]
       },
       backgroundImage: {
         bg: "url('/src/img/bg.png')",

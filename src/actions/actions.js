@@ -78,3 +78,15 @@ export function hideLoader() {
     type: "HIDE_LOADER",
   };
 }
+export function showNewUser() {
+  return {
+    type: "SHOW_NEW_USER",
+  };
+}
+
+export function hideNewUser() {
+  return {
+    type: "HIDE_NEW_USER",
+  };
+}
+

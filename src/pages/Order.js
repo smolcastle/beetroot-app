@@ -81,22 +81,31 @@ const Order = ({sender, truncate, receiver}) => {
         </div>
         {/*  */}
             {showOption == 1 && <>
-                <div className="flex flex-col h-[90%] w-[95%] justify-evenly">
+                <div className="flex flex-col h-[95%] w-[95%] justify-evenly">
                     <div className="flex h-full w-full">
                     <div className='flex flex-col justify-evenly w-[50%] h-full'>
-                        <h1 className='text-[24px] text-gum'>Trade NFTS</h1>
-                        <p className='text-[14px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
+                        <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
+                        <p className='text-[16px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
                         <h3 className='text-[18px]'>Your Wallet</h3>
+                        <div className='bg-parsleytint text-parsley p-2 rounded-md border border-parsley border-solid'>You: {truncate(sender, 10)}</div>
                         <h3 className='text-[18px]'>Their Wallet</h3>
                         <p className='text-[14px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>
+                        <input placeholder='Their Wallet Address' className='outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
                         <h3 className='text-[18px]'>Expiry Date</h3>
                         <p className='text-[14px]'>Leave this field blank if you would like the order request to remain active for eternity.</p>
+                        <div className='flex justify-evenly  items-center text-[15px]'>
+                            <input placeholder='00 MINS' className=' w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
+                            <p>+</p>
+                            <input placeholder='00.00 HRS' className='w-[100px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
+                            <p>+</p>
+                            <input placeholder='000 DAYS' className='w-[90px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
+                        </div>
                         {!isLoading && <button className='w-full border-2 border-gum border-solid rounded-3xl text-gum h-10 font-bold mt-5 cursor-pointer'
                             onClick={
                                 async () => {
                                     await createOrder()
                                 }
-                            }>{"Create Order"}
+                            }>{"CREATE ORDER"}
                             </button>}
                             {isLoading &&
                             <button className='w-full bg-pink80 text-pinktint10 h-10 cursor-pointer flex justify-center items-center'>
@@ -116,7 +125,26 @@ const Order = ({sender, truncate, receiver}) => {
                             </button>
                             }
                     </div>
-                    <div className='w-[50%] h-full'></div>
+                    <div className='w-[50%] h-full ml-5'>
+                        <div className='bg-parsleytint flex rounded-md items-center px-2 py-1'>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5714 14.2859C11.2796 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2796 0.857422 7.5714 0.857422C3.86322 0.857422 0.857147 3.86349 0.857147 7.57167C0.857147 11.2798 3.86322 14.2859 7.5714 14.2859Z" fill="#DCE5D7" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15.1429 15.1432L12.3238 12.3242" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input placeholder='Search to add NFTS into your cart' className='w-full outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
+                        </div>
+                        <div className='flex rounded-md items-center my-3 justify-between'>
+                            <div className='flex rounded-md text-parsley bg-parsleytint items-center px-2 py-1 justify-between'>
+                            <input placeholder='Add Tokens (Ex: ETH)' className='w-[90%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
+                            <p>Amount</p>
+                            </div>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>
+                                <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
+                                <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
                     </div>
                     {/* <div className="flex h-[80%] justify-evenly">
                         <div className='w-full bg-white10 h-full flex flex-col p-4 '>
@@ -170,15 +198,22 @@ const Order = ({sender, truncate, receiver}) => {
                 </div>
             </>}
         {showOption == 2 && <>
-            <div>
+            <div className='w-[80%]'>
+                <p className='text-gray1 mb-2'>Show only orders pertaining to user selected in the chat box</p>
                 {orders.map((order) => {
                     if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
                     return (
-                        <div className='flex justify-around bg-gray6 rounded-lg p-3 mb-4'>
-                            <div>
-                                {(order.to == sender) && <h1 className='text-gray2'>You: {truncate(order.to, 10)}</h1>}
-                                {(order.to != sender) && <h1 className='text-gray2'>You: {truncate(order.name, 10)}</h1>}
-                                <h1 className='my-2 text-gray2 text-[14px]'>Created: {getDateTime(order.timestamp?.seconds)}</h1>
+                        <div className='flex justify-between bg-gray6 rounded-lg p-3 mb-4'>
+                            <div className='w-[30%] flex flex-col'>
+                                <div className="flex items-center">
+                                    {(order.to == sender) && <h1 className='text-gray2'>You: {truncate(order.to, 10)}</h1>}
+                                    {(order.to != sender) && <h1 className='text-gray2'>You: {truncate(order.name, 10)}</h1>}
+                                    <svg className='ml-2' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0.884288 9.03111C0.986211 9.85208 1.64944 10.5006 2.47224 10.5866C3.61078 10.7056 4.79078 10.8313 6 10.8313C7.20922 10.8313 8.38922 10.7056 9.52774 10.5866C10.3505 10.5006 11.0138 9.85208 11.1157 9.03111C11.2374 8.0509 11.3571 7.03723 11.3571 5.99963C11.3571 4.96203 11.2374 3.94836 11.1157 2.96818C11.0138 2.14721 10.3505 1.49866 9.52774 1.41265C8.38922 1.29363 7.20922 1.16797 6 1.16797C4.79078 1.16797 3.61077 1.29363 2.47224 1.41265C1.64944 1.49866 0.986211 2.14721 0.884279 2.96818C0.762591 3.94836 0.642857 4.96203 0.642857 5.99963C0.642857 7.03723 0.762591 8.0509 0.884288 9.03111Z" fill="#EED3DC" stroke="#AB224E"/>
+                                        <path d="M0.908203 2.74707L4.9389 5.92489C5.56108 6.41571 6.43892 6.41571 7.06141 5.92489L11.0918 2.74707" stroke="#AB224E" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                {/* <h1 className='my-2 text-gray2 text-[14px]'>Created: {getDateTime(order.timestamp?.seconds)}</h1> */}
                                 {(order.to == sender) && <button className='bg-parsleytint rounded-sm px-2 text-parsley rounded-md mr-3' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
                                 {(order.to == sender) && <button className='bg-gumtint rounded-sm px-2 text-gum rounded-md '>Reject</button>}
                             </div>
@@ -187,10 +222,20 @@ const Order = ({sender, truncate, receiver}) => {
                                 <path d="M4.11304 12.0168L10.9345 12.0168M7.25637 8.38105C5.8784 9.68797 5.18987 10.4849 4.11564 12.0168C5.18987 13.5487 5.87842 14.3456 7.25636 15.6526" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             <div>
-                                {(order.to == sender) && <h1 className='text-gray2'>Them: {truncate(order.name, 10)}</h1>}
-                                {(order.to != sender) && <h1 className='text-gray2'>Them: {truncate(order.to, 10)}</h1>}
+                                <div className="flex items-center justify-between">
+                                    {(order.to == sender) && <h1 className='text-gray2'>Them: {truncate(order.name, 10)}</h1>}
+                                    {(order.to != sender) && <h1 className='text-gray2'>Them: {truncate(order.to, 10)}</h1>}
+                                    <svg className='ml-2' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0.884288 9.03111C0.986211 9.85208 1.64944 10.5006 2.47224 10.5866C3.61078 10.7056 4.79078 10.8313 6 10.8313C7.20922 10.8313 8.38922 10.7056 9.52774 10.5866C10.3505 10.5006 11.0138 9.85208 11.1157 9.03111C11.2374 8.0509 11.3571 7.03723 11.3571 5.99963C11.3571 4.96203 11.2374 3.94836 11.1157 2.96818C11.0138 2.14721 10.3505 1.49866 9.52774 1.41265C8.38922 1.29363 7.20922 1.16797 6 1.16797C4.79078 1.16797 3.61077 1.29363 2.47224 1.41265C1.64944 1.49866 0.986211 2.14721 0.884279 2.96818C0.762591 3.94836 0.642857 4.96203 0.642857 5.99963C0.642857 7.03723 0.762591 8.0509 0.884288 9.03111Z" fill="#EED3DC" stroke="#AB224E"/>
+                                        <path d="M0.908203 2.74707L4.9389 5.92489C5.56108 6.41571 6.43892 6.41571 7.06141 5.92489L11.0918 2.74707" stroke="#AB224E" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
                                 <h1 className='my-2 text-gray2 text-[14px]'>Expires in: 1 week</h1>
                             </div>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 11.2174L8 4.7832" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                     )}
                 })}

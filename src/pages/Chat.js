@@ -23,6 +23,8 @@ import {
   updateMessages,
   updateQueueIds,
   updateSignatureData,
+  showNewUser,
+  hideNewUser
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -33,6 +35,7 @@ import { generateNonce, SiweMessage } from "siwe";
 import Order from "./Order";
 import { useAccount } from "wagmi";
 import profile from '../img/profile.png'
+import profile0 from '../img/profile0.png'
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 // Saves a new message to Cloud Firestore.
@@ -214,7 +217,7 @@ function User({
             <p className="text-[14px] text-parsley">verified</p>
           </div>
           <div className="flex flex-col items-end w-[20%]">
-            <div className="bg-gumtint text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
+            <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
             <p className=" text-[14px] text-gray3">12:00</p>
           </div>
         </div>
@@ -224,6 +227,7 @@ function User({
 }
 
 function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
+  const [searchTerm, setSearchTerm] = useState('')
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 bg-white10">
@@ -239,14 +243,24 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
           <path d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M15.1429 15.1432L12.3238 12.3242" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <input className="bg-gray6 mx-4 outline-none" placeholder="Search or add contacts"></input>
+        <input className="bg-gray6 mx-4 outline-none" placeholder="Search or add contacts" onChange={(e) => {setSearchTerm(e.target.value)}}></input>
+        <button onClick={() => {dispatch(showNewUser())}}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.09696 11.7358C1.27312 13.3823 2.59735 14.7065 4.24301 14.8899C6.77077 15.1717 9.22916 15.1717 11.7569 14.8899C13.4026 14.7065 14.7268 13.3823 14.9029 11.7358C15.033 10.5203 15.1428 9.2725 15.1428 8.00031C15.1428 6.72814 15.033 5.4803 14.9029 4.26486C14.7268 2.61841 13.4026 1.29417 11.7569 1.11073C9.22916 0.828975 6.77077 0.828975 4.24301 1.11073C2.59735 1.29417 1.27312 2.61841 1.09696 4.26486C0.966926 5.4803 0.857117 6.72814 0.857117 8.00031C0.857117 9.2725 0.966927 10.5203 1.09696 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
           <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
           <path d="M10.8572 8H5.14288" stroke="#AB224E" stroke-linecap="round"/>
         </svg>
+        </button>
       </div>
-      {Object.keys(users)
+      {Object.keys(users).filter((item) => {
+        const addresses = item.split("_");
+        const receiver = addresses[0] === sender ? addresses[1] : addresses[0];
+        if (searchTerm == ""){
+          return receiver
+        } else if (receiver.toLowerCase().includes(searchTerm.toLowerCase())){
+          return receiver
+        }
+      })
         // .reverse()
         ?.map((item, index) => {
           const addresses = item.split("_");
@@ -282,9 +296,10 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
         })}
     </ul>
   );
+
 }
 
-function TopSection({ sender, receiver, setReceiver, dispatch }) {
+function TopSection({receiver }) {
   return (
     <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
@@ -298,19 +313,41 @@ function TopSection({ sender, receiver, setReceiver, dispatch }) {
             onClick={() => navigator.clipboard.writeText(receiver)}
           >
          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11.009 13.3529C11.0856 12.1296 11.1258 10.8621 11.1258 9.56334C11.1258 9.03718 11.1192 8.51614 11.1063 8.00109C11.0971 7.63659 10.9789 7.28235 10.7631 6.98844C9.94668 5.8765 9.29559 5.1844 8.22401 4.35709C7.92735 4.12804 7.56324 4.00381 7.18854 3.99564C6.8158 3.98752 6.42656 3.9834 6.01086 3.9834C4.75229 3.9834 3.73638 4.0212 2.68593 4.09325C1.78486 4.15506 1.06921 4.87243 1.01276 5.77386C0.936163 6.99714 0.895905 8.26463 0.895905 9.56334C0.895905 10.8621 0.936163 12.1296 1.01276 13.3529C1.06921 14.2542 1.78486 14.9716 2.68593 15.0334C3.73638 15.1054 4.75229 15.1433 6.01086 15.1433C7.26944 15.1433 8.28534 15.1054 9.33578 15.0334C10.2369 14.9716 10.9525 14.2542 11.009 13.3529Z" fill="#EED3DC" stroke="#AB224E"/>
-<path d="M14.9872 10.2269C15.0639 9.00359 15.1041 7.73608 15.1041 6.43738C15.1041 5.91122 15.0975 5.39018 15.0846 4.87512C15.0754 4.51061 14.9572 4.15637 14.7414 3.86246C13.9249 2.75052 13.2738 2.05843 12.2023 1.23111C11.9056 1.00207 11.5415 0.877831 11.1668 0.869668C10.7941 0.861546 10.4049 0.857422 9.98917 0.857422C8.73058 0.857422 7.71469 0.89523 6.66424 0.967281C5.76317 1.02909 5.04751 1.74645 4.99106 2.64788C4.91446 3.87116 4.87421 5.13866 4.87421 6.43738C4.87421 7.73608 4.91447 9.00359 4.99106 10.2269C5.04751 11.1283 5.76317 11.8457 6.66424 11.9075C7.71469 11.9795 8.73058 12.0173 9.98917 12.0173C11.2477 12.0173 12.2637 11.9795 13.3141 11.9075C14.2152 11.8457 14.9309 11.1283 14.9872 10.2269Z" fill="white" stroke="#AB224E"/>
-</svg>
-
+            <path d="M11.009 13.3529C11.0856 12.1296 11.1258 10.8621 11.1258 9.56334C11.1258 9.03718 11.1192 8.51614 11.1063 8.00109C11.0971 7.63659 10.9789 7.28235 10.7631 6.98844C9.94668 5.8765 9.29559 5.1844 8.22401 4.35709C7.92735 4.12804 7.56324 4.00381 7.18854 3.99564C6.8158 3.98752 6.42656 3.9834 6.01086 3.9834C4.75229 3.9834 3.73638 4.0212 2.68593 4.09325C1.78486 4.15506 1.06921 4.87243 1.01276 5.77386C0.936163 6.99714 0.895905 8.26463 0.895905 9.56334C0.895905 10.8621 0.936163 12.1296 1.01276 13.3529C1.06921 14.2542 1.78486 14.9716 2.68593 15.0334C3.73638 15.1054 4.75229 15.1433 6.01086 15.1433C7.26944 15.1433 8.28534 15.1054 9.33578 15.0334C10.2369 14.9716 10.9525 14.2542 11.009 13.3529Z" fill="#EED3DC" stroke="#AB224E"/>
+            <path d="M14.9872 10.2269C15.0639 9.00359 15.1041 7.73608 15.1041 6.43738C15.1041 5.91122 15.0975 5.39018 15.0846 4.87512C15.0754 4.51061 14.9572 4.15637 14.7414 3.86246C13.9249 2.75052 13.2738 2.05843 12.2023 1.23111C11.9056 1.00207 11.5415 0.877831 11.1668 0.869668C10.7941 0.861546 10.4049 0.857422 9.98917 0.857422C8.73058 0.857422 7.71469 0.89523 6.66424 0.967281C5.76317 1.02909 5.04751 1.74645 4.99106 2.64788C4.91446 3.87116 4.87421 5.13866 4.87421 6.43738C4.87421 7.73608 4.91447 9.00359 4.99106 10.2269C5.04751 11.1283 5.76317 11.8457 6.66424 11.9075C7.71469 11.9795 8.73058 12.0173 9.98917 12.0173C11.2477 12.0173 12.2637 11.9795 13.3141 11.9075C14.2152 11.8457 14.9309 11.1283 14.9872 10.2269Z" fill="white" stroke="#AB224E"/>
+          </svg>
           </button>
         </div>
-        <p className="text-[14px] text-parsley">verified</p>
-      </div>
-      <div className="flex flex-col items-end w-[20%]">
-
+        <p className="text-[14px] text-parsley">Verified</p>
       </div>
     </div>
   );
+}
+
+function AddUser({receiver, dispatch}){
+  return (
+    <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+      <div className="w-[15%]">
+        <img src={profile0} className='w-[48px]'></img>
+      </div>
+      <div className="flex flex-col items-start w-[20%] ">
+        <div className="flex">
+          <input className="bg-gray6 outline-none w-[150px]" placeholder="Paste Address Here"></input>
+          <button
+            type={"button"}
+            onClick={() => navigator.clipboard.writeText(receiver)}
+          >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.0091 13.3524C11.0856 12.1291 11.1259 10.8616 11.1259 9.56285C11.1259 9.03669 11.1193 8.51565 11.1063 8.0006C11.0972 7.6361 10.979 7.28186 10.7632 6.98795C9.94677 5.87601 9.29568 5.18392 8.2241 4.3566C7.92744 4.12755 7.56333 4.00332 7.18863 3.99515C6.81589 3.98704 6.42665 3.98291 6.01095 3.98291C4.75238 3.98291 3.73647 4.02072 2.68602 4.09276C1.78495 4.15457 1.0693 4.87194 1.01285 5.77337C0.936254 6.99665 0.895996 8.26414 0.895996 9.56285C0.895996 10.8616 0.936254 12.1291 1.01285 13.3524C1.0693 14.2538 1.78495 14.9711 2.68602 15.033C3.73647 15.105 4.75238 15.1428 6.01095 15.1428C7.26953 15.1428 8.28543 15.105 9.33588 15.033C10.2369 14.9711 10.9526 14.2538 11.0091 13.3524Z" fill="#BDBDBD" stroke="#828282"/>
+              <path d="M14.9873 10.2264C15.064 9.0031 15.1042 7.7356 15.1042 6.43689C15.1042 5.91073 15.0976 5.38969 15.0846 4.87464C15.0755 4.51012 14.9572 4.15588 14.7414 3.86197C13.925 2.75003 13.2739 2.05794 12.2024 1.23063C11.9057 1.00158 11.5416 0.877343 11.1669 0.869179C10.7942 0.861058 10.4049 0.856934 9.98923 0.856934C8.73064 0.856934 7.71475 0.894742 6.6643 0.966793C5.76323 1.0286 5.04757 1.74596 4.99112 2.64739C4.91452 3.87067 4.87427 5.13817 4.87427 6.43689C4.87427 7.7356 4.91453 9.0031 4.99112 10.2264C5.04757 11.1278 5.76323 11.8452 6.6643 11.907C7.71475 11.979 8.73064 12.0168 9.98923 12.0168C11.2478 12.0168 12.2637 11.979 13.3141 11.907C14.2153 11.8452 14.9309 11.1278 14.9873 10.2264Z" fill="white" stroke="#828282"/>
+            </svg>
+          </button>
+          <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>X</button>
+        </div>
+        <p className="text-[14px] text-gray3">Unverified</p>
+      </div>
+      </div>
+  )
 }
 
 function SendMessageSection({
@@ -330,13 +367,15 @@ function SendMessageSection({
       }}
     >
       <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
-      <button>
-      {/* <input type="file" /> */}
+      <label for="file-upload" className="cursor-pointer">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8 15.1431C11.9449 15.1431 15.1429 11.9452 15.1429 8.00028C15.1429 4.05539 11.9449 0.857422 8 0.857422C4.05511 0.857422 0.857147 4.05539 0.857147 8.00028C0.857147 11.9452 4.05511 15.1431 8 15.1431Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M8 11.2174V4.7832" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button>
+</svg>
+</label>
+<input id="file-upload" className="hidden" type="file"/>
+
 
         <input
           value={message}
@@ -371,9 +410,12 @@ function SendMessageSection({
 
 function Messages({ message, setMsgString, sender, receiver, dispatch }) {
   const messages = useSelector((state) => state.messages?.messages);
+  const newUser = useSelector((state) => state.newUser.showNewUser);
+  const [showDelMessage, setShowDelMessage] = useState(false)
+
   return (
-    <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full h-[95%]">
-      <TopSection receiver={receiver}/>
+    <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full ">
+      {newUser ? (<AddUser receiver={receiver} dispatch={dispatch}/>) : (<TopSection receiver={receiver}/>)}
       <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
         {messages === null && (
           <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
@@ -383,19 +425,33 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
         {messages?.map(({ text, name, timestamp }, index) => {
           return (
             <div>
-                <div class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                <div onDoubleClick={() => {setShowDelMessage(!showDelMessage)}} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
+                {(name === sender && showDelMessage) && timestamp?.seconds && (
+                    <div className="text-gray3 text-[11px] capitalize p-2">
+                      {getDateTime(timestamp?.seconds).date}
+                    </div>
+                  )}
+                  <div className="flex items-center">
+                  {(name === sender && showDelMessage) && <svg className="mr-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.856934 4.28027H15.1426" stroke="#AB224E" stroke-linecap="round"/>
+                    <path d="M13.1324 4.28027H2.86313C2.69736 7.27746 2.69994 10.2515 3.1467 13.2299C3.31163 14.3294 4.25619 15.1429 5.36806 15.1429H10.6275C11.7394 15.1429 12.6839 14.3294 12.8489 13.2299C13.2956 10.2515 13.2981 7.27746 13.1324 4.28027Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5.14502 4.28003V3.70952C5.14502 2.95296 5.44556 2.2274 5.98053 1.69243C6.51549 1.15747 7.24105 0.856934 7.9976 0.856934C8.75415 0.856934 9.47972 1.15747 10.0147 1.69243C10.5496 2.2274 10.8502 2.95296 10.8502 3.70952V4.28003" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.28613 7.33545V12.0644" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.70898 7.33545V12.0644" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>}
                   <div className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
                   name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"
                 }`}>
                     {text}
                   </div>
-                  {/* {timestamp?.seconds && (
-                    <div className="text-white3 text-[11px] capitalize p-2">
-                      {getDateTime(timestamp?.seconds)}
+                  </div>
+                  {(name === sender && showDelMessage) && timestamp?.seconds && (
+                    <div className="text-gray3 text-[11px] capitalize p-2">
+                      {getDateTime(timestamp?.seconds).time}
                     </div>
-                  )} */}
+                  )}
                 </div>
             </div>
           );
@@ -459,8 +515,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-newrubrik overflow-hidden">
-      <div className="flex flex-1 h-full mt-5 mb-10 ml-20">
+    <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden">
+      <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-20">
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
             <Users
