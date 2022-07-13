@@ -27,6 +27,13 @@ export function getEthPrice() {
   };
 }
 
+export function updateUsers(users) {
+  return {
+    type: "UPDATE_USERS",
+    users,
+  };
+}
+
 export function updateMessages(messages) {
   return {
     type: "UPDATE_MESSAGES",
@@ -51,6 +58,12 @@ export function updateQueueIds(queue_ids) {
   return {
     type: "UPDATE_QUEUE_IDS",
     queue_ids,
+  };
+}
+export function updateDetails(details) {
+  return {
+    type: "UPDATE_DETAILS",
+    details,
   };
 }
 

@@ -12,6 +12,7 @@ const Order = ({sender, truncate, receiver}) => {
     const [considerations, setConsiderations] = useState([])
     const [showOption, setShowOption] = useState(1)
     const [orders, setOrders] = useState([])
+    const [showPendingOrder, setShowPendingOrder] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
 
     async function saveOrder(order) {
@@ -67,6 +68,21 @@ const Order = ({sender, truncate, receiver}) => {
 
         const transaction = await executeAllFulfillActions()
         console.log(transaction)
+    }
+
+    const showPendingOrderFunc = (id, index) => {
+        orders.map(order => {
+            if (order.id === id){
+                setShowPendingOrder(index)
+            }
+        })
+    }
+    const hidePendingOrderFunc = (id, index) => {
+        orders.map(order => {
+            if (order.id === id){
+                setShowPendingOrder(null)
+            }
+        })
     }
 
 
@@ -200,10 +216,12 @@ const Order = ({sender, truncate, receiver}) => {
         {showOption == 2 && <>
             <div className='w-[80%]'>
                 <p className='text-gray1 mb-2'>Show only orders pertaining to user selected in the chat box</p>
-                {orders.map((order) => {
+                {orders.map((order, index) => {
                     if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
+                        console.log(index)
                     return (
-                        <div className='flex justify-between bg-gray6 rounded-lg p-3 mb-4'>
+                        <div className='flex flex-col bg-gray6 rounded-lg p-3 mb-4'>
+                        <div className='flex justify-between '>
                             <div className='w-[30%] flex flex-col'>
                                 <div className="flex items-center">
                                     {(order.to == sender) && <h1 className='text-gray2'>You: {truncate(order.to, 10)}</h1>}
@@ -232,10 +250,20 @@ const Order = ({sender, truncate, receiver}) => {
                                 </div>
                                 <h1 className='my-2 text-gray2 text-[14px]'>Expires in: 1 week</h1>
                             </div>
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            {showPendingOrder !== index &&
+                            <svg onClick={() => showPendingOrderFunc(order.id, index)} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 11.2174L8 4.7832" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                            </svg>}
+                            {showPendingOrder === index &&
+                            <svg onClick={() => hidePendingOrderFunc(order.id, index)} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 4.78265L8 11.2168" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M5.30866 8.90693C6.12644 9.94019 6.68345 10.421 7.51353 11.0499C7.80724 11.2724 8.19257 11.2724 8.48629 11.0499C9.31637 10.421 9.87338 9.94019 10.6912 8.90692" stroke="#4F4F4F" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>}
+                        </div>
+                            <div index={index} className={`${showPendingOrder === index ? "block" : "hidden"}`}>
+                                Order Info
+                            </div>
                         </div>
                     )}
                 })}

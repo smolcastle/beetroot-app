@@ -21,6 +21,11 @@ export default function Reducer(state = initialState, action) {
         ...state,
         queue_ids: action.queue_ids,
       };
+    case "UPDATE_DETAILS":
+      return {
+        ...state,
+        messages: [...(state.messages || [])].concat(action.details)
+      };
     case "UPDATE_SIGNING_DATA":
       return {
         ...state,

@@ -24,7 +24,9 @@ import {
   updateQueueIds,
   updateSignatureData,
   showNewUser,
-  hideNewUser
+  hideNewUser,
+  updateDetails,
+  updateUsers
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -171,6 +173,26 @@ async function signMessage(sender, dispatch, chainId, signer) {
   }
 }
 
+async function saveUser(user, sender) {
+  try {
+    await addDoc(collection(getFirestore(), "users"), {
+      name: user,
+      sender: sender,
+      timestamp: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Error writing new user to Firebase Database", error);
+  }
+}
+async function getUsers(dispatch) {
+  try {
+    const users = await getDocs(collection(getFirestore(), 'users'))
+    dispatch(updateUsers(users.docs.map((doc) => ({...doc.data(), id: doc.id}))))
+  } catch (error) {
+    console.error("Error getting users from Firebase Database", error);
+  }
+}
+
 function User({
   sender,
   receiver,
@@ -226,7 +248,8 @@ function User({
   );
 }
 
-function Users({ users, sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
+function Users({sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
+  const users = useSelector((state) => state.users?.users);
   const [searchTerm, setSearchTerm] = useState('')
 
   return (
@@ -252,9 +275,10 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
         </svg>
         </button>
       </div>
-      {Object.keys(users).filter((item) => {
-        const addresses = item.split("_");
-        const receiver = addresses[0] === sender ? addresses[1] : addresses[0];
+      {users.filter((item) => {
+        // const addresses = item.split("_");
+        // const receiver = addresses[0] === sender ? addresses[1] : addresses[0];
+        const receiver = item.name
         if (searchTerm == ""){
           return receiver
         } else if (receiver.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -263,9 +287,11 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
       })
         // .reverse()
         ?.map((item, index) => {
-          const addresses = item.split("_");
-          const receiver =
-            addresses[0] === sender ? addresses[1] : addresses[0];
+          // const addresses = item.split("_");
+          // const receiver =
+          //   addresses[0] === sender ? addresses[1] : addresses[0];
+          if(item.sender.toLowerCase() === sender.toLowerCase() || item.name.toLowerCase() === sender.toLowerCase()){
+          const receiver = item.sender.toLowerCase() === sender.toLowerCase() ? item.name : item.sender
           return (
             <>
             <User
@@ -278,7 +304,7 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
               setSelected={setSelected}
               setReceiver={setReceiver}
             />
-            {modal && (
+            {/* {modal && (
               <NewChatModal
                 saveMessage={saveMessage}
                 sender={sender}
@@ -290,9 +316,10 @@ function Users({ users, sender, dispatch, setReceiver, setModalState, selected, 
                 isSelected={selected === index}
                 index={index}
               />
-            )}
+            )} */}
             </>
           );
+            }
         })}
     </ul>
   );
@@ -324,7 +351,8 @@ function TopSection({receiver }) {
   );
 }
 
-function AddUser({receiver, dispatch}){
+function AddUser({receiver, dispatch, sender}){
+  const [newUser, setNewUser] = useState('')
   return (
     <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
@@ -332,7 +360,7 @@ function AddUser({receiver, dispatch}){
       </div>
       <div className="flex flex-col items-start w-[20%] ">
         <div className="flex">
-          <input className="bg-gray6 outline-none w-[150px]" placeholder="Paste Address Here"></input>
+          <input className="bg-gray6 outline-none w-[150px]" placeholder="Paste Address Here" value={newUser} onChange={(e) => setNewUser(e.target.value)}></input>
           <button
             type={"button"}
             onClick={() => navigator.clipboard.writeText(receiver)}
@@ -343,6 +371,7 @@ function AddUser({receiver, dispatch}){
             </svg>
           </button>
           <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>X</button>
+          <button className="text-gum ml-1" onClick={() => saveUser(newUser, sender) }>Done</button>
         </div>
         <p className="text-[14px] text-gray3">Unverified</p>
       </div>
@@ -413,19 +442,35 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(false)
 
+  // const toggleDone = (id) => {
+  //   console.log(id);
+
+  //   // loop over the todos list and find the provided id.
+  //   messages.map(item =>
+  //     {
+  //       if (item.id == id){
+  //         const u = dispatch(updateDetails(Object.assign({}, item, {details: true}))) //gets everything that was already in item, and updates "done"
+  //         console.log(u)
+
+  //       }
+  //       return item; // else return unmodified item
+  //     });
+  //     console.log(messages)
+  // }
+
   return (
     <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full ">
-      {newUser ? (<AddUser receiver={receiver} dispatch={dispatch}/>) : (<TopSection receiver={receiver}/>)}
+      {newUser ? (<AddUser receiver={receiver} sender={sender}/>) : (<TopSection receiver={receiver}/>)}
       <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
         {messages === null && (
           <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
             {"This is the beginning of chat, send a message"}
           </div>
         )}
-        {messages?.map(({ text, name, timestamp }, index) => {
+        {messages?.map(({ text, name, timestamp, id, details }, index) => {
           return (
             <div>
-                <div onDoubleClick={() => {setShowDelMessage(!showDelMessage)}} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                <div onDoubleClick={() => setShowDelMessage(!showDelMessage)} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
                 {(name === sender && showDelMessage) && timestamp?.seconds && (
@@ -478,7 +523,6 @@ export default function Chat() {
   const address = useAccount()
   const result = address.address
   const sender = (result || '').toLowerCase();
-
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);
   const dispatch = useDispatch();
@@ -492,6 +536,9 @@ export default function Chat() {
     }
   }, [sender]);
 
+  useEffect(() => {
+    getUsers(dispatch)
+  }, [])
 
   if (!sender) {
     return (
@@ -520,7 +567,6 @@ export default function Chat() {
         {signatureData && signatureData?.signature && queue_ids && sender ? (
           <>
             <Users
-              users={queue_ids}
               sender={sender}
               dispatch={dispatch}
               setReceiver={setReceiver}
