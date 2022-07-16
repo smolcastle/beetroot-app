@@ -18,7 +18,7 @@ function App() {
   return (
   <WagmiConfig client={rainbow.wagmiClient}>
       <RainbowKitProvider chains={rainbow.chains} theme={lightTheme({
-      accentColor: '#983E5B',
+      accentColor: '#AB224E',
       accentColorForeground: 'white',
     })}>
         <Home />

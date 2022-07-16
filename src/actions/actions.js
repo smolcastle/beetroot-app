@@ -27,6 +27,13 @@ export function getEthPrice() {
   };
 }
 
+export function updateUsers(users) {
+  return {
+    type: "UPDATE_USERS",
+    users,
+  };
+}
+
 export function updateMessages(messages) {
   return {
     type: "UPDATE_MESSAGES",
@@ -53,7 +60,6 @@ export function updateQueueIds(queue_ids) {
     queue_ids,
   };
 }
-
 export function updateSignatureData(signatureData) {
   return {
     type: "UPDATE_SIGNING_DATA",
@@ -78,3 +84,15 @@ export function hideLoader() {
     type: "HIDE_LOADER",
   };
 }
+export function showNewUser() {
+  return {
+    type: "SHOW_NEW_USER",
+  };
+}
+
+export function hideNewUser() {
+  return {
+    type: "HIDE_NEW_USER",
+  };
+}
+

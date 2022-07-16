@@ -65,11 +65,13 @@ export function truncate(fullStr, strLen, separator) {
 
 export function getDateTime(timestamp) {
   let dateObj = new Date(timestamp * 1000);
-  let month = dateObj.toLocaleString('default', { month: 'long' }); //months from 1-12
+  // let month = dateObj.toLocaleString('default', { month: 'long' }); //months from 1-12
+  let month = dateObj.getUTCMonth();
   let day = dateObj.getUTCDate();
   let year = dateObj.getUTCFullYear();
   let hours = dateObj.getHours();
   let minutes = dateObj.getMinutes();
+  let totalTime = dateObj.getTime();
 
-  return month + " " + day + ", " + year;
+  return {date: day + "." + month + "." + year, time: hours + ":" + minutes, hours: hours, totalTime: totalTime};
 }

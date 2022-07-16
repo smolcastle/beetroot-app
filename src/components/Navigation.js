@@ -20,10 +20,10 @@ const Navigation = () => {
           to={link.to}
           key={link.name}
           onClick={onTabClick(link.index)}
-          className={`flex items-center text-base font-medium text-white0 font-termina px-4 h-10 ${
+          className={`flex items-center text-base font-normal font-newrubrik px-4 h-10 ${
             link.index === selectedTab
-              ? "border-themepink border-2 border-solid text-themepink"
-              : "hover:text-themepink eye_cursor"
+              ? "text-gum "
+              : "hover:text-gum eye_cursor text-gumtint"
           }`}
         >
           {link.name}
