@@ -71,6 +71,7 @@ export function getDateTime(timestamp) {
   let year = dateObj.getUTCFullYear();
   let hours = dateObj.getHours();
   let minutes = dateObj.getMinutes();
+  let totalTime = dateObj.getTime();
 
-  return {date: day + "." + month + "." + year, time: hours + ":" + minutes};
+  return {date: day + "." + month + "." + year, time: hours + ":" + minutes, hours: hours, totalTime: totalTime};
 }

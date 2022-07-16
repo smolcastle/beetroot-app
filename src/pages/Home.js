@@ -19,7 +19,7 @@ const WalletButton = () => {
 
 const Header = () => {
   return (
-    <div className="flex items-center h-20 bg-gum/[0.04] shadow-sm px-6 flex-shrink-0">
+    <div className="flex items-center h-20 bg-gum/[0.04] font-rubrik shadow-sm px-6 flex-shrink-0">
       <img
           className="w-10 h-10 xs:w-12 xs:h-12 lg:w-16 lg:h-16 object-contain"
           src={logo3}

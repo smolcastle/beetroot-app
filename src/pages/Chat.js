@@ -12,8 +12,9 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  updateDoc,
   doc,
-  serverTimestamp,
+  serverTimestamp
 } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,7 +26,6 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateDetails,
   updateUsers
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
@@ -38,7 +38,11 @@ import Order from "./Order";
 import { useAccount } from "wagmi";
 import profile from '../img/profile.png'
 import profile0 from '../img/profile0.png'
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
+import firebase from '../utils/firebase'
+import storage from '../utils/firebase'
+
+const db = getFirestore()
 
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
@@ -62,10 +66,9 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
   }
 }
 
-// Loads chat messages history and listens for upcoming ones.
 async function getAllQueues(sender, dispatch) {
   const queue_ids = {};
-  // Create the query to load the last 12 messages and listen for new ones.
+
   const query1 = query(
     collection(getFirestore(), "messages"),
     where("receiver", "==", sender),
@@ -108,7 +111,7 @@ function listenMessages(sender, receiver, dispatch) {
   const unsubscribe = onSnapshot(recentMessagesQuery, (querySnapshot) => {
     const messages = [];
     querySnapshot.forEach((doc) => {
-      messages.push(doc.data());
+      messages.push({...doc.data(), id: doc.id});
       //   dispatch(updateMessage(doc.data()));
     });
     dispatch(updateMessages(messages.length ? messages : null));
@@ -176,8 +179,9 @@ async function signMessage(sender, dispatch, chainId, signer) {
 async function saveUser(user, sender) {
   try {
     await addDoc(collection(getFirestore(), "users"), {
-      name: user,
-      sender: sender,
+      // name: sender > user ? `${user}_${sender}` : `${sender}_${user}`,
+      name: `${sender}_${user}`,
+      messages: false,
       timestamp: serverTimestamp(),
     });
   } catch (error) {
@@ -190,6 +194,17 @@ async function getUsers(dispatch) {
     dispatch(updateUsers(users.docs.map((doc) => ({...doc.data(), id: doc.id}))))
   } catch (error) {
     console.error("Error getting users from Firebase Database", error);
+  }
+}
+
+async function updateUserMsg(id){
+  try {
+    const messageRef = doc(db, 'users', id)
+    await updateDoc(messageRef, {
+      messages: true
+    })
+  } catch (error) {
+    console.error("Error updating users", error);
   }
 }
 
@@ -248,19 +263,10 @@ function User({
   );
 }
 
-function Users({sender, dispatch, setReceiver, setModalState, selected, setSelected, modal, setNewModalState }) {
-  const users = useSelector((state) => state.users?.users);
+function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSelected, modal, setNewModalState }) {
   const [searchTerm, setSearchTerm] = useState('')
-
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 bg-white10">
-      {/* <button
-        onClick={() => setModalState(true)}
-        type="button"
-        class="flex mb-6 justify-center items-center text-white0 text-[16px] w-full bg-green1 h-12 rounded-sm cursor-pointer"
-      >
-        {"New"}
-      </button> */}
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
@@ -276,9 +282,9 @@ function Users({sender, dispatch, setReceiver, setModalState, selected, setSelec
         </button>
       </div>
       {users.filter((item) => {
-        // const addresses = item.split("_");
-        // const receiver = addresses[0] === sender ? addresses[1] : addresses[0];
-        const receiver = item.name
+        //search functionality
+        const addresses = item.name.split("_");
+        const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
         if (searchTerm == ""){
           return receiver
         } else if (receiver.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -287,11 +293,11 @@ function Users({sender, dispatch, setReceiver, setModalState, selected, setSelec
       })
         // .reverse()
         ?.map((item, index) => {
-          // const addresses = item.split("_");
-          // const receiver =
-          //   addresses[0] === sender ? addresses[1] : addresses[0];
-          if(item.sender.toLowerCase() === sender.toLowerCase() || item.name.toLowerCase() === sender.toLowerCase()){
-          const receiver = item.sender.toLowerCase() === sender.toLowerCase() ? item.name : item.sender
+          const addresses = item.name.split("_");
+          if (addresses[0] === sender || addresses[1] === sender){
+          const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+          console.log(selected)
+          if((addresses[1] === receiver) || item.messages == true){
           return (
             <>
             <User
@@ -304,23 +310,11 @@ function Users({sender, dispatch, setReceiver, setModalState, selected, setSelec
               setSelected={setSelected}
               setReceiver={setReceiver}
             />
-            {/* {modal && (
-              <NewChatModal
-                saveMessage={saveMessage}
-                sender={sender}
-                dispatch={dispatch}
-                setModalState={setModalState}
-                setNewModalState={setNewModalState}
-                getAllQueues={getAllQueues}
-                setSelected = {setSelected}
-                isSelected={selected === index}
-                index={index}
-              />
-            )} */}
             </>
           );
-            }
-        })}
+          }
+        }
+      })}
     </ul>
   );
 
@@ -351,7 +345,7 @@ function TopSection({receiver }) {
   );
 }
 
-function AddUser({receiver, dispatch, sender}){
+function AddUser({dispatch, sender}){
   const [newUser, setNewUser] = useState('')
   return (
     <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
@@ -361,17 +355,20 @@ function AddUser({receiver, dispatch, sender}){
       <div className="flex flex-col items-start w-[20%] ">
         <div className="flex">
           <input className="bg-gray6 outline-none w-[150px]" placeholder="Paste Address Here" value={newUser} onChange={(e) => setNewUser(e.target.value)}></input>
-          <button
-            type={"button"}
-            onClick={() => navigator.clipboard.writeText(receiver)}
-          >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11.0091 13.3524C11.0856 12.1291 11.1259 10.8616 11.1259 9.56285C11.1259 9.03669 11.1193 8.51565 11.1063 8.0006C11.0972 7.6361 10.979 7.28186 10.7632 6.98795C9.94677 5.87601 9.29568 5.18392 8.2241 4.3566C7.92744 4.12755 7.56333 4.00332 7.18863 3.99515C6.81589 3.98704 6.42665 3.98291 6.01095 3.98291C4.75238 3.98291 3.73647 4.02072 2.68602 4.09276C1.78495 4.15457 1.0693 4.87194 1.01285 5.77337C0.936254 6.99665 0.895996 8.26414 0.895996 9.56285C0.895996 10.8616 0.936254 12.1291 1.01285 13.3524C1.0693 14.2538 1.78495 14.9711 2.68602 15.033C3.73647 15.105 4.75238 15.1428 6.01095 15.1428C7.26953 15.1428 8.28543 15.105 9.33588 15.033C10.2369 14.9711 10.9526 14.2538 11.0091 13.3524Z" fill="#BDBDBD" stroke="#828282"/>
               <path d="M14.9873 10.2264C15.064 9.0031 15.1042 7.7356 15.1042 6.43689C15.1042 5.91073 15.0976 5.38969 15.0846 4.87464C15.0755 4.51012 14.9572 4.15588 14.7414 3.86197C13.925 2.75003 13.2739 2.05794 12.2024 1.23063C11.9057 1.00158 11.5416 0.877343 11.1669 0.869179C10.7942 0.861058 10.4049 0.856934 9.98923 0.856934C8.73064 0.856934 7.71475 0.894742 6.6643 0.966793C5.76323 1.0286 5.04757 1.74596 4.99112 2.64739C4.91452 3.87067 4.87427 5.13817 4.87427 6.43689C4.87427 7.7356 4.91453 9.0031 4.99112 10.2264C5.04757 11.1278 5.76323 11.8452 6.6643 11.907C7.71475 11.979 8.73064 12.0168 9.98923 12.0168C11.2478 12.0168 12.2637 11.979 13.3141 11.907C14.2153 11.8452 14.9309 11.1278 14.9873 10.2264Z" fill="white" stroke="#828282"/>
-            </svg>
-          </button>
-          <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>X</button>
-          <button className="text-gum ml-1" onClick={() => saveUser(newUser, sender) }>Done</button>
+            </svg> */}
+          <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>Cancel</button>
+          <button className="text-gum mx-2" onClick={() =>  {
+            if(newUser !== ""){
+                    saveUser(newUser.toLowerCase(), sender)
+                    getUsers(dispatch)
+                    setNewUser('')
+                    dispatch(hideNewUser())
+                  } else{
+                    alert("Please paste an address")
+                  } }}>Done</button>
         </div>
         <p className="text-[14px] text-gray3">Unverified</p>
       </div>
@@ -385,7 +382,9 @@ function SendMessageSection({
   sender,
   receiver,
   dispatch,
+  users
 }) {
+
   return (
     <form
       className="mt-2"
@@ -393,18 +392,25 @@ function SendMessageSection({
         e.preventDefault();
         setMsgString("");
         saveMessage(message, sender, receiver, dispatch);
+        {users.map((user) => {
+          const addresses = user.name.split("_");
+          if (addresses[0] === sender || addresses[1] === sender && addresses[0] === receiver || addresses[1] === receiver){
+            updateUserMsg(user.id)
+            console.log(user.id)
+          }
+        })}
+
       }}
     >
       <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
-      <label for="file-upload" className="cursor-pointer">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8 15.1431C11.9449 15.1431 15.1429 11.9452 15.1429 8.00028C15.1429 4.05539 11.9449 0.857422 8 0.857422C4.05511 0.857422 0.857147 4.05539 0.857147 8.00028C0.857147 11.9452 4.05511 15.1431 8 15.1431Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8 11.2174V4.7832" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</label>
-<input id="file-upload" className="hidden" type="file"/>
-
+      <label htmlFor="file-upload" className="cursor-pointer">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 15.1431C11.9449 15.1431 15.1429 11.9452 15.1429 8.00028C15.1429 4.05539 11.9449 0.857422 8 0.857422C4.05511 0.857422 0.857147 4.05539 0.857147 8.00028C0.857147 11.9452 4.05511 15.1431 8 15.1431Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 11.2174V4.7832" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </label>
+      <input id="file-upload" multiple className="hidden" accept="image/*" type="file"/>
 
         <input
           value={message}
@@ -437,62 +443,54 @@ function SendMessageSection({
   );
 }
 
-function Messages({ message, setMsgString, sender, receiver, dispatch }) {
+function Messages({ message, setMsgString, sender, receiver, dispatch, users }) {
   const messages = useSelector((state) => state.messages?.messages);
   const newUser = useSelector((state) => state.newUser.showNewUser);
-  const [showDelMessage, setShowDelMessage] = useState(false)
+  const [showDelMessage, setShowDelMessage] = useState(null)
 
-  // const toggleDone = (id) => {
-  //   console.log(id);
-
-  //   // loop over the todos list and find the provided id.
-  //   messages.map(item =>
-  //     {
-  //       if (item.id == id){
-  //         const u = dispatch(updateDetails(Object.assign({}, item, {details: true}))) //gets everything that was already in item, and updates "done"
-  //         console.log(u)
-
-  //       }
-  //       return item; // else return unmodified item
-  //     });
-  //     console.log(messages)
-  // }
+  const showMessageDetails = (id, index) => {
+    messages.map(message => {
+        if (message.id === id){
+          setShowDelMessage(index)
+        }
+    })
+  }
+  const hideMessageDetails = (id) => {
+    messages.map(message => {
+        if (message.id === id){
+            setShowDelMessage(null)
+        }
+    })
+  }
 
   return (
     <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full ">
-      {newUser ? (<AddUser receiver={receiver} sender={sender}/>) : (<TopSection receiver={receiver}/>)}
+      {newUser ? (<AddUser receiver={receiver} sender={sender} dispatch={dispatch}/>) : (<TopSection receiver={receiver}/>)}
       <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
         {messages === null && (
           <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
             {"This is the beginning of chat, send a message"}
           </div>
         )}
-        {messages?.map(({ text, name, timestamp, id, details }, index) => {
+        {messages?.map(({ text, name, timestamp, id }, index) => {
           return (
             <div>
-                <div onDoubleClick={() => setShowDelMessage(!showDelMessage)} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                <div onDoubleClick={() => {{showDelMessage === index ? (hideMessageDetails(id)) : ((showMessageDetails(id, index)))}}} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
-                {(name === sender && showDelMessage) && timestamp?.seconds && (
+                {(name === sender && showDelMessage === index) && timestamp?.seconds && (
                     <div className="text-gray3 text-[11px] capitalize p-2">
                       {getDateTime(timestamp?.seconds).date}
                     </div>
                   )}
                   <div className="flex items-center">
-                  {(name === sender && showDelMessage) && <svg className="mr-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0.856934 4.28027H15.1426" stroke="#AB224E" stroke-linecap="round"/>
-                    <path d="M13.1324 4.28027H2.86313C2.69736 7.27746 2.69994 10.2515 3.1467 13.2299C3.31163 14.3294 4.25619 15.1429 5.36806 15.1429H10.6275C11.7394 15.1429 12.6839 14.3294 12.8489 13.2299C13.2956 10.2515 13.2981 7.27746 13.1324 4.28027Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M5.14502 4.28003V3.70952C5.14502 2.95296 5.44556 2.2274 5.98053 1.69243C6.51549 1.15747 7.24105 0.856934 7.9976 0.856934C8.75415 0.856934 9.47972 1.15747 10.0147 1.69243C10.5496 2.2274 10.8502 2.95296 10.8502 3.70952V4.28003" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M6.28613 7.33545V12.0644" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9.70898 7.33545V12.0644" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>}
                   <div className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
                   name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"
                 }`}>
                     {text}
                   </div>
                   </div>
-                  {(name === sender && showDelMessage) && timestamp?.seconds && (
+                  {(name === sender && showDelMessage === index) && timestamp?.seconds && (
                     <div className="text-gray3 text-[11px] capitalize p-2">
                       {getDateTime(timestamp?.seconds).time}
                     </div>
@@ -508,6 +506,7 @@ function Messages({ message, setMsgString, sender, receiver, dispatch }) {
         sender={sender}
         receiver={receiver}
         dispatch={dispatch}
+        users={users}
       />
     </ul>
   );
@@ -525,8 +524,8 @@ export default function Chat() {
   const sender = (result || '').toLowerCase();
   const queue_ids = useSelector((state) => state.messages?.queue_ids);
   const signatureData = useSelector((state) => state.messages?.signatureData);
+  const users = useSelector((state) => state.users?.users);
   const dispatch = useDispatch();
-
   const { chain } = useNetwork()
 
   useEffect(() => {
@@ -539,6 +538,8 @@ export default function Chat() {
   useEffect(() => {
     getUsers(dispatch)
   }, [])
+
+
 
   if (!sender) {
     return (
@@ -564,11 +565,13 @@ export default function Chat() {
   return (
     <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden">
       <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-20">
-        {signatureData && signatureData?.signature && queue_ids && sender ? (
+        {signatureData && signatureData?.signature && users && sender ? (
           <>
             <Users
               sender={sender}
               dispatch={dispatch}
+              users={users}
+              queue_ids={queue_ids}
               setReceiver={setReceiver}
               setModalState={setModalState}
               modal={modal}
@@ -583,6 +586,7 @@ export default function Chat() {
               sender={sender}
               receiver={receiver}
               dispatch={dispatch}
+              users={users}
             />
             <div className="flex flex-[6] flex-col">
               <Order sender={sender} receiver={receiver} truncate={truncate}/>
@@ -590,7 +594,7 @@ export default function Chat() {
           </>
         ) : (
           <div className="flex flex-1 w-full h-full justify-center items-center flex-col">
-            <div className="text-white0 text-xl font-bold mb-8 p-2">
+            <div className="text-gum text-xl font-bold mb-8 p-2">
               {"You don't have any conversations!"}
             </div>
             <button
@@ -603,7 +607,7 @@ export default function Chat() {
               }}
               type="button"
               class={
-                "flex bg-white10 text-white0 h-10 w-72 text-base shadow-sm rounded-md justify-center items-center"
+                "flex bg-white10 text-gum h-10 w-72 text-base shadow-sm rounded-md justify-center items-center"
               }
             >
               {"Start New Chat"}
@@ -621,7 +625,7 @@ export default function Chat() {
           chainId={chain.id}
         />
       )}
-      {newModal &&
+       {newModal &&
                   <NewChatModal
                   saveMessage={saveMessage}
                   sender={sender}

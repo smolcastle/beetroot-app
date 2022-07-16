@@ -103,10 +103,16 @@ const Order = ({sender, truncate, receiver}) => {
                         <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
                         <p className='text-[16px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
                         <h3 className='text-[18px]'>Your Wallet</h3>
-                        <div className='bg-parsleytint text-parsley p-2 rounded-md border border-parsley border-solid'>You: {truncate(sender, 10)}</div>
+                        <div className='flex bg-parsleytint text-parsley p-2 rounded-md border border-parsley border-solid justify-between'>
+                        <p>{truncate(sender, 10)} (You)</p>
+                        <button className='bg-parsleytint text-[15px]'>Clear cart</button>
+                        </div>
                         <h3 className='text-[18px]'>Their Wallet</h3>
                         <p className='text-[14px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>
-                        <input placeholder='Their Wallet Address' className='outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
+                        <div className='bg-parsleytint rounded-md p-2 flex justify-between text-parsley'>
+                        <input placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input>
+                        <button className='bg-parsleytint text-[15px]'>Clear cart</button>
+                        </div>
                         <h3 className='text-[18px]'>Expiry Date</h3>
                         <p className='text-[14px]'>Leave this field blank if you would like the order request to remain active for eternity.</p>
                         <div className='flex justify-evenly  items-center text-[15px]'>
@@ -150,9 +156,9 @@ const Order = ({sender, truncate, receiver}) => {
                         <input placeholder='Search to add NFTS into your cart' className='w-full outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
                         </div>
                         <div className='flex rounded-md items-center my-3 justify-between'>
-                            <div className='flex rounded-md text-parsley bg-parsleytint items-center px-2 py-1 justify-between'>
-                            <input placeholder='Add Tokens (Ex: ETH)' className='w-[90%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
-                            <p>Amount</p>
+                            <div className='flex rounded-md text-parsley w-[90%] bg-parsleytint items-center px-2 py-1 justify-between'>
+                            <input placeholder='Add Tokens (Ex: ETH)' className='w-[70%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
+                            <input placeholder='Amount' className='w-[30%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
                             </div>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>

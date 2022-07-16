@@ -60,13 +60,6 @@ export function updateQueueIds(queue_ids) {
     queue_ids,
   };
 }
-export function updateDetails(details) {
-  return {
-    type: "UPDATE_DETAILS",
-    details,
-  };
-}
-
 export function updateSignatureData(signatureData) {
   return {
     type: "UPDATE_SIGNING_DATA",
