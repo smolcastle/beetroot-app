@@ -3,10 +3,11 @@ import NewTradeModal from '../components/NewTradeModal'
 import seaport from '../utils/seaport'
 import { getDateTime } from '../helpers/Collections'
 import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc } from 'firebase/firestore'
+import TradeTab from '../components/TradeTab'
 
 const Order = ({sender, truncate, receiver}) => {
     const [openTrade, setOpenTrade] = useState(false)
-    const [offerTrade, setOfferTrade] = useState(false)
+    const [offerTrade, setOfferTrade] = useState(true)
     const [askTrade, setAskTrade] = useState(false)
     const [offers, setOffers] = useState([])
     const [considerations, setConsiderations] = useState([])
@@ -15,11 +16,11 @@ const Order = ({sender, truncate, receiver}) => {
     const [showPendingOrder, setShowPendingOrder] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
 
-    async function saveOrder(order) {
+    async function saveOrder(order, offerFor) {
         try {
           await addDoc(collection(getFirestore(), "orders"), {
             name: sender,
-            to: receiver,
+            to: offerFor,
             order: order,
             timestamp: serverTimestamp(),
           });
@@ -27,7 +28,7 @@ const Order = ({sender, truncate, receiver}) => {
           console.error("Error writing new order to Firebase Database", error);
         }
       }
-    async function createOrder() {
+    async function createOrder(offerFor) {
         if(offers.length == 0 || considerations.length == 0){
             alert("Order cannot be empty")
         }
@@ -41,10 +42,12 @@ const Order = ({sender, truncate, receiver}) => {
             });
             const order = await orderActions.executeAllActions();
             console.log(order)
-            saveOrder(order)
+            saveOrder(order, offerFor)
             setIsLoading(false)
         }
         setIsLoading(false)
+        setOffers([])
+        setConsiderations([])
     }
 
 
@@ -96,135 +99,15 @@ const Order = ({sender, truncate, receiver}) => {
             <button onClick={() => setShowOption(2)} className={`bg-parsleytint px-3 rounded-md ${showOption == 2 ? "border border-parsley border-solid" : ""}`}>Pending Orders</button>
         </div>
         {/*  */}
-            {showOption == 1 && <>
-                <div className="flex flex-col h-[95%] w-[95%] justify-evenly">
-                    <div className="flex h-full w-full">
-                    <div className='flex flex-col justify-evenly w-[50%] h-full'>
-                        <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
-                        <p className='text-[16px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
-                        <h3 className='text-[18px]'>Your Wallet</h3>
-                        <div className='flex bg-parsleytint text-parsley p-2 rounded-md border border-parsley border-solid justify-between'>
-                        <p>{truncate(sender, 10)} (You)</p>
-                        <button className='bg-parsleytint text-[15px]'>Clear cart</button>
-                        </div>
-                        <h3 className='text-[18px]'>Their Wallet</h3>
-                        <p className='text-[14px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>
-                        <div className='bg-parsleytint rounded-md p-2 flex justify-between text-parsley'>
-                        <input placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input>
-                        <button className='bg-parsleytint text-[15px]'>Clear cart</button>
-                        </div>
-                        <h3 className='text-[18px]'>Expiry Date</h3>
-                        <p className='text-[14px]'>Leave this field blank if you would like the order request to remain active for eternity.</p>
-                        <div className='flex justify-evenly  items-center text-[15px]'>
-                            <input placeholder='00 MINS' className=' w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
-                            <p>+</p>
-                            <input placeholder='00.00 HRS' className='w-[100px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
-                            <p>+</p>
-                            <input placeholder='000 DAYS' className='w-[90px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
-                        </div>
-                        {!isLoading && <button className='w-full border-2 border-gum border-solid rounded-3xl text-gum h-10 font-bold mt-5 cursor-pointer'
-                            onClick={
-                                async () => {
-                                    await createOrder()
-                                }
-                            }>{"CREATE ORDER"}
-                            </button>}
-                            {isLoading &&
-                            <button className='w-full bg-pink80 text-pinktint10 h-10 cursor-pointer flex justify-center items-center'>
-                                <svg className='w-[10%]' version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                viewBox="0 0 100 100" enable-background="new 0 0 0 0" xmlSpace="preserve">
-                                <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
-                                    <animateTransform
-                                    attributeName="transform"
-                                    attributeType="XML"
-                                    type="rotate"
-                                    dur="1s"
-                                    from="0 50 50"
-                                    to="360 50 50"
-                                    repeatCount="indefinite" />
-                                </path>
-                            </svg>
-                            </button>
-                            }
-                    </div>
-                    <div className='w-[50%] h-full ml-5'>
-                        <div className='bg-parsleytint flex rounded-md items-center px-2 py-1'>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.5714 14.2859C11.2796 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2796 0.857422 7.5714 0.857422C3.86322 0.857422 0.857147 3.86349 0.857147 7.57167C0.857147 11.2798 3.86322 14.2859 7.5714 14.2859Z" fill="#DCE5D7" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M15.1429 15.1432L12.3238 12.3242" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <input placeholder='Search to add NFTS into your cart' className='w-full outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
-                        </div>
-                        <div className='flex rounded-md items-center my-3 justify-between'>
-                            <div className='flex rounded-md text-parsley w-[90%] bg-parsleytint items-center px-2 py-1 justify-between'>
-                            <input placeholder='Add Tokens (Ex: ETH)' className='w-[70%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
-                            <input placeholder='Amount' className='w-[30%] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
-                            </div>
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>
-                                <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
-                                <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    </div>
-                    {/* <div className="flex h-[80%] justify-evenly">
-                        <div className='w-full bg-white10 h-full flex flex-col p-4 '>
-                            <p className='text-themepink text-sm text-[16px] mb-[10px]'>{truncate(sender, 16)} {"(You)"}</p>
-                            <div className="flex flex-col justify-evenly w-[50%] min-h-[60%]">
-                                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className="w-[40px] h-[40px] bg-white10 flex items-center justify-center">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="12" cy="12" r="12" fill="white" opacity='0.5'/>
-                                        <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>
-                                        <rect x="6" y="12.5996" width="1.2" height="12" transform="rotate(-90 6 12.5996)" fill="#565454"/>
-                                    </svg>
-                                </button>
-                                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className="w-[40px] h-[40px] bg-white10"></button>
-                                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className="w-[40px] h-[40px] bg-white10"></button>
-                                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className="w-[40px] h-[40px] bg-white10"></button>
-                                <button onClick={() => {setOpenTrade(true); setOfferTrade(true); setAskTrade(false)}} className="w-[40px] h-[40px] bg-white10"></button>
-                            </div>
-                        </div>
-                        <svg className='self-center w-[100px]' width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 7.47266L1.09492 7.4409L1.0918 5.41933L18.9984 5.44416L15.8071 2.04263L17.7491 0.809924L24 7.47266Z" fill="white" fill-opacity="0.9"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00087 12.5584L9.19246 15.96L7.25057 17.1927L0.998844 10.5296L23.9042 10.5626L23.9072 12.5842L6.00087 12.5584Z" fill="white" fill-opacity="0.9"/>
-                        </svg>
-                        <div className='w-full bg-white10 h-full flex flex-col p-4'>
-                            <p className='text-themepink text-sm text-[16px] mb-[10px]'>{truncate(receiver, 16)} {"(Them)"}</p>
-                            <div class="flex flex-col justify-evenly w-[50%] min-h-[60%]">
-                                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10 flex items-center justify-center'>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="12" cy="12" r="12" fill="white" opacity='0.5'/>
-                                        <rect x="11.3999" y="6" width="1.2" height="12" fill="#565454"/>
-                                        <rect x="6" y="12.5996" width="1.2" height="12" transform="rotate(-90 6 12.5996)" fill="#565454"/>
-                                    </svg>
-                                </button>
-                                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10'></button>
-                                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10'></button>
-                                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10'></button>
-                                <button onClick={() => {setOpenTrade(true); setAskTrade(true); setOfferTrade(false)}} className='w-[40px] h-[40px] bg-white10'></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex w-[90%] justify-between">
-                        <div className='flex flex-col mt-5 w-[52%] '>
-                            <input placeholder='set counterparty address (for private trade)' className='bg-white10 text-themepink text-[14px] placeholder:text-themepink outline-none p-2'></input>
-                            <p className='text-white0 text-[11px] mt-3'>(leave empty for anyone to accept the swap)</p>
-                        </div>
-                        <div className='flex flex-col mt-5 w-[40%]'>
-                            <input placeholder='21/03/23' className='bg-white10 text-themepink placeholder:text-themepink outline-none text-[14px] p-2'></input>
-                            <p className='text-white0 text-[11px] mt-3'>(leave empty for default expiry in 1 week)</p>
-                        </div>
-                    </div>*/}
-
-                </div>
-            </>}
+            {showOption == 1 &&
+                <TradeTab considerations={considerations} setConsiderations={setConsiderations} truncate={truncate} isLoading={isLoading} createOrder={createOrder} askTrade={askTrade} setAskTrade={setAskTrade}
+                offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
+            }
         {showOption == 2 && <>
             <div className='w-[80%]'>
                 <p className='text-gray1 mb-2'>Show only orders pertaining to user selected in the chat box</p>
                 {orders.map((order, index) => {
                     if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
-                        console.log(index)
                     return (
                         <div className='flex flex-col bg-gray6 rounded-lg p-3 mb-4'>
                         <div className='flex justify-between '>
@@ -276,10 +159,10 @@ const Order = ({sender, truncate, receiver}) => {
             </div>
         </>}
     </div>
-    {openTrade && (
+    {/* {openTrade && (
         <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}
         offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
-    )}
+    )} */}
     </>
   )
 }

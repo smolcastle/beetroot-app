@@ -296,7 +296,6 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
           const addresses = item.name.split("_");
           if (addresses[0] === sender || addresses[1] === sender){
           const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
-          console.log(selected)
           if((addresses[1] === receiver) || item.messages == true){
           return (
             <>
