@@ -148,20 +148,20 @@ const TradeTab = ({createOrder, sender, setOffers, offers, considerations, setCo
                     <div className="flex h-full w-full">
                     <div className='flex flex-col justify-evenly w-[50%] h-full'>
                         <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
-                        <p className='text-[16px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
-                        <h3 className='text-[18px]'>Your Wallet</h3>
+                        <p className='text-[12px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
+                        <h3 className='text-[16px]'>Your Wallet</h3>
                         <div onClick={() => {setAskTrade(false); setOfferTrade(true); reset()}} className={`flex bg-parsleytint text-parsley p-2 rounded-md justify-between ${offerTrade ? "border border-parsley border-solid" : ""}`}>
                             <p>{truncate(sender, 10)} (You)</p>
                             <button className='bg-parsleytint text-[15px]'>Clear cart</button>
                         </div>
-                        <h3 className='text-[18px]'>Their Wallet</h3>
-                        <p className='text-[14px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>
+                        <h3 className='text-[16px]'>Their Wallet</h3>
+                        <p className='text-[12px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>
                         <div onClick={() => {setAskTrade(true); setOfferTrade(false); reset()}} className={`bg-parsleytint rounded-md p-2 flex justify-between text-parsley ${askTrade ? "border border-parsley border-solid" : ""}`}>
                             <input onChange={(e) => setOfferFor(e.target.value)} placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input>
                             <button className='bg-parsleytint text-[15px]'>Clear cart</button>
                         </div>
-                        <h3 className='text-[18px]'>Expiry Date</h3>
-                        <p className='text-[14px]'>Leave this field blank if you would like the order request to remain active for eternity.</p>
+                        <h3 className='text-[16px]'>Expiry Date</h3>
+                        <p className='text-[12px]'>Leave this field blank if you would like the order request to remain active for eternity.</p>
                         <div className='flex justify-evenly  items-center text-[15px]'>
                             <input placeholder='00 MINS' className=' w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
                             <p>+</p>

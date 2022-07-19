@@ -216,6 +216,7 @@ function User({
   setSelected,
   isSelected,
   setReceiver,
+
 }) {
   useEffect(() => {
     let unsubscribe;
@@ -251,7 +252,7 @@ function User({
           </div>
           <div className="flex flex-col items-start w-[50%] ">
             <p className="text-[16px]">{truncate(receiver, 10)}</p>
-            <p className="text-[14px] text-parsley">verified</p>
+            <p className="text-[14px] text-gray3">Unverified</p>
           </div>
           <div className="flex flex-col items-end w-[20%]">
             <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
@@ -309,6 +310,7 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
               setSelected={setSelected}
               setReceiver={setReceiver}
             />
+
             </>
           );
           }
@@ -338,7 +340,7 @@ function TopSection({receiver }) {
           </svg>
           </button>
         </div>
-        <p className="text-[14px] text-parsley">Verified</p>
+        <p className="text-[14px] text-gray3">Unverified</p>
       </div>
     </div>
   );
@@ -402,22 +404,13 @@ function SendMessageSection({
       }}
     >
       <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
-      <label htmlFor="file-upload" className="cursor-pointer">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 15.1431C11.9449 15.1431 15.1429 11.9452 15.1429 8.00028C15.1429 4.05539 11.9449 0.857422 8 0.857422C4.05511 0.857422 0.857147 4.05539 0.857147 8.00028C0.857147 11.9452 4.05511 15.1431 8 15.1431Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 11.2174V4.7832" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M10.6914 7.09307C9.87362 6.05981 9.31661 5.57897 8.48653 4.95009C8.19282 4.72757 7.80749 4.72757 7.51377 4.95009C6.68369 5.57897 6.12668 6.05981 5.3089 7.09308" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </label>
-      <input id="file-upload" multiple className="hidden" accept="image/*" type="file"/>
-
         <input
           value={message}
           type="text"
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-4"
+          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
           placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
@@ -474,24 +467,19 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, users }) 
         {messages?.map(({ text, name, timestamp, id }, index) => {
           return (
             <div>
-                <div onDoubleClick={() => {{showDelMessage === index ? (hideMessageDetails(id)) : ((showMessageDetails(id, index)))}}} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                <div onClick={() => {{showDelMessage === index ? (hideMessageDetails(id)) : ((showMessageDetails(id, index)))}}} key={index} class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? "items-end" : "items-start"
                 } `}>
-                {(name === sender && showDelMessage === index) && timestamp?.seconds && (
-                    <div className="text-gray3 text-[11px] capitalize p-2">
-                      {getDateTime(timestamp?.seconds).date}
-                    </div>
-                  )}
                   <div className="flex items-center">
-                  <div className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
-                  name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"
-                }`}>
-                    {text}
-                  </div>
+                    <div className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
+                    name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"}`}>
+                      {text}
+                    </div>
                   </div>
                   {(name === sender && showDelMessage === index) && timestamp?.seconds && (
-                    <div className="text-gray3 text-[11px] capitalize p-2">
-                      {getDateTime(timestamp?.seconds).time}
+                    <div className="text-gray3 text-[11px] capitalize p-2 flex w-[100px] justify-between">
+                      <p>{getDateTime(timestamp?.seconds).date},</p>
+                      <p>{getDateTime(timestamp?.seconds).time}</p>
                     </div>
                   )}
                 </div>
@@ -563,7 +551,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden">
-      <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-20">
+      <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-[16px]">
         {signatureData && signatureData?.signature && users && sender ? (
           <>
             <Users

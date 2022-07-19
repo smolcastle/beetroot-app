@@ -159,10 +159,6 @@ const Order = ({sender, truncate, receiver}) => {
             </div>
         </>}
     </div>
-    {/* {openTrade && (
-        <NewTradeModal considerations={considerations} setConsiderations={setConsiderations}
-        offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
-    )} */}
     </>
   )
 }
