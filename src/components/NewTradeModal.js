@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
+import { assets } from "../utils/opensea";
 
 const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, considerations, setConsiderations, askTrade, offerTrade}) => {
     const boxes = 6
@@ -26,6 +27,7 @@ const NewTradeModal = ({setOpenTrade, sender, receiver, setOffers, offers, consi
         try {
           // will throw if tokenId doesn't exist.
           const owner = await erc721Contract.ownerOf(tokenId);
+          console.log(await assets(nftBox, tokenId));
           if (owner != await seaport.signer.getAddress()) {
             alert("You are not the owner");
             return;
