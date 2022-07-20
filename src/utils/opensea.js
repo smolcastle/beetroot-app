@@ -9,7 +9,7 @@ const openseaSDK = new OpenSeaSDK(provider, {
   apiKey: OPENSEA_KEY
 })
 
-assets = async function getAsset(tokenAddress, tokenId) {
+const assets = async function getAsset(tokenAddress, tokenId) {
     const asset = await openseaSDK.api.getAsset({
         tokenAddress, tokenId
     });

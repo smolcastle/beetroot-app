@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import NewTradeModal from '../components/NewTradeModal'
 import seaport from '../utils/seaport'
 import { getDateTime } from '../helpers/Collections'
 import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc } from 'firebase/firestore'
