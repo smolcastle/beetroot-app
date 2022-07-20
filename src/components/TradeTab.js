@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
 
-
 const TradeTab = ({createOrder, sender, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade}) => {
 
     const [nftBox, setNftBox] = useState('')
