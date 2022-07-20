@@ -26,7 +26,7 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers
+  updateUsers, updateContacts
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -176,12 +176,12 @@ async function signMessage(sender, dispatch, chainId, signer) {
   }
 }
 
-async function saveUser(user, sender) {
+async function saveUser(sender) {
   try {
     await addDoc(collection(getFirestore(), "users"), {
       // name: sender > user ? `${user}_${sender}` : `${sender}_${user}`,
-      name: `${sender}_${user}`,
-      messages: false,
+      name: `${sender}`,
+      newUser: true,
       timestamp: serverTimestamp(),
     });
   } catch (error) {
@@ -207,6 +207,37 @@ async function updateUserMsg(id){
     console.error("Error updating users", error);
   }
 }
+
+async function createContact(newUser, sender){
+  try{
+    await addDoc(collection(db, "chats", sender, "contacts"), {
+      from: sender,
+      to: newUser,
+      timestamp: serverTimestamp(),
+    });
+  } catch(e){
+    console.log("Error creating new contact", e)
+  }
+}
+
+async function getContacts(sender, setChats){
+  try{
+    const chatsRef = collection(db, "chats", sender, "contacts");
+    const q = query(chatsRef, orderBy("timestamp", "asc"));
+    onSnapshot(q, (querySnapshot) => {
+      let chats = [];
+      querySnapshot.forEach((doc) => {
+        chats.push(doc.data());
+      });
+      setChats(chats);
+      console.log("chats", chats)
+    });
+
+  } catch(e){
+    console.log(e)
+  }
+}
+
 
 function User({
   sender,
@@ -281,10 +312,11 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
         </svg>
         </button>
       </div>
-      {users.filter((item) => {
+      {users?.filter((item) => {
         //search functionality
         const addresses = item.name.split("_");
-        const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+        // const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+        const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]);
         if (searchTerm == ""){
           return receiver
         } else if (receiver.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -295,7 +327,8 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
         ?.map((item, index) => {
           const addresses = item.name.split("_");
           if (addresses[0] === sender || addresses[1] === sender){
-          const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+          // const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+          const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]);
           console.log(selected)
           if((addresses[1] === receiver) || item.messages == true){
           return (
@@ -362,7 +395,7 @@ function AddUser({dispatch, sender}){
           <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>Cancel</button>
           <button className="text-gum mx-2" onClick={() =>  {
             if(newUser !== ""){
-                    saveUser(newUser.toLowerCase(), sender)
+                    createContact(newUser.toLowerCase(), sender)
                     getUsers(dispatch)
                     setNewUser('')
                     dispatch(hideNewUser())
@@ -527,6 +560,7 @@ export default function Chat() {
   const users = useSelector((state) => state.users?.users);
   const dispatch = useDispatch();
   const { chain } = useNetwork()
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
@@ -538,7 +572,27 @@ export default function Chat() {
   useEffect(() => {
     getUsers(dispatch)
   }, [])
+  useEffect(() => {
+    getContacts(sender, setChats)
+  }, [])
 
+  const funcNewUser = () => {
+    if(users){
+      users.map((user) => {
+      if(sender === user.name.toLowerCase()){
+        return
+      }
+      saveUser(sender)
+    })
+  }
+  if((users != null && users.length === 0)){
+    saveUser(sender)
+  }
+}
+console.log(users)
+useEffect(() => {
+  funcNewUser()
+}, [sender])
 
 
   if (!sender) {

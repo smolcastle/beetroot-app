@@ -9,6 +9,8 @@ import LoaderOverlay from "../components/LoaderOverlay";
 import {truncate } from "../helpers/Collections";
 import logo3 from '../img/logo3.png'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Onboarding from "./Onboarding";
+import OnboardSuccess from "./OnboardSuccess";
 
 const WalletButton = () => {
   return (
@@ -69,6 +71,8 @@ const Home = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Content />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/success" element={<OnboardSuccess />} />
       </Routes>
       <LoaderOverlay />
     </main>
