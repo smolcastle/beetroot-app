@@ -178,8 +178,7 @@ async function signMessage(sender, dispatch, chainId, signer) {
 
 async function saveUser(sender) {
   try {
-    await addDoc(collection(getFirestore(), "users"), {
-      // name: sender > user ? `${user}_${sender}` : `${sender}_${user}`,
+    await setDoc(doc(db, "users", sender), {
       name: `${sender}`,
       newUser: true,
       timestamp: serverTimestamp(),
@@ -230,7 +229,7 @@ async function getContacts(sender, setContacts){
         contacts.push(doc.data());
       });
       setContacts(contacts);
-      // console.log("contacts", contacts)
+      console.log("contacts", contacts)
     });
 
   } catch(e){
@@ -314,10 +313,6 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
         </button>
       </div>
       {contacts?.filter((contact) => {
-        //search functionality
-        //const addresses = item.name.split("_");
-        // const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
-        //const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]);
         const receiver = contact.to
         if (searchTerm == ""){
           return receiver
@@ -327,13 +322,8 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
       })
         // .reverse()
         ?.map((contact, index) => {
-          // const addresses = item.name.split("_");
           if (contact.from === sender){
-          // const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
-          // const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]);
-          // console.log(selected)
           const receiver = contact.to
-          if(contact.to === sender){
           return (
             <>
             <User
@@ -350,7 +340,6 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
             </>
           );
           }
-        }
       })}
     </ul>
   );
@@ -557,7 +546,22 @@ export default function Chat() {
   const dispatch = useDispatch();
   const { chain } = useNetwork()
   const [contacts, setContacts] = useState([]);
-  const [userExists, setUserExists] = useState(null)
+
+  const funcNewUser = async () => {
+    // if users list exist then check if sender already exists in the list
+    if(users && sender !== ""){
+      const userRef = doc(getFirestore(), "users", sender);
+      const user = await getDoc(userRef);
+      if (!(user.exists())) {
+        await saveUser(sender)
+        getUsers(dispatch)
+      }
+    }
+    // if the users list is empty then add the new user
+    if((users != null && users.length === 0 && sender !== "")){
+      saveUser(sender)
+    }
+  }
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
@@ -569,37 +573,13 @@ export default function Chat() {
   useEffect(() => {
     getUsers(dispatch)
   }, [])
+
   useEffect(() => {
     getContacts(sender, setContacts)
-  }, [])
-
-  const funcNewUser = () => {
-    // if users exist then check if sender exists in the list
-    if(users && sender !== ""){
-      let i;
-      for(i=0; i<users.length; i++)
-      {
-        if(users[i].name.toLowerCase() === sender){
-          setUserExists(true)
-          break
-        }
-        setUserExists(false)
-      }
-    }
-    // if not then save this new user
-    if(userExists === false){
-      saveUser(sender)
-    }
-
-    // if there are no new users then add the new users
-    if((users != null && users.length === 0 && sender !== "")){
-      saveUser(sender)
-    }
-  }
-console.log(users)
-useEffect(() => {
-  funcNewUser()
-}, [])
+  }, [sender])
+  useEffect(() => {
+    funcNewUser()
+  }, [sender])
 
 
   if (!sender) {
