@@ -26,7 +26,7 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers
+  updateUsers, updateContacts
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -176,12 +176,11 @@ async function signMessage(sender, dispatch, chainId, signer) {
   }
 }
 
-async function saveUser(user, sender) {
+async function saveUser(sender) {
   try {
-    await addDoc(collection(getFirestore(), "users"), {
-      // name: sender > user ? `${user}_${sender}` : `${sender}_${user}`,
-      name: `${sender}_${user}`,
-      messages: false,
+    await setDoc(doc(db, "users", sender), {
+      name: `${sender}`,
+      newUser: true,
       timestamp: serverTimestamp(),
     });
   } catch (error) {
@@ -207,6 +206,37 @@ async function updateUserMsg(id){
     console.error("Error updating users", error);
   }
 }
+
+async function createContact(newUser, sender){
+  try{
+    await addDoc(collection(db, "chats", sender, "contacts"), {
+      from: sender,
+      to: newUser,
+      timestamp: serverTimestamp(),
+    });
+  } catch(e){
+    console.log("Error creating new contact", e)
+  }
+}
+
+async function getContacts(sender, setContacts){
+  try{
+    const contactsRef = collection(db, "chats", sender, "contacts");
+    const q = query(contactsRef, orderBy("timestamp", "asc"));
+    onSnapshot(q, (querySnapshot) => {
+      let contacts = [];
+      querySnapshot.forEach((doc) => {
+        contacts.push(doc.data());
+      });
+      setContacts(contacts);
+      console.log("contacts", contacts)
+    });
+
+  } catch(e){
+    console.log(e)
+  }
+}
+
 
 function User({
   sender,
@@ -264,7 +294,7 @@ function User({
   );
 }
 
-function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSelected, modal, setNewModalState }) {
+function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSelected, contacts, setNewModalState }) {
   const [searchTerm, setSearchTerm] = useState('')
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 bg-white10">
@@ -282,10 +312,8 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
         </svg>
         </button>
       </div>
-      {users.filter((item) => {
-        //search functionality
-        const addresses = item.name.split("_");
-        const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
+      {contacts?.filter((contact) => {
+        const receiver = contact.to
         if (searchTerm == ""){
           return receiver
         } else if (receiver.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -293,15 +321,13 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
         }
       })
         // .reverse()
-        ?.map((item, index) => {
-          const addresses = item.name.split("_");
-          if (addresses[0] === sender || addresses[1] === sender){
-          const receiver = (addresses[0] === sender ? addresses[1] : addresses[0]).toLowerCase();
-          if((addresses[1] === receiver) || item.messages == true){
+        ?.map((contact, index) => {
+          if (contact.from === sender){
+          const receiver = contact.to
           return (
             <>
             <User
-              key={item}
+              key={contact}
               sender={sender}
               receiver={receiver}
               dispatch={dispatch}
@@ -314,7 +340,6 @@ function Users({sender, dispatch, setReceiver, users, selected, queue_ids, setSe
             </>
           );
           }
-        }
       })}
     </ul>
   );
@@ -350,7 +375,7 @@ function AddUser({dispatch, sender}){
   const [newUser, setNewUser] = useState('')
   function addNewUserFunc(){
     if(newUser !== ""){
-      saveUser(newUser.toLowerCase(), sender)
+      createContact(newUser.toLowerCase(), sender)
       getUsers(dispatch)
       setNewUser('')
       dispatch(hideNewUser())
@@ -371,10 +396,6 @@ function AddUser({dispatch, sender}){
           onKeyPress={(event) => {
             event.key === "Enter" && addNewUserFunc()}}
           />
-          {/* <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.0091 13.3524C11.0856 12.1291 11.1259 10.8616 11.1259 9.56285C11.1259 9.03669 11.1193 8.51565 11.1063 8.0006C11.0972 7.6361 10.979 7.28186 10.7632 6.98795C9.94677 5.87601 9.29568 5.18392 8.2241 4.3566C7.92744 4.12755 7.56333 4.00332 7.18863 3.99515C6.81589 3.98704 6.42665 3.98291 6.01095 3.98291C4.75238 3.98291 3.73647 4.02072 2.68602 4.09276C1.78495 4.15457 1.0693 4.87194 1.01285 5.77337C0.936254 6.99665 0.895996 8.26414 0.895996 9.56285C0.895996 10.8616 0.936254 12.1291 1.01285 13.3524C1.0693 14.2538 1.78495 14.9711 2.68602 15.033C3.73647 15.105 4.75238 15.1428 6.01095 15.1428C7.26953 15.1428 8.28543 15.105 9.33588 15.033C10.2369 14.9711 10.9526 14.2538 11.0091 13.3524Z" fill="#BDBDBD" stroke="#828282"/>
-              <path d="M14.9873 10.2264C15.064 9.0031 15.1042 7.7356 15.1042 6.43689C15.1042 5.91073 15.0976 5.38969 15.0846 4.87464C15.0755 4.51012 14.9572 4.15588 14.7414 3.86197C13.925 2.75003 13.2739 2.05794 12.2024 1.23063C11.9057 1.00158 11.5416 0.877343 11.1669 0.869179C10.7942 0.861058 10.4049 0.856934 9.98923 0.856934C8.73064 0.856934 7.71475 0.894742 6.6643 0.966793C5.76323 1.0286 5.04757 1.74596 4.99112 2.64739C4.91452 3.87067 4.87427 5.13817 4.87427 6.43689C4.87427 7.7356 4.91453 9.0031 4.99112 10.2264C5.04757 11.1278 5.76323 11.8452 6.6643 11.907C7.71475 11.979 8.73064 12.0168 9.98923 12.0168C11.2478 12.0168 12.2637 11.979 13.3141 11.907C14.2153 11.8452 14.9309 11.1278 14.9873 10.2264Z" fill="white" stroke="#828282"/>
-            </svg> */}
           <button className="text-gum ml-1" onClick={() => {dispatch(hideNewUser())}}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M21.04 19.1467C21.2911 19.3978 21.4321 19.7383 21.4321 20.0934C21.4321 20.4484 21.2911 20.789 21.04 21.04C20.7889 21.2911 20.4484 21.4322 20.0933 21.4322C19.7383 21.4322 19.3977 21.2911 19.1467 21.04L15.3867 17.2667L11.6133 21.04C11.3623 21.2911 11.0217 21.4322 10.6667 21.4322C10.3116 21.4322 9.97107 21.2911 9.72 21.04C9.46893 20.789 9.32788 20.4484 9.32788 20.0934C9.32788 19.9176 9.36251 19.7435 9.42979 19.581C9.49707 19.4186 9.59569 19.271 9.72 19.1467L13.4933 15.3867L9.73334 11.6C9.48227 11.349 9.34121 11.0084 9.34121 10.6534C9.34121 10.2983 9.48227 9.95777 9.73334 9.7067C9.98441 9.45563 10.3249 9.31458 10.68 9.31458C11.0351 9.31458 11.3756 9.45563 11.6267 9.7067L15.4 13.48L19.16 9.7067C19.2843 9.58238 19.4319 9.48376 19.5943 9.41648C19.7568 9.3492 19.9309 9.31458 20.1067 9.31458C20.2825 9.31458 20.4566 9.3492 20.619 9.41648C20.7814 9.48376 20.929 9.58238 21.0533 9.7067C21.1777 9.83102 21.2763 9.9786 21.3435 10.141C21.4108 10.3035 21.4455 10.4776 21.4455 10.6534C21.4455 10.8292 21.4108 11.0033 21.3435 11.1657C21.2763 11.3281 21.1777 11.4757 21.0533 11.6L17.28 15.3734L21.0533 19.1334L21.04 19.1467Z" fill="#AB224E"/>
@@ -524,6 +545,23 @@ export default function Chat() {
   const users = useSelector((state) => state.users?.users);
   const dispatch = useDispatch();
   const { chain } = useNetwork()
+  const [contacts, setContacts] = useState([]);
+
+  const funcNewUser = async () => {
+    // if users list exist then check if sender already exists in the list
+    if(users && sender !== ""){
+      const userRef = doc(getFirestore(), "users", sender);
+      const user = await getDoc(userRef);
+      if (!(user.exists())) {
+        await saveUser(sender)
+        getUsers(dispatch)
+      }
+    }
+    // if the users list is empty then add the new user
+    if((users != null && users.length === 0 && sender !== "")){
+      saveUser(sender)
+    }
+  }
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
@@ -536,6 +574,12 @@ export default function Chat() {
     getUsers(dispatch)
   }, [])
 
+  useEffect(() => {
+    getContacts(sender, setContacts)
+  }, [sender])
+  useEffect(() => {
+    funcNewUser()
+  }, [sender])
 
 
   if (!sender) {
@@ -576,6 +620,7 @@ export default function Chat() {
               setSelected={setSelected}
               setSignModalState={setSignModalState}
               signModal={signModal}
+              contacts = {contacts}
             />
             <Messages
               message={message}

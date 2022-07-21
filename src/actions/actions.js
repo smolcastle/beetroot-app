@@ -33,6 +33,12 @@ export function updateUsers(users) {
     users,
   };
 }
+export function updateContacts(contacts) {
+  return {
+    type: "UPDATE_CONTACTS",
+    contacts,
+  };
+}
 
 export function updateMessages(messages) {
   return {
