@@ -39,6 +39,12 @@ export function updateContacts(contacts) {
     contacts,
   };
 }
+export function updateReceiverContacts(receiverContacts) {
+  return {
+    type: "UPDATE_RECEIVER_CONTACTS",
+    receiverContacts,
+  };
+}
 
 export function updateMessages(messages) {
   return {

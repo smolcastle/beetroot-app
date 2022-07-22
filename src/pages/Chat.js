@@ -26,7 +26,7 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers, updateContacts
+  updateUsers, updateReceiverContacts
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -226,7 +226,7 @@ async function getContacts(sender, setContacts) {
   }
 }
 
-async function getReceiverContacts(receiver, setReceiverContacts){
+async function getReceiverContacts(receiver, dispatch){
   try {
     const contactsRef = collection(db, "address book", receiver, "contacts");
     const q = query(contactsRef, orderBy("timestamp", "asc"));
@@ -235,7 +235,7 @@ async function getReceiverContacts(receiver, setReceiverContacts){
       querySnapshot.forEach((doc) => {
         receiverContacts.push(doc.data());
       });
-      setReceiverContacts(receiverContacts);
+      dispatch(updateReceiverContacts(receiverContacts))
     });
 
   } catch (e) {
@@ -379,12 +379,9 @@ function AddUser({ dispatch, sender, contacts }) {
   const [newUser, setNewUser] = useState('')
   let contactExists = false
   async function addNewUserFunc() {
-    if (newUser !== "") {
-      console.log("contacts", contacts)
+    if (newUser !== "" && newUser !== sender) {
       let i;
       for (i = 0; i < contacts.length; i++) {
-        console.log(contacts[i].to)
-        console.log(newUser)
         if (contacts[i].to.toLowerCase() === newUser) {
           contactExists = true
           break
@@ -432,19 +429,15 @@ function SendMessageSection({
   setMsgString,
   sender,
   receiver,
-  dispatch,
-  receiverContacts,
-  setReceiverContacts
+  dispatch
 }) {
 
+  const receiverContacts = useSelector((state) => state.contacts.receiverContacts);
   const userExists = async () => {
-    await getReceiverContacts(receiver, setReceiverContacts)
     let contactExists = false
     let i;
-    console.log(receiverContacts)
     for (i = 0; i < receiverContacts.length; i++) {
-      console.log(receiverContacts[i].to)
-      if (receiverContacts[i].to.toLowerCase() === receiver) {
+      if (receiverContacts[i].to.toLowerCase() === sender) {
         contactExists = true
         break
       }
@@ -454,7 +447,6 @@ function SendMessageSection({
     if (contactExists == false) {
       createContact(sender, receiver)
     }
-
   }
 
   return (
@@ -501,10 +493,14 @@ function SendMessageSection({
   );
 }
 
-function Messages({ message, setMsgString, sender, receiver, dispatch, contacts, receiverContacts, setReceiverContacts }) {
+function Messages({ message, setMsgString, sender, receiver, dispatch, contacts, setReceiverContacts, receiverContacts }) {
   const messages = useSelector((state) => state.messages?.messages);
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null)
+
+  useEffect(() => {
+    getReceiverContacts(receiver, dispatch)
+  }, [receiver])
 
   const showMessageDetails = (id, index) => {
     messages.map(message => {
@@ -541,9 +537,10 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
                   </div>
                 </div>
                 {(name === sender && showDelMessage === index) && timestamp?.seconds && (
-                  <div className="text-gray3 text-[11px] capitalize p-2 flex w-[100px] justify-between">
+                  <div className="text-gray3 text-[11px] capitalize p-2 flex w-[120px] justify-between">
                     <p>{getDateTime(timestamp?.seconds).date},</p>
-                    <p>{getDateTime(timestamp?.seconds).time}</p>
+                    <p>{getDateTime(timestamp?.seconds).time} </p>
+                    <p>{"(UTC)"}</p>
                   </div>
                 )}
               </div>
