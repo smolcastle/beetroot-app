@@ -1,14 +1,14 @@
 const initialState = {
-    contacts: null,
+    receiverContacts: null
 }
 
 export default function Reducer(state = initialState, action) {
     switch (action.type) {
-      case "UPDATE_CONTACTS":
-        return {
-          ...state,
-          contacts: action.contacts,
-        };
+      case "UPDATE_RECEIVER_CONTACTS":
+      return {
+        ...state,
+        receiverContacts: action.receiverContacts,
+      };
       default:
         return state;
     }

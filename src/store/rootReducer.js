@@ -8,6 +8,7 @@ import trades from "./reducers/trades";
 import loader from "./reducers/loader";
 import newUser from './reducers/newUser'
 import users from './reducers/users'
+import contacts from './reducers/contacts'
 
 export default combineReducers({
   wallet,
@@ -19,4 +20,5 @@ export default combineReducers({
   loader,
   newUser,
   users,
+  contacts
 });

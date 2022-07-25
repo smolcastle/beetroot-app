@@ -53,8 +53,8 @@ export function truncate(fullStr, strLen, separator) {
 
   var sepLen = separator.length,
     charsToShow = strLen - sepLen,
-    frontChars = Math.ceil(charsToShow / 2),
-    backChars = Math.floor(charsToShow / 3);
+    frontChars = Math.floor(charsToShow / 2),
+    backChars = Math.ceil(charsToShow / 3);
 
   return (
     fullStr.substr(0, frontChars) +
