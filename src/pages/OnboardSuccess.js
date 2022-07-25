@@ -1,22 +1,19 @@
 import React from 'react'
-import mascot from '../img/onboarding.png'
 
 const OnboardSuccess = () => {
   return (
-    <div className='flex h-screen w-screen pl-[4%] pt-[80px] overflow-x-hidden '>
+    <div className='flex h-screen w-screen pl-[12%] pt-[12%] overflow-x-hidden '>
         <div className='font-rubrik w-[50%] justify-evenly h-full'>
-            <h1 className='font-questa text-gray2 text-[48px] w-[65%] leading-tight'>
+            <h1 className='font-questa text-gray2 text-[32px] w-[30%] leading-tight'>
             {"You have been successfully onboarded!"}
             </h1>
-            <h1 className='font-questa mt-[48px] text-gray2 text-[48px] w-[65%] leading-tight'>
-           {"You can now begin trading NFTs and other assets with fellow crypto enthusiasts!"}
+            <h1 className='mt-[40px] text-gray2 text-[14px] w-[35%] leading-tight'>
+           {"You can now begin chatting with other users to negotiate NFT trades and deals."}
             </h1>
-            <button className='bg-gumtint border-2 border-gum border-solid text-gum font-rubrik font-bold w-[30%] text-[14px] mt-[48px] rounded-[8px] py-[8px] px-[16px]'>
-                {"START NOW"}
+            <button className='border-2 border-gum/[0.8] border-solid text-gum/[0.8] font-rubrik font-bold w-[30%] text-[14px] mt-[40px] rounded-[4px] py-[8px] px-[16px]'>
+                {"TAKE A TOUR"}
             </button>
-        </div>
-        <div className='flex w-[50%] justify-end items-end'>
-            <img className='fixed' src={mascot}></img>
+            <p className='text-gray1 text-[14px] mt-[16px]'>or skip tour and dive right in!</p>
         </div>
     </div>
   )

@@ -7,7 +7,7 @@ import LandingPage from "./LandingPage";
 import Chat from "./Chat";
 import LoaderOverlay from "../components/LoaderOverlay";
 import {truncate } from "../helpers/Collections";
-import logo3 from '../img/logo3.png'
+import logo from '../img/logo.png'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Onboarding from "./Onboarding";
 import OnboardSuccess from "./OnboardSuccess";
@@ -21,16 +21,16 @@ const WalletButton = () => {
 
 const Header = () => {
   return (
-    <div className="flex items-center h-20 bg-gum/[0.04] font-rubrik shadow-sm px-6 flex-shrink-0">
+    <div className="flex items-center h-20 bg-white0 font-rubrik shadow-sm px-6 flex-shrink-0">
       <img
-          className="w-10 h-10 xs:w-12 xs:h-12 lg:w-16 lg:h-16 object-contain"
-          src={logo3}
+          className="w-10 h-10 xs:w-12 xs:h-12 lg:w-14 lg:h-14 object-contain"
+          src={logo}
           alt=""
       />
       <div className="w-16" />
 
       <div className="flex flex-[6_6_0%]" />
-      <div className="w-[35rem] flex justify-between items-center">
+      <div className="w-[25rem] flex justify-between items-center">
         <Navigation />
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.11035 17.7969C8.47155 18.4704 9.18229 18.9284 9.99999 18.9284C10.8177 18.9284 11.5284 18.4704 11.8897 17.7969" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
