@@ -151,7 +151,7 @@ const TradeTab = ({createOrder, sender, setOffers, offers, considerations, setCo
                         <p className='text-[12px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
                         <h3 className='text-[16px]'>Your Wallet</h3>
                         <div onClick={() => {setAskTrade(false); setOfferTrade(true); reset()}} className={`flex bg-parsleytint text-parsley p-2 rounded-md justify-between ${offerTrade ? "border border-parsley border-solid" : ""}`}>
-                            <p>{truncate(sender, 10)} (You)</p>
+                            <p>{truncate(sender, 14)} (You)</p>
                             <button className='bg-parsleytint text-[15px]'>Clear cart</button>
                         </div>
                         <h3 className='text-[16px]'>Their Wallet</h3>

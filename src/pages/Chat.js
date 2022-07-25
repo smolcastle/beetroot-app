@@ -41,6 +41,7 @@ import profile0 from '../img/profile0.png'
 import { useNetwork } from 'wagmi'
 import firebase from '../utils/firebase'
 import storage from '../utils/firebase'
+import Onboarding from "./Onboarding";
 
 const db = getFirestore()
 
@@ -179,7 +180,12 @@ async function saveUser(sender) {
   try {
     await setDoc(doc(db, "users", sender), {
       name: `${sender}`,
-      newUser: true,
+      has_onboarded: false,
+      has_skipped: false,
+      verified: false,
+      telegram: '',
+      email: '',
+      profilePic: '',
       timestamp: serverTimestamp(),
     });
   } catch (error) {
@@ -285,7 +291,7 @@ function User({
             <img src={profile} className='w-[48px]'></img>
           </div>
           <div className="flex flex-col items-start w-[50%] ">
-            <p className="text-[16px]">{truncate(receiver, 10)}</p>
+            <p className="text-[16px]">{truncate(receiver, 14)}</p>
             <p className="text-[14px] text-gray3">Unverified</p>
           </div>
           <div className="flex flex-col items-end w-[20%]">
@@ -358,7 +364,7 @@ function TopSection({ receiver }) {
       </div>
       <div className="flex flex-col items-start w-[20%] ">
         <div className="flex">
-          <p className="text-[16px] mr-2">{truncate(receiver, 10)}</p>
+          <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
           <button
             type={"button"}
             onClick={() => navigator.clipboard.writeText(receiver)}
@@ -579,6 +585,7 @@ export default function Chat() {
   const { chain } = useNetwork()
   const [contacts, setContacts] = useState([]);
   const [receiverContacts, setReceiverContacts] = useState([]);
+  const [onboarded, setOnboarded] = useState(null)
 
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
@@ -596,6 +603,25 @@ export default function Chat() {
     }
   }
 
+  async function showOnboarding(){
+    if (users && sender !== "") {
+      const userRef = doc(getFirestore(), "users", sender);
+      const user = await getDoc(userRef);
+      const userData = user.data()
+      if ((userData.has_onboarded == false && userData.has_skipped == false)) {
+        setOnboarded(false)
+      }
+      else{
+        setOnboarded(true)
+      }
+    }
+  }
+  console.log(onboarded)
+
+  useEffect(() => {
+    showOnboarding()
+  }, [address])
+
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
       dispatch(showLoader());
@@ -612,7 +638,7 @@ export default function Chat() {
   }, [sender])
   useEffect(() => {
     funcNewUser()
-  }, [sender])
+  }, [address])
 
 
   if (!sender) {
@@ -639,7 +665,7 @@ export default function Chat() {
   return (
     <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden">
       <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-[16px]">
-        {signatureData && signatureData?.signature && users && sender ? (
+        {signatureData && signatureData?.signature && users && sender && onboarded ? (
           <>
             <Users
               sender={sender}
@@ -670,47 +696,9 @@ export default function Chat() {
             </div>
           </>
         ) : (
-          <div className="flex flex-1 w-full h-full justify-center items-center flex-col">
-            <div className="text-gum text-xl font-bold mb-8 p-2">
-              {"You don't have any conversations!"}
-            </div>
-            <button
-              onClick={() => {
-                if (signatureData && signatureData?.signature) {
-                  setNewModalState(true);
-                } else {
-                  setSignModalState(true);
-                }
-              }}
-              type="button"
-              class={
-                "flex bg-white10 text-gum h-10 w-72 text-base shadow-sm rounded-md justify-center items-center"
-              }
-            >
-              {"Start New Chat"}
-            </button>
-          </div>
+          <Onboarding users={users} sender={sender} truncate={truncate} setOnboarded={setOnboarded}/>
         )}
       </div>
-
-      {signModal && (
-        <SigningModal
-          signMessage={signMessage}
-          sender={sender}
-          setSignModalState={setSignModalState}
-          dispatch={dispatch}
-          chainId={chain.id}
-        />
-      )}
-      {newModal &&
-        <NewChatModal
-          saveMessage={saveMessage}
-          sender={sender}
-          dispatch={dispatch}
-          newModal={newModal}
-          setNewModalState={setNewModalState}
-          getAllQueues={getAllQueues}
-        />}
     </div>
   );
 }

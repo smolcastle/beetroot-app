@@ -112,8 +112,8 @@ const Order = ({sender, truncate, receiver}) => {
                         <div className='flex justify-between '>
                             <div className='w-[30%] flex flex-col'>
                                 <div className="flex items-center">
-                                    {(order.to == sender) && <h1 className='text-gray2'>You: {truncate(order.to, 10)}</h1>}
-                                    {(order.to != sender) && <h1 className='text-gray2'>You: {truncate(order.name, 10)}</h1>}
+                                    {(order.to == sender) && <h1 className='text-gray2'>You: {truncate(order.to, 14)}</h1>}
+                                    {(order.to != sender) && <h1 className='text-gray2'>You: {truncate(order.name, 14)}</h1>}
                                     <svg className='ml-2' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M0.884288 9.03111C0.986211 9.85208 1.64944 10.5006 2.47224 10.5866C3.61078 10.7056 4.79078 10.8313 6 10.8313C7.20922 10.8313 8.38922 10.7056 9.52774 10.5866C10.3505 10.5006 11.0138 9.85208 11.1157 9.03111C11.2374 8.0509 11.3571 7.03723 11.3571 5.99963C11.3571 4.96203 11.2374 3.94836 11.1157 2.96818C11.0138 2.14721 10.3505 1.49866 9.52774 1.41265C8.38922 1.29363 7.20922 1.16797 6 1.16797C4.79078 1.16797 3.61077 1.29363 2.47224 1.41265C1.64944 1.49866 0.986211 2.14721 0.884279 2.96818C0.762591 3.94836 0.642857 4.96203 0.642857 5.99963C0.642857 7.03723 0.762591 8.0509 0.884288 9.03111Z" fill="#EED3DC" stroke="#AB224E"/>
                                         <path d="M0.908203 2.74707L4.9389 5.92489C5.56108 6.41571 6.43892 6.41571 7.06141 5.92489L11.0918 2.74707" stroke="#AB224E" stroke-linejoin="round"/>
@@ -129,8 +129,8 @@ const Order = ({sender, truncate, receiver}) => {
                             </svg>
                             <div>
                                 <div className="flex items-center justify-between">
-                                    {(order.to == sender) && <h1 className='text-gray2'>Them: {truncate(order.name, 10)}</h1>}
-                                    {(order.to != sender) && <h1 className='text-gray2'>Them: {truncate(order.to, 10)}</h1>}
+                                    {(order.to == sender) && <h1 className='text-gray2'>Them: {truncate(order.name, 14)}</h1>}
+                                    {(order.to != sender) && <h1 className='text-gray2'>Them: {truncate(order.to, 14)}</h1>}
                                     <svg className='ml-2' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M0.884288 9.03111C0.986211 9.85208 1.64944 10.5006 2.47224 10.5866C3.61078 10.7056 4.79078 10.8313 6 10.8313C7.20922 10.8313 8.38922 10.7056 9.52774 10.5866C10.3505 10.5006 11.0138 9.85208 11.1157 9.03111C11.2374 8.0509 11.3571 7.03723 11.3571 5.99963C11.3571 4.96203 11.2374 3.94836 11.1157 2.96818C11.0138 2.14721 10.3505 1.49866 9.52774 1.41265C8.38922 1.29363 7.20922 1.16797 6 1.16797C4.79078 1.16797 3.61077 1.29363 2.47224 1.41265C1.64944 1.49866 0.986211 2.14721 0.884279 2.96818C0.762591 3.94836 0.642857 4.96203 0.642857 5.99963C0.642857 7.03723 0.762591 8.0509 0.884288 9.03111Z" fill="#EED3DC" stroke="#AB224E"/>
                                         <path d="M0.908203 2.74707L4.9389 5.92489C5.56108 6.41571 6.43892 6.41571 7.06141 5.92489L11.0918 2.74707" stroke="#AB224E" stroke-linejoin="round"/>

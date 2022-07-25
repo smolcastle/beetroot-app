@@ -1,22 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Profile from '../components/Profile'
+import {doc, getFirestore, getDoc, updateDoc} from "firebase/firestore"
 
-const Onboarding = () => {
+const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
+
+    const [success, setSuccess] = useState()
+
+    async function updateUserOnboarded(){
+        try {
+            console.log("try block")
+            const userRef = doc(getFirestore(), "users", sender);
+            await updateDoc(userRef, {
+                has_onboarded: true
+            })
+        } catch(e){
+                console.log(e)
+        }
+    }
+    async function updateUserSkipped(){
+        try {
+            console.log("try block")
+            const userRef = doc(getFirestore(), "users", sender);
+            await updateDoc(userRef, {
+                has_skipped: true
+            })
+        } catch(e){
+                console.log(e)
+        }
+    }
 
   return (
-    <div className='flex justify-center items-center bg-white0 h-screen w-screen pl-[4%] pt-[40px] overflow-x-hidden '>
+    <>
+    {!success ? (
+    <div className='flex justify-center items-center bg-white0 w-screen pl-[4%] overflow-x-hidden '>
         <div className='w-[75%] flex'>
         <div className='font-rubrik w-[50%] justify-evenly h-full'>
-            <span className='font-questa text-gray2 text-[48px]'>{"gm"}</span>
-            <span className='font-questa text-gum text-[48px]'>{" 0xabc..rgbh!"}</span>
+            <span className='font-questa text-gray2 text-[48px] mr-[8px]'>{"gm"}</span>
+            <span className='font-questa text-gum text-[48px]'>{truncate(sender, 14)}!</span>
             <p className='text-gray2 w-[70%] mt-[16px]'> Take a moment to set the following account details before you can begin transcating on beetroot.</p>
             <p className='text-[12px] mt-[32px] text-gray2'>Preview Your Profile:</p>
             <div className='mt-[8px] flex w-[70%] h-[270px] rounded-[16px] shadow-lg'>
                 <Profile />
             </div>
             <div className='text-gray1 mt-[64px] pb-[48px]'>
-                <button className='border-b border-gray1 border-solid'>Skip</button>
-                <button className='border-b border-gray1 border-solid ml-[16px]'>Next</button>
+                <button className='border-b border-gray1 border-solid' onClick={() => {setOnboarded(true); updateUserSkipped()}}>Skip</button>
+                <button className='border-b border-gray1 border-solid ml-[16px]' onClick={() => {setSuccess(true)}}>Next</button>
             </div>
         </div>
         <div className='flex w-[50%] flex-col'>
@@ -71,6 +99,27 @@ const Onboarding = () => {
         </div>
         </div>
     </div>
+    ):(
+        <div className='flex w-screen pl-[12%] pt-[8%] overflow-x-hidden '>
+            <div className='font-rubrik w-[50%] justify-evenly h-full'>
+                <h1 className='font-questa text-gray2 text-[32px] w-[30%] leading-tight'>
+                {"You have been successfully onboarded!"}
+                </h1>
+                <h1 className='mt-[40px] text-gray2 text-[14px] w-[35%] leading-tight'>
+            {"You can now begin chatting with other users to negotiate NFT trades and deals."}
+                </h1>
+                <button className='border-2 border-gum/[0.8] border-solid text-gum/[0.8] font-rubrik font-bold w-[30%] text-[14px] mt-[40px] rounded-[4px] py-[8px] px-[16px]'>
+                    {"TAKE A TOUR"}
+                </button>
+                <div className='flex mt-[16px]'>
+                <p className='text-gray1 text-[14px] mr-[4px]'>or</p>
+                <button onClick={() => {setOnboarded(true); {updateUserOnboarded()}}} className="text-gum underline text-[14px] mr-[4px]">skip tour</button>
+                <p className='text-gray1 text-[14px]'>and dive right in!</p>
+                </div>
+            </div>
+        </div>
+    )}
+    </>
   )
 }
 
