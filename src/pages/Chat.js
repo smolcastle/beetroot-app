@@ -280,6 +280,7 @@ function User({
           setSelected(index);
         }
       }}
+      className="w-[99%]"
     >
       <li
         index={index}
@@ -307,7 +308,7 @@ function User({
 function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setSelected, contacts, setNewModalState }) {
   const [searchTerm, setSearchTerm] = useState('')
   return (
-    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 bg-white10">
+    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10">
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round" />
@@ -322,6 +323,7 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
           </svg>
         </button>
       </div>
+      <div className="overflow-y-scroll">
       {contacts?.filter((contact) => {
         const receiver = contact.to
         if (searchTerm == "") {
@@ -351,6 +353,7 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
             );
           }
         })}
+        </div>
     </ul>
   );
 
@@ -524,9 +527,9 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   }
 
   return (
-    <ul role="list" class="flex flex-[4] flex-col scroll-hide py-5 bg-white10 w-full ">
+    <ul role="list" class="flex flex-[4] flex-col py-5 bg-white10 w-full ">
       {newUser ? (<AddUser receiver={receiver} contacts={contacts} sender={sender} dispatch={dispatch} />) : (<TopSection receiver={receiver} />)}
-      <div className="flex flex-1 flex-col-reverse overflow-scroll px-2">
+      <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
         {messages === null && (
           <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
             {"This is the beginning of chat, send a message"}

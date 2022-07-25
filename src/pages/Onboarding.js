@@ -40,7 +40,7 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
             <p className='text-gray2 w-[70%] mt-[16px]'> Take a moment to set the following account details before you can begin transcating on beetroot.</p>
             <p className='text-[12px] mt-[32px] text-gray2'>Preview Your Profile:</p>
             <div className='mt-[8px] flex w-[70%] h-[270px] rounded-[16px] shadow-lg'>
-                <Profile />
+                <Profile truncate={truncate} sender={sender}/>
             </div>
             <div className='text-gray1 mt-[64px] pb-[48px]'>
                 <button className='border-b border-gray1 border-solid' onClick={() => {setOnboarded(true); updateUserSkipped()}}>Skip</button>
