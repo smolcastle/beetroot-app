@@ -619,7 +619,6 @@ export default function Chat() {
       }
     }
   }
-  console.log(onboarded)
 
   useEffect(() => {
     showOnboarding()
