@@ -33,10 +33,10 @@ export function updateUsers(users) {
     users,
   };
 }
-export function updateContacts(contacts) {
+export function addContactBtn(addContactBtn) {
   return {
-    type: "UPDATE_CONTACTS",
-    contacts,
+    type: "ADD_CONTACT_BUTTON",
+    addContactBtn,
   };
 }
 export function updateReceiverContacts(receiverContacts) {

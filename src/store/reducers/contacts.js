@@ -1,5 +1,6 @@
 const initialState = {
-    receiverContacts: null
+    receiverContacts: null,
+    addContactBtn: null,
 }
 
 export default function Reducer(state = initialState, action) {
@@ -8,6 +9,11 @@ export default function Reducer(state = initialState, action) {
       return {
         ...state,
         receiverContacts: action.receiverContacts,
+      };
+      case "ADD_CONTACT_BUTTON":
+      return {
+        ...state,
+        addContactBtn: action.addContactBtn,
       };
       default:
         return state;

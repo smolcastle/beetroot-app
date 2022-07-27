@@ -67,7 +67,7 @@ const Home = () => {
   }, []);
 
   return (
-    <main class="flex flex-1 flex-col bg-white4 dark:bg-black7 w-screen h-screen">
+    <main class="flex flex-1 flex-col bg-white0 dark:bg-black7 w-screen h-screen">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Content />} />

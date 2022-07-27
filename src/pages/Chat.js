@@ -26,7 +26,8 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers, updateReceiverContacts
+  updateUsers, updateReceiverContacts,
+  addContactBtn
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -206,7 +207,6 @@ async function createContact(newUser, sender) {
     await addDoc(collection(db, "address book", sender, "contacts"), {
       from: sender,
       to: newUser,
-      messages: false,
       timestamp: serverTimestamp(),
     });
   } catch (e) {
@@ -257,7 +257,6 @@ function User({
   setSelected,
   isSelected,
   setReceiver,
-
 }) {
   useEffect(() => {
     let unsubscribe;
@@ -307,6 +306,21 @@ function User({
 
 function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setSelected, contacts, setNewModalState }) {
   const [searchTerm, setSearchTerm] = useState('')
+
+  function AddContactBtn(){
+    return (
+      <div className="p-[4px]">
+        <p className="text-[12px] text-gray2 mb-[8px]">This address cannot be found in your address book.</p>
+        <button className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
+        onClick={() => {createContact(searchTerm.toLowerCase(), sender); setSearchTerm("")}}
+        >Add to address book</button>
+      </div>
+    )
+  }
+
+  const contactBtn = useSelector((state) => state.contacts.addContactBtn)
+  console.log(contactBtn)
+
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10">
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
@@ -360,6 +374,34 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
 }
 
 function TopSection({ receiver }) {
+
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (copied) setCopied(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
+  function Clipboard(){
+    return (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.009 13.3529C11.0856 12.1296 11.1258 10.8621 11.1258 9.56334C11.1258 9.03718 11.1192 8.51614 11.1063 8.00109C11.0971 7.63659 10.9789 7.28235 10.7631 6.98844C9.94668 5.8765 9.29559 5.1844 8.22401 4.35709C7.92735 4.12804 7.56324 4.00381 7.18854 3.99564C6.8158 3.98752 6.42656 3.9834 6.01086 3.9834C4.75229 3.9834 3.73638 4.0212 2.68593 4.09325C1.78486 4.15506 1.06921 4.87243 1.01276 5.77386C0.936163 6.99714 0.895905 8.26463 0.895905 9.56334C0.895905 10.8621 0.936163 12.1296 1.01276 13.3529C1.06921 14.2542 1.78486 14.9716 2.68593 15.0334C3.73638 15.1054 4.75229 15.1433 6.01086 15.1433C7.26944 15.1433 8.28534 15.1054 9.33578 15.0334C10.2369 14.9716 10.9525 14.2542 11.009 13.3529Z" fill="#EED3DC" stroke="#AB224E" />
+        <path d="M14.9872 10.2269C15.0639 9.00359 15.1041 7.73608 15.1041 6.43738C15.1041 5.91122 15.0975 5.39018 15.0846 4.87512C15.0754 4.51061 14.9572 4.15637 14.7414 3.86246C13.9249 2.75052 13.2738 2.05843 12.2023 1.23111C11.9056 1.00207 11.5415 0.877831 11.1668 0.869668C10.7941 0.861546 10.4049 0.857422 9.98917 0.857422C8.73058 0.857422 7.71469 0.89523 6.66424 0.967281C5.76317 1.02909 5.04751 1.74645 4.99106 2.64788C4.91446 3.87116 4.87421 5.13866 4.87421 6.43738C4.87421 7.73608 4.91447 9.00359 4.99106 10.2269C5.04751 11.1283 5.76317 11.8457 6.66424 11.9075C7.71469 11.9795 8.73058 12.0173 9.98917 12.0173C11.2477 12.0173 12.2637 11.9795 13.3141 11.9075C14.2152 11.8457 14.9309 11.1283 14.9872 10.2269Z" fill="white" stroke="#AB224E" />
+      </svg>
+    )
+  }
+
+  function Check(){
+    return (
+      <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.33328 9.45329L13.7333 1.05329C13.9899 0.836537 14.3188 0.724619 14.6544 0.739909C14.9899 0.755198 15.3073 0.89657 15.5432 1.13576C15.779 1.37495 15.9158 1.69434 15.9264 2.03006C15.9369 2.36579 15.8203 2.69313 15.5999 2.94662L6.26661 12.28C6.01737 12.5243 5.68228 12.6611 5.33328 12.6611C4.98428 12.6611 4.64919 12.5243 4.39995 12.28L0.399947 8.27996C0.179576 8.02646 0.0630028 7.69913 0.0735318 7.3634C0.0840608 7.02767 0.220916 6.70829 0.456738 6.46909C0.69256 6.2299 1.00997 6.08853 1.34552 6.07324C1.68106 6.05795 2.01001 6.16987 2.26661 6.38662L5.33328 9.45329Z" fill="#4E7B36"/>
+      </svg>
+    )
+  }
+
   return (
     <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
@@ -370,12 +412,13 @@ function TopSection({ receiver }) {
           <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
           <button
             type={"button"}
-            onClick={() => navigator.clipboard.writeText(receiver)}
+            onClick={() => {navigator.clipboard.writeText(receiver); setCopied(true)}}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.009 13.3529C11.0856 12.1296 11.1258 10.8621 11.1258 9.56334C11.1258 9.03718 11.1192 8.51614 11.1063 8.00109C11.0971 7.63659 10.9789 7.28235 10.7631 6.98844C9.94668 5.8765 9.29559 5.1844 8.22401 4.35709C7.92735 4.12804 7.56324 4.00381 7.18854 3.99564C6.8158 3.98752 6.42656 3.9834 6.01086 3.9834C4.75229 3.9834 3.73638 4.0212 2.68593 4.09325C1.78486 4.15506 1.06921 4.87243 1.01276 5.77386C0.936163 6.99714 0.895905 8.26463 0.895905 9.56334C0.895905 10.8621 0.936163 12.1296 1.01276 13.3529C1.06921 14.2542 1.78486 14.9716 2.68593 15.0334C3.73638 15.1054 4.75229 15.1433 6.01086 15.1433C7.26944 15.1433 8.28534 15.1054 9.33578 15.0334C10.2369 14.9716 10.9525 14.2542 11.009 13.3529Z" fill="#EED3DC" stroke="#AB224E" />
-              <path d="M14.9872 10.2269C15.0639 9.00359 15.1041 7.73608 15.1041 6.43738C15.1041 5.91122 15.0975 5.39018 15.0846 4.87512C15.0754 4.51061 14.9572 4.15637 14.7414 3.86246C13.9249 2.75052 13.2738 2.05843 12.2023 1.23111C11.9056 1.00207 11.5415 0.877831 11.1668 0.869668C10.7941 0.861546 10.4049 0.857422 9.98917 0.857422C8.73058 0.857422 7.71469 0.89523 6.66424 0.967281C5.76317 1.02909 5.04751 1.74645 4.99106 2.64788C4.91446 3.87116 4.87421 5.13866 4.87421 6.43738C4.87421 7.73608 4.91447 9.00359 4.99106 10.2269C5.04751 11.1283 5.76317 11.8457 6.66424 11.9075C7.71469 11.9795 8.73058 12.0173 9.98917 12.0173C11.2477 12.0173 12.2637 11.9795 13.3141 11.9075C14.2152 11.8457 14.9309 11.1283 14.9872 10.2269Z" fill="white" stroke="#AB224E" />
-            </svg>
+            {!copied ? (
+            <Clipboard />
+            ) : (
+            <Check />
+            )}
           </button>
         </div>
         <p className="text-[14px] text-gray3">Unverified</p>
@@ -388,10 +431,10 @@ function AddUser({ dispatch, sender, contacts }) {
   const [newUser, setNewUser] = useState('')
   let contactExists = false
   async function addNewUserFunc() {
-    if (newUser !== "" && newUser !== sender) {
+    if (newUser !== "" && newUser.toLowerCase() !== sender) {
       let i;
       for (i = 0; i < contacts.length; i++) {
-        if (contacts[i].to.toLowerCase() === newUser) {
+        if (contacts[i].to.toLowerCase() === newUser.toLowerCase()) {
           contactExists = true
           break
         }
@@ -476,7 +519,7 @@ function SendMessageSection({
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
+          class="w-[90%] h-full border-none outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
           placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
@@ -665,7 +708,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden">
+    <div className={`flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden ${onboarded == null ? "hidden" : "" }`}>
       <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-[16px]">
         {signatureData && signatureData?.signature && users && sender && onboarded ? (
           <>
@@ -698,7 +741,7 @@ export default function Chat() {
             </div>
           </>
         ) : (
-          <Onboarding users={users} sender={sender} truncate={truncate} setOnboarded={setOnboarded}/>
+          <Onboarding users={users} sender={sender} onboarded={onboarded} truncate={truncate} setOnboarded={setOnboarded}/>
         )}
       </div>
     </div>
