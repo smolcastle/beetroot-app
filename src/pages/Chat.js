@@ -43,6 +43,7 @@ import { useNetwork } from 'wagmi'
 import firebase from '../utils/firebase'
 import storage from '../utils/firebase'
 import Onboarding from "./Onboarding";
+import mascot from '../img/mascot-hands.png'
 
 const db = getFirestore()
 
@@ -319,7 +320,6 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
   }
 
   const contactBtn = useSelector((state) => state.contacts.addContactBtn)
-  console.log(contactBtn)
 
   return (
     <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10">
@@ -367,6 +367,19 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
             );
           }
         })}
+        {contacts.length == 0 && <>
+          <div className="flex flex-col justify-center items-center">
+            <img className="w-[40%]" src={mascot}></img>
+            <p className="text-gray3 text-[12px] text-center my-[24px] w-[80%]">Your address book is empty. Click below to add a new address.</p>
+            <button onClick={() => { dispatch(showNewUser()) }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.64548 17.6032C1.90971 20.073 3.89605 22.0593 6.36455 22.3344C10.1562 22.757 13.8438 22.757 17.6354 22.3344C20.1039 22.0593 22.0903 20.073 22.3544 17.6032C22.5495 15.78 22.7143 13.9083 22.7143 12C22.7143 10.0917 22.5495 8.21997 22.3544 6.39681C22.0903 3.92712 20.1039 1.94076 17.6354 1.66561C13.8438 1.24297 10.1562 1.24297 6.36455 1.66561C3.89605 1.94076 1.90971 3.92712 1.64548 6.39681C1.45042 8.21997 1.28571 10.0917 1.28571 12C1.28571 13.9083 1.45042 15.78 1.64548 17.6032Z" fill="#EED3DC" stroke="#AB224E"/>
+              <path d="M12 7.71436V16.2858" stroke="#AB224E" stroke-linecap="round"/>
+              <path d="M16.2857 12H7.71429" stroke="#AB224E" stroke-linecap="round"/>
+            </svg>
+            </button>
+          </div>
+        </>}
         </div>
     </ul>
   );
@@ -572,12 +585,37 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   return (
     <ul role="list" class="flex flex-[4] flex-col py-5 bg-white10 w-full ">
       {newUser ? (<AddUser receiver={receiver} contacts={contacts} sender={sender} dispatch={dispatch} />) : (<TopSection receiver={receiver} />)}
-      <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
-        {messages === null && (
-          <div className="text-gum text-lg font-medium capitalize mt-8 flex justify-center mb-24">
-            {"This is the beginning of chat, send a message"}
+      {(messages === null && contacts.length === 0 ) && (
+          <div className="flex flex-col text-[12px] text-center text-gray2 h-[400px] justify-evenly items-center mt-4">
+            <p className="text-[24px]">👋</p>
+            <p className="w-[50%]">Be polite and respectful while communcating with other users using Beetrot chat.</p>
+            <p className="w-[50%]">Useful Tips:</p>
+            <div className="w-full flex flex-col items-center">
+            <p className="text-parsley w-[50%]">Verfied:</p>
+            <p className="w-[50%]">This address has been authenticated with Beetroot using a signature.</p>
+            </div>
+            <div className="w-full flex flex-col items-center">
+            <p className="w-[50%]">Unverfied:</p>
+            <p className="w-[50%]">This address has not been authenticated with Beetroot.</p>
+            </div>
+            <div className="w-full flex flex-col items-center">
+            <p className="w-[50%]">Start chatting by clicking the</p>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.68555 7.33425C0.795645 8.36332 1.62329 9.19097 2.65183 9.30561C4.23168 9.48168 5.76817 9.48168 7.348 9.30561C8.37657 9.19097 9.20422 8.36332 9.31429 7.33425C9.39557 6.5746 9.46422 5.7947 9.46422 4.99959C9.46422 4.20448 9.39557 3.42458 9.31429 2.66493C9.20422 1.63589 8.37657 0.808243 7.348 0.693597C5.76817 0.517499 4.23168 0.517499 2.65183 0.693597C1.62329 0.808243 0.795645 1.63589 0.68555 2.66493C0.604275 3.42458 0.535645 4.20448 0.535645 4.99959C0.535645 5.7947 0.604276 6.5746 0.68555 7.33425Z" fill="#EED3DC" stroke="#AB224E"/>
+            <path d="M5 3.21387V6.7853" stroke="#AB224E" stroke-linecap="round"/>
+            <path d="M6.78578 5H3.21436" stroke="#AB224E" stroke-linecap="round"/>
+            </svg>
+            <p className="w-[50%]">button on the top left of this chat box</p>
+            </div>
           </div>
         )}
+      {(messages === null && contacts.length === 1 ) && (
+          <div className="flex flex-col justify-center items-center mt-24">
+            <p className="text-[24px]">🍻</p>
+            <p className="text-[12px] text-gray2 text-center w-[50%]">Yay! You have added your first contact to your address book. Use the input field below to send them a message.</p>
+          </div>
+        )}
+      <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
         {messages?.map(({ text, name, timestamp, id }, index) => {
           return (
             <div>
