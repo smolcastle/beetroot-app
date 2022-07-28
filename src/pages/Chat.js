@@ -567,7 +567,7 @@ function SendMessageSection({
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full border-none outline-none text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
+          class="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
           placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
