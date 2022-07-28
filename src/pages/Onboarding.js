@@ -18,6 +18,7 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
                 has_onboarded: true,
                 telegram: telegram,
                 email: email,
+                verified: true,
             })
             setSuccess(true)
         } catch(e){
@@ -32,7 +33,8 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
         try {
             const userRef = doc(getFirestore(), "users", sender);
             await updateDoc(userRef, {
-                has_skipped: true
+                has_skipped: true,
+                verified: true,
             })
         } catch(e){
                 console.log(e)
@@ -42,7 +44,7 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
   return (
     <>
     {!success ? (
-    <div className='flex justify-center items-center bg-white0 w-screen pl-[4%] overflow-x-hidden '>
+    <div className={`flex justify-center items-center bg-white0 w-screen pl-[4%] overflow-x-hidden`}>
         <div className='w-[75%] flex'>
         <div className='font-rubrik w-[50%] justify-evenly h-full'>
             <span className='font-questa text-gray2 text-[48px] mr-[8px]'>{"gm"}</span>
