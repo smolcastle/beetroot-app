@@ -18,6 +18,7 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
                 has_onboarded: true,
                 telegram: telegram,
                 email: email,
+                verified: true,
             })
             setSuccess(true)
         } catch(e){
@@ -32,7 +33,8 @@ const Onboarding = ({onboarded, setOnboarded, sender, truncate, users}) => {
         try {
             const userRef = doc(getFirestore(), "users", sender);
             await updateDoc(userRef, {
-                has_skipped: true
+                has_skipped: true,
+                verified: true,
             })
         } catch(e){
                 console.log(e)

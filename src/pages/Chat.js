@@ -26,8 +26,7 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers, updateReceiverContacts,
-  addContactBtn
+  updateUsers, updateReceiverContacts
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -271,6 +270,23 @@ function User({
     };
   }, [isSelected]);
 
+  const [isVerified, setIsVerified] = useState()
+
+  async function getVerifedData(){
+    const verifyRef = doc(getFirestore(), "users", receiver);
+    const verify = await getDoc(verifyRef)
+    if(verify.exists()){
+      const verifyData = verify.data()
+      setIsVerified(verifyData.verified)
+    } else {
+      setIsVerified(false)
+    }
+  }
+
+  useEffect(() => {
+    getVerifedData()
+  }, [receiver])
+
   return (
     <button
       type={"button"}
@@ -293,7 +309,8 @@ function User({
           </div>
           <div className="flex flex-col items-start w-[50%] ">
             <p className="text-[16px]">{truncate(receiver, 14)}</p>
-            <p className="text-[14px] text-gray3">Unverified</p>
+            {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
+            {!isVerified && <p className="text-[14px] text-gray3">Unverified</p>}
           </div>
           <div className="flex flex-col items-end w-[20%]">
             <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
@@ -415,6 +432,23 @@ function TopSection({ receiver }) {
     )
   }
 
+  const [isVerified, setIsVerified] = useState()
+
+  async function getVerifedData(){
+    const verifyRef = doc(getFirestore(), "users", receiver);
+    const verify = await getDoc(verifyRef)
+    if(verify.exists()){
+      const verifyData = verify.data()
+      setIsVerified(verifyData.verified)
+    } else {
+      setIsVerified(false)
+    }
+  }
+
+  useEffect(() => {
+    getVerifedData()
+  }, [receiver])
+
   return (
     <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
@@ -434,7 +468,8 @@ function TopSection({ receiver }) {
             )}
           </button>
         </div>
-        <p className="text-[14px] text-gray3">Unverified</p>
+        {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
+        {!isVerified && <p className="text-[14px] text-gray3">Unverified</p>}
       </div>
     </div>
   );
@@ -583,38 +618,8 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   }
 
   return (
-    <ul role="list" class="flex flex-[4] flex-col py-5 bg-white10 w-full ">
+    <ul role="list" class="flex flex-[4] flex-col py-5 bg-white10 w-full relative">
       {newUser ? (<AddUser receiver={receiver} contacts={contacts} sender={sender} dispatch={dispatch} />) : (<TopSection receiver={receiver} />)}
-      {(messages === null && contacts.length === 0 ) && (
-          <div className="flex flex-col text-[12px] text-center text-gray2 h-[400px] justify-evenly items-center mt-4">
-            <p className="text-[24px]">👋</p>
-            <p className="w-[50%]">Be polite and respectful while communcating with other users using Beetrot chat.</p>
-            <p className="w-[50%]">Useful Tips:</p>
-            <div className="w-full flex flex-col items-center">
-            <p className="text-parsley w-[50%]">Verfied:</p>
-            <p className="w-[50%]">This address has been authenticated with Beetroot using a signature.</p>
-            </div>
-            <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Unverfied:</p>
-            <p className="w-[50%]">This address has not been authenticated with Beetroot.</p>
-            </div>
-            <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Start chatting by clicking the</p>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.68555 7.33425C0.795645 8.36332 1.62329 9.19097 2.65183 9.30561C4.23168 9.48168 5.76817 9.48168 7.348 9.30561C8.37657 9.19097 9.20422 8.36332 9.31429 7.33425C9.39557 6.5746 9.46422 5.7947 9.46422 4.99959C9.46422 4.20448 9.39557 3.42458 9.31429 2.66493C9.20422 1.63589 8.37657 0.808243 7.348 0.693597C5.76817 0.517499 4.23168 0.517499 2.65183 0.693597C1.62329 0.808243 0.795645 1.63589 0.68555 2.66493C0.604275 3.42458 0.535645 4.20448 0.535645 4.99959C0.535645 5.7947 0.604276 6.5746 0.68555 7.33425Z" fill="#EED3DC" stroke="#AB224E"/>
-            <path d="M5 3.21387V6.7853" stroke="#AB224E" stroke-linecap="round"/>
-            <path d="M6.78578 5H3.21436" stroke="#AB224E" stroke-linecap="round"/>
-            </svg>
-            <p className="w-[50%]">button on the top left of this chat box</p>
-            </div>
-          </div>
-        )}
-      {(messages === null && contacts.length === 1 ) && (
-          <div className="flex flex-col justify-center items-center mt-24">
-            <p className="text-[24px]">🍻</p>
-            <p className="text-[12px] text-gray2 text-center w-[50%]">Yay! You have added your first contact to your address book. Use the input field below to send them a message.</p>
-          </div>
-        )}
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
         {messages?.map(({ text, name, timestamp, id }, index) => {
           return (
@@ -638,6 +643,36 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
           );
         })}
       </div>
+      {(messages === null && contacts.length === 0 ) && (
+          <div className="flex flex-col text-[12px] text-center text-gray2 h-[400px] justify-evenly items-center mt-4 absolute top-[20%] w-full">
+            <p className="text-[24px]">👋</p>
+            <p className="w-[50%]">Be polite and respectful while communcating with other users using Beetrot chat.</p>
+            <p className="w-[50%]">Useful Tips:</p>
+            <div className="w-full flex flex-col items-center">
+            <p className="text-parsley w-[50%]">Verfied:</p>
+            <p className="w-[50%]">This address has been authenticated with Beetroot using a signature.</p>
+            </div>
+            <div className="w-full flex flex-col items-center">
+            <p className="w-[50%]">Unverfied:</p>
+            <p className="w-[50%]">This address has not been authenticated with Beetroot.</p>
+            </div>
+            <div className="w-full flex flex-col items-center">
+            <p className="w-[50%]">Start chatting by clicking the</p>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.68555 7.33425C0.795645 8.36332 1.62329 9.19097 2.65183 9.30561C4.23168 9.48168 5.76817 9.48168 7.348 9.30561C8.37657 9.19097 9.20422 8.36332 9.31429 7.33425C9.39557 6.5746 9.46422 5.7947 9.46422 4.99959C9.46422 4.20448 9.39557 3.42458 9.31429 2.66493C9.20422 1.63589 8.37657 0.808243 7.348 0.693597C5.76817 0.517499 4.23168 0.517499 2.65183 0.693597C1.62329 0.808243 0.795645 1.63589 0.68555 2.66493C0.604275 3.42458 0.535645 4.20448 0.535645 4.99959C0.535645 5.7947 0.604276 6.5746 0.68555 7.33425Z" fill="#EED3DC" stroke="#AB224E"/>
+            <path d="M5 3.21387V6.7853" stroke="#AB224E" stroke-linecap="round"/>
+            <path d="M6.78578 5H3.21436" stroke="#AB224E" stroke-linecap="round"/>
+            </svg>
+            <p className="w-[50%]">button on the top left of this chat box</p>
+            </div>
+          </div>
+        )}
+      {(messages === null && contacts.length === 1 ) && (
+          <div className="flex flex-col justify-center items-center absolute top-[20%]">
+            <p className="text-[24px]">🍻</p>
+            <p className="text-[12px] text-gray2 text-center w-[50%]">Yay! You have added your first contact to your address book. Use the input field below to send them a message.</p>
+          </div>
+        )}
       <SendMessageSection
         message={message}
         setMsgString={setMsgString}
@@ -713,11 +748,12 @@ export default function Chat() {
   }, [sender]);
 
   useEffect(() => {
-    getUsers(dispatch)
-  }, [])
+    getUsers(dispatch);
+    }, [])
 
   useEffect(() => {
-    getContacts(sender, setContacts)
+    getContacts(sender, setContacts);
+    listenMessages(sender, receiver, dispatch);
   }, [sender])
   useEffect(() => {
     funcNewUser()
