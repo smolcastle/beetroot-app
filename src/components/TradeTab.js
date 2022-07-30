@@ -227,7 +227,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     <input placeholder='yyyy/mm/dd' className=' w-[90px] outline-none placeholder:text-center bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
                     <input placeholder='00.00 HRS' className='w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley'></input>
                 </div>
-                {!isLoading && <button className='w-full border-[1px] border-gum border-solid rounded-[4px] text-gum h-10 font-bold mt-5 cursor-pointer'
+                {!isLoading && <button className='w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer'
                     onClick={
                         async () => {
                             await createOrder(offerFor);
@@ -272,13 +272,13 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                           <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                   </svg>
                 </div>
-                <div className='flex rounded-md items-center my-3 justify-between'>
+                <div className='flex items-center my-3 justify-between'>
                     <div className='flex rounded-md text-parsley w-[50%] bg-parsleytint items-center px-2 py-1 justify-between'>
-                      <input placeholder='ETH' className='w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 4.78265L8 11.2168" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M5.30793 8.90693C6.12571 9.94019 6.68271 10.421 7.51279 11.0499C7.80651 11.2724 8.19183 11.2724 8.48556 11.0499C9.31564 10.421 9.87265 9.94019 10.6904 8.90692" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
+                      {/* <input placeholder='ETH' className='w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input> */}
+                      <select name="tokens" id="tokens" className='w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley'>
+                        <option value="ETH" className='bg-white0 text-gray1'>ETH</option>
+                        <option value="WETH" className='bg-white0 text-gray1'>WETH</option>
+                      </select>
                     </div>
                     <input ref={inputRef} placeholder='Amount' className='rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley' onChange={(e) => setEtherBox(e.target.value)}></input>
                     <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

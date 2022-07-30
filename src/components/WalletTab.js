@@ -7,7 +7,6 @@ const WalletTab = ({receiver, truncate}) => {
     addressOrName: receiver,
   })
 
-  console.log(balance.data)
 
   return (
     <div>

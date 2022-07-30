@@ -597,6 +597,7 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   const messages = useSelector((state) => state.messages?.messages);
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null)
+  console.log(messages)
 
   useEffect(() => {
     getReceiverContacts(receiver, dispatch)
