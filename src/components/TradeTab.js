@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
+import getAsset from '../utils/opensea';
 
 const TradeTab = ({createOrder, sender, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade}) => {
 
@@ -34,6 +35,11 @@ const TradeTab = ({createOrder, sender, setOffers, offers, considerations, setCo
             alert("You are not the owner");
             return;
           }
+
+          // TODO: use assetInfo.image_url to display image.
+          // remove the owner check above if you want to test with NFTs you don't own.
+          const assetInfo = await getAsset(nftBox, tokenId);
+          console.log(assetInfo);
 
           setOffers(
             [
