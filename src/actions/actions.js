@@ -59,6 +59,12 @@ export function updateMessage(message) {
     message,
   };
 }
+export function updateMsgTime(msgTime) {
+  return {
+    type: "UPDATE_MSG_TIME",
+    msgTime,
+  };
+}
 
 export function resetMessages() {
   return {

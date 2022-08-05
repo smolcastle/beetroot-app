@@ -16,6 +16,11 @@ export default function Reducer(state = initialState, action) {
         ...state,
         messages: null,
       };
+    case "UPDATE_MSG_TIME":
+      return {
+        ...state,
+        msgTime: action.msgTime,
+      };
     case "UPDATE_QUEUE_IDS":
       return {
         ...state,
