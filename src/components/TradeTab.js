@@ -13,6 +13,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     const [tokenId, setTokenId] = useState('')
     const [offerFor, setOfferFor] = useState(receiver)
     const inputRef = useRef('')
+    const [assetsInfo, setAssestsInfo] = useState([])
 
     const reset = () => {
         inputRef.current.value = "";
@@ -30,16 +31,17 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
         if(tokenId){
         try {
           // will throw if tokenId doesn't exist.
-          const owner = await erc721Contract.ownerOf(tokenId);
-          if (owner != await seaport.signer.getAddress()) {
-            alert("You are not the owner");
-            return;
-          }
+          // const owner = await erc721Contract.ownerOf(tokenId);
+          // if (owner != await seaport.signer.getAddress()) {
+          //   alert("You are not the owner");
+          //   return;
+          // }
 
           // TODO: use assetInfo.image_url to display image.
           // remove the owner check above if you want to test with NFTs you don't own.
           const assetInfo = await getAsset(nftBox, tokenId);
           console.log(assetInfo);
+          setAssestsInfo(assetInfo);
 
           setOffers(
             [
@@ -178,6 +180,9 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     console.log("Considerations" ,considerations)
   }, [considerations])
 
+  const img_URL = assetsInfo.image_original_url
+  console.log(img_URL)
+
   return (
     <>
         <div className="flex flex-col h-[95%] w-[95%] justify-evenly">
@@ -292,6 +297,9 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
                         <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                     </svg>
+                </div>
+                <div className='assets'>
+                    <img src={img_URL} />
                 </div>
             </div>
             </div>
