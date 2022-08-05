@@ -235,7 +235,6 @@ async function getContacts(sender, setContacts) {
         contacts.push(doc.data());
       });
       setContacts(contacts);
-      console.log(contacts)
     });
 
   } catch (e) {
@@ -244,6 +243,7 @@ async function getContacts(sender, setContacts) {
 }
 
 async function getReceiverContacts(receiver, dispatch){
+  if(receiver){
   try {
     const contactsRef = collection(db, "address book", receiver, "contacts");
     const q = query(contactsRef, orderBy("timestamp", "asc"));
@@ -258,6 +258,7 @@ async function getReceiverContacts(receiver, dispatch){
   } catch (e) {
     console.log(e)
   }
+}
 }
 
 async function createLastMsgTime(sender, receiver) {
@@ -498,6 +499,7 @@ function TopSection({ receiver }) {
   const [isVerified, setIsVerified] = useState()
 
   async function getVerifedData(){
+    if(receiver){
     const verifyRef = doc(getFirestore(), `users/${receiver}`);
     const verify = await getDoc(verifyRef)
     if(verify.exists()){
@@ -506,6 +508,7 @@ function TopSection({ receiver }) {
     } else {
       setIsVerified(false)
     }
+  }
   }
 
   useEffect(() => {
@@ -660,20 +663,17 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   const messages = useSelector((state) => state.messages?.messages);
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null)
-  console.log(messages)
 
   useEffect(() => {
     getReceiverContacts(receiver, dispatch)
   }, [receiver])
 
-  // console.log(receiver)
   const chats = []
   messages?.map((chat) => {
     if(chat.queue_id ===(sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`)){
       chats.push(chat)
     }
   })
-  // console.log(chats)
 
   const showMessageDetails = (id, index) => {
     messages.map(message => {
