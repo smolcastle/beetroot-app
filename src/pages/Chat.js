@@ -26,7 +26,7 @@ import {
   updateSignatureData,
   showNewUser,
   hideNewUser,
-  updateUsers, updateReceiverContacts
+  updateUsers, updateReceiverContacts, updateMsgTime
 } from "../actions/actions";
 import { getDateTime, isFunction, truncate } from "../helpers/Collections";
 import NewChatModal from "../components/NewChatModal";
@@ -46,14 +46,23 @@ import mascot from '../img/mascot-hands.png'
 
 const db = getFirestore()
 
-// Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, sender, receiver, dispatch) {
   if (!messageText?.trim().length) {
     return;
   }
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), "messages"), {
+    await addDoc(collection(db, `address book/ ${sender}/texts`), {
+      name: sender,
+      text: messageText,
+      uid: sender,
+      receiver: receiver.toLowerCase(),
+      queue_id:
+        sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
+      profilePicUrl: "https://i.pravatar.cc/150?img=3",
+      timestamp: serverTimestamp(),
+    });
+    await addDoc(collection(db, `address book/ ${receiver}/texts`), {
       name: sender,
       text: messageText,
       uid: sender,
@@ -72,13 +81,13 @@ async function getAllQueues(sender, dispatch) {
   const queue_ids = {};
 
   const query1 = query(
-    collection(getFirestore(), "messages"),
+    collection(db, `address book/ ${sender}/texts`),
     where("receiver", "==", sender),
     orderBy("timestamp", "asc")
   );
 
   const query2 = query(
-    collection(getFirestore(), "messages"),
+    collection(db, `address book/ ${sender}/texts`),
     where("name", "==", sender),
     orderBy("timestamp", "asc")
   );
@@ -100,12 +109,12 @@ async function getAllQueues(sender, dispatch) {
 function listenMessages(sender, receiver, dispatch) {
   // Create the query to load the last 12 messages and listen for new ones.
   const recentMessagesQuery = query(
-    collection(db, "messages"),
-    where(
-      "queue_id",
-      "==",
-      sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
-    ),
+    collection(db, `address book/ ${sender}/texts`),
+    // where(
+    //   "queue_id",
+    //   "==",
+    //   sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
+    // ),
     orderBy("timestamp", "desc"),
     limit(50)
   );
@@ -115,6 +124,7 @@ function listenMessages(sender, receiver, dispatch) {
     querySnapshot.forEach((doc) => {
       messages.push({ ...doc.data(), id: doc.id });
     });
+    // console.log(messages)
     dispatch(updateMessages(messages.length ? messages : null));
   });
   return unsubscribe;
@@ -179,7 +189,7 @@ async function signMessage(sender, dispatch, chainId, signer) {
 
 async function saveUser(sender) {
   try {
-    await setDoc(doc(db, "users", sender), {
+    await setDoc(doc(db, `users/${sender}`), {
       name: `${sender}`,
       has_onboarded: false,
       has_skipped: false,
@@ -225,6 +235,7 @@ async function getContacts(sender, setContacts) {
         contacts.push(doc.data());
       });
       setContacts(contacts);
+      console.log(contacts)
     });
 
   } catch (e) {
@@ -242,6 +253,47 @@ async function getReceiverContacts(receiver, dispatch){
         receiverContacts.push(doc.data());
       });
       dispatch(updateReceiverContacts(receiverContacts))
+    });
+
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+async function createLastMsgTime(sender, receiver) {
+  const id = sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
+  try{
+      const msgTimeRef = doc(db, `lastMsg`, id);
+      const msgTimeSnap = await getDoc(msgTimeRef);
+      if(msgTimeSnap.exists()){
+        await updateDoc(msgTimeRef, {
+              timestamp: serverTimestamp(),
+          })
+        return
+      }
+      else {
+      await setDoc(doc(db, `lastMsg`, id), {
+        sender: sender,
+        receiver: receiver,
+        timestamp: serverTimestamp(),
+      })
+      }
+  } catch(e) {
+    console.log("Error", e)
+  }
+
+}
+
+async function getLastMsgTime(dispatch){
+  try {
+    const msgTimeRef = collection(db, `lastMsg`);
+    const q = query(msgTimeRef, orderBy("timestamp", "asc"));
+    onSnapshot(q, (querySnapshot) => {
+      let msgTime = [];
+      querySnapshot.forEach((doc) => {
+        msgTime.push(doc.data());
+      });
+      dispatch(updateMsgTime(msgTime))
     });
 
   } catch (e) {
@@ -273,7 +325,7 @@ function User({
   const [isVerified, setIsVerified] = useState()
 
   async function getVerifedData(){
-    const verifyRef = doc(getFirestore(), "users", receiver);
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
     const verify = await getDoc(verifyRef)
     if(verify.exists()){
       const verifyData = verify.data()
@@ -283,6 +335,16 @@ function User({
     }
   }
 
+  const [lastMsgTime, setLastMsgTime] = useState(null);
+  const msgTime = useSelector((state) => state.messages.msgTime)
+  useEffect(() => {
+    msgTime.map((lastMsg) => {
+      if((lastMsg.receiver === receiver && lastMsg.sender === sender) || (lastMsg.receiver === sender && lastMsg.sender === receiver)){
+        setLastMsgTime(lastMsg.timestamp)
+        return
+      }
+    })
+  })
   useEffect(() => {
     getVerifedData()
   }, [receiver])
@@ -300,10 +362,10 @@ function User({
     >
       <li
         index={index}
-        class={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${isSelected ? "bg-gray6" : " "
+        className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${isSelected ? "bg-gray6" : " "
           }`}
       >
-        <div class="flex-1 flex items-center p-3">
+        <div className="flex-1 flex items-center p-3">
           <div className="w-[30%]">
             <img src={profile} className='w-[48px]'></img>
           </div>
@@ -314,7 +376,8 @@ function User({
           </div>
           <div className="flex flex-col items-end w-[20%]">
             <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]"><p>4</p></div>
-            <p className=" text-[14px] text-gray3">12:00</p>
+            {lastMsgTime && <p className={`text-[14px] text-gray3`}>{getDateTime(lastMsgTime?.seconds).time}</p>}
+            {lastMsgTime === null && <p className="text-[14px] text-gray3">-</p>}
           </div>
         </div>
       </li>
@@ -339,7 +402,7 @@ function Users({ sender, dispatch, setReceiver, users, selected, queue_ids, setS
   const contactBtn = useSelector((state) => state.contacts.addContactBtn)
 
   return (
-    <ul role="list" class="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10">
+    <ul role="list" className="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10">
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round" />
@@ -435,7 +498,7 @@ function TopSection({ receiver }) {
   const [isVerified, setIsVerified] = useState()
 
   async function getVerifedData(){
-    const verifyRef = doc(getFirestore(), "users", receiver);
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
     const verify = await getDoc(verifyRef)
     if(verify.exists()){
       const verifyData = verify.data()
@@ -450,7 +513,7 @@ function TopSection({ receiver }) {
   }, [receiver])
 
   return (
-    <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
         <img src={profile} className='w-[48px]'></img>
       </div>
@@ -500,7 +563,7 @@ function AddUser({ dispatch, sender, contacts }) {
 
   }
   return (
-    <div class="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
         <img src={profile0} className='w-[48px]'></img>
       </div>
@@ -557,7 +620,7 @@ function SendMessageSection({
         setMsgString("");
         saveMessage(message, sender, receiver, dispatch);
         userExists()
-
+        createLastMsgTime(sender, receiver)
       }}
     >
       <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
@@ -567,7 +630,7 @@ function SendMessageSection({
           name="search"
           autoComplete="off"
           id="search"
-          class="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
+          className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
           placeholder={"Type your message here"}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
@@ -580,7 +643,7 @@ function SendMessageSection({
             saveMessage(message, sender, receiver, dispatch);
           }}
           type="button"
-          class="h-12"
+          className="h-12"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z" fill="white" />
@@ -603,6 +666,15 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
     getReceiverContacts(receiver, dispatch)
   }, [receiver])
 
+  // console.log(receiver)
+  const chats = []
+  messages?.map((chat) => {
+    if(chat.queue_id ===(sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`)){
+      chats.push(chat)
+    }
+  })
+  // console.log(chats)
+
   const showMessageDetails = (id, index) => {
     messages.map(message => {
       if (message.id === id) {
@@ -619,13 +691,13 @@ function Messages({ message, setMsgString, sender, receiver, dispatch, contacts,
   }
 
   return (
-    <ul role="list" class="flex flex-[4] flex-col py-5 bg-white10 w-full relative">
+    <ul role="list" className="flex flex-[4] flex-col py-5 bg-white10 w-full relative">
       {newUser ? (<AddUser receiver={receiver} contacts={contacts} sender={sender} dispatch={dispatch} />) : (<TopSection receiver={receiver} />)}
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
-        {messages?.map(({ text, name, timestamp, id }, index) => {
+        {chats?.map(({ text, name, timestamp, id }, index) => {
           return (
             <div>
-              <div class={`flex flex-col text-[14px] h-auto text-white0 m-1 ${name === sender ? "items-end" : "items-start"
+              <div className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${name === sender ? "items-end" : "items-start"
                 } `}>
                 <div className="flex items-center">
                   <div onClick={() => { { showDelMessage === index ? (hideMessageDetails(id)) : ((showMessageDetails(id, index))) } }} key={index} className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${name === sender ? "text-parsley bg-parsleytint" : "text-gum bg-gumtint"}`}>
@@ -710,7 +782,7 @@ export default function Chat() {
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
     if (users && sender !== "") {
-      const userRef = doc(getFirestore(), "users", sender);
+      const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       if (!(user.exists())) {
         await saveUser(sender)
@@ -725,7 +797,7 @@ export default function Chat() {
 
   async function showOnboarding(){
     if (users && sender !== "") {
-      const userRef = doc(getFirestore(), "users", sender);
+      const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       const userData = user.data()
       if ((userData.has_onboarded == false && userData.has_skipped == false)) {
@@ -753,6 +825,10 @@ export default function Chat() {
     }, [])
 
   useEffect(() => {
+    getLastMsgTime(dispatch);
+  })
+
+  useEffect(() => {
     getContacts(sender, setContacts);
     listenMessages(sender, receiver, dispatch);
   }, [sender])
@@ -763,7 +839,7 @@ export default function Chat() {
 
   if (!sender) {
     return (
-      <div class="h-screen w-screen bg-white0">
+      <div className="h-screen w-screen bg-white0">
         <div className="text-gum text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Connect your wallet first"}
         </div>
@@ -774,7 +850,7 @@ export default function Chat() {
 
   if (chain.id != 1) {
     return (
-      <div class="h-screen w-screen bg-white0">
+      <div className="h-screen w-screen bg-white0">
         <div className="text-parsley text-base font-medium text-[30px] capitalize mt-8 flex justify-center">
           {"Please connect to Ethereum Mainnet"}
         </div>
