@@ -11,7 +11,7 @@ const Order = ({sender, truncate, receiver}) => {
     const [askTrade, setAskTrade] = useState(false)
     const [offers, setOffers] = useState([])
     const [considerations, setConsiderations] = useState([])
-    const [showOption, setShowOption] = useState(3)
+    const [showOption, setShowOption] = useState(2)
     const [orders, setOrders] = useState([])
     const [showPendingOrder, setShowPendingOrder] = useState(null)
     const [isLoading, setIsLoading] = useState(false)

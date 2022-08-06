@@ -40,8 +40,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           // TODO: use assetInfo.image_url to display image.
           // remove the owner check above if you want to test with NFTs you don't own.
           const assetInfo = await getAsset(nftBox, tokenId);
-          console.log(assetInfo);
-          setAssestsInfo(assetInfo);
+          setAssestsInfo(...assetsInfo, assetInfo);
 
           setOffers(
             [
@@ -53,17 +52,20 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               }
             ]
           )
+          setNftBox("")
         } catch (error) {
           console.log(error);
           alert("NFT doesn't exist");
         }
-    }
+        }
 
         if(etherBox !== ""){
           setOffers(
             [
               ...offers,
               {
+                "name": "Ethereum",
+                "symbol": "ETH",
                 "amount":parseEther(etherBox).toString(),
               }
             ]
@@ -75,6 +77,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
             [
               ...offers,
               {
+                "name": "Wrapped Ethereum",
+                "symbol": "WETH",
                 "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
                 "amount": parseEther(wEtherBox),
               }
@@ -122,6 +126,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           [
             ...considerations,
             {
+              "name": "Ethereum",
+              "symbol": "ETH",
               "amount": parseEther(etherBox).toString(),
               "recipient": sender
             }
@@ -133,6 +139,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           [
             ...considerations,
             {
+              "name": "Wrapped Ethereum",
+              "symbol": "WETH",
               "token": "0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15",
               "amount": parseEther(wEtherBox),
               "recipient": sender
@@ -181,7 +189,12 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
   }, [considerations])
 
   const img_URL = assetsInfo.image_original_url
-  console.log(img_URL)
+
+  const [selectOption, setSelectOption] = useState('ETH')
+
+  function handleChange(e){
+    setSelectOption(e.target.value)
+  }
 
   return (
     <>
@@ -196,7 +209,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                       <p className='text-gray1 text-[12px]'>My Cart</p>
                       <div>
                       <button><Cart /></button>
-                      <button className='mx-3'><ClearCart /></button>
+                      <button className='mx-3' onClick={() => {setOffers([])}}><ClearCart /></button>
                       </div>
                     </div>
                     <div className='flex text-[12px] bg-white0 justify-between p-3'>
@@ -218,7 +231,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                       <p className='text-gray1 text-[12px]'>Their Cart</p>
                       <div>
                       <button><Cart /></button>
-                      <button className='mx-3'><ClearCart /></button>
+                      <button className='mx-3' onClick={() => {setConsiderations([])}}><ClearCart /></button>
                       </div>
                     </div>
                     <div className='flex text-[12px] bg-white0 justify-between p-3'>
@@ -263,7 +276,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     </button>
                     }
             </div>
-            <div className='w-[50%] h-full ml-5'>
+            <div className='w-[50%] h-full ml-8'>
                 <div className='flex rounded-md items-center justify-between'>
                   <div className='flex rounded-md items-center bg-parsleytint p-1 w-[50%]'>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -286,21 +299,76 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 <div className='flex items-center my-3 justify-between'>
                     <div className='flex rounded-md text-parsley w-[50%] bg-parsleytint items-center px-2 py-1 justify-between'>
                       {/* <input placeholder='ETH' className='w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input> */}
-                      <select name="tokens" id="tokens" className='w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley'>
+                      <select name="tokens" value={selectOption} onChange={handleChange} id="tokens" className='w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley'>
                         <option value="ETH" className='bg-white0 text-gray1'>ETH</option>
                         <option value="WETH" className='bg-white0 text-gray1'>WETH</option>
                       </select>
                     </div>
-                    <input ref={inputRef} placeholder='Amount' className='rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley' onChange={(e) => setEtherBox(e.target.value)}></input>
+                    <input ref={inputRef} list="tokens" placeholder='Amount' className='rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley'
+                    onChange={(e) => {selectOption === 'ETH' ? (setEtherBox(e.target.value)) : (setWEtherBox(e.target.value)) }}/>
                     <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>
                         <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
                         <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                     </svg>
                 </div>
-                <div className='assets'>
-                    <img src={img_URL} />
+                {offerTrade ? (
+                <div className='cart p-2'>
+                  {offers.map((offer) => {
+                    return (
+                      <>
+                      <div className='flex text-[12px] text-gum justify-between items-center w-[80%] mb-3'>
+                        <div className='flex flex-col justify-center'>
+                          {offer.name === 'Ethereum' && <p>Ethereum</p>}
+                          {offer.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                        </div>
+                        <div className='flex flex-col justify-center'>
+                          <svg className='place-self-end cursor-pointer' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
+                            <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.71484 5.50195V9.04869" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7.28223 5.50195V9.04869" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <p className='mt-4'>{offer.amount}</p>
+                        </div>
+                      </div>
+                      <div className='assets'>
+                        <img src={img_URL} />
+                      </div>
+                      </>
+                    )
+                  })}
+
                 </div>
+                  ) : (
+                <div className='cart p-2'>
+                    {considerations.map((consideration) => {
+                      return (
+                        <>
+                        <div className='flex text-[12px] text-gum justify-between items-center w-[80%]'>
+                          <div className='flex flex-col justify-center'>
+                            {consideration.name === 'Ethereum' && <p>Ethereum</p>}
+                            {consideration.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                          </div>
+                          <div className='flex flex-col justify-center'>
+                            <svg className='place-self-end cursor-pointer' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
+                              <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M4.71484 5.50195V9.04869" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M7.28223 5.50195V9.04869" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p className='mt-4'>{consideration.amount}</p>
+                          </div>
+                        </div>
+                        <div className='assets'>
+                          <img src={img_URL} />
+                        </div>
+                        </>
+                  )})}
+                  </div>
+                )}
             </div>
             </div>
         </div>
