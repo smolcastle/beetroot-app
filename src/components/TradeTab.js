@@ -14,10 +14,35 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     const [offerFor, setOfferFor] = useState(receiver)
     const inputRef = useRef('')
     const [assetsInfo, setAssestsInfo] = useState([])
+    const [userAssets, setUserAssets] = useState([])
 
     const reset = () => {
         inputRef.current.value = "";
       };
+
+    async function fetchAssets(){
+      const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+      setUserAssets(holdingAssetsInfo?.assets)
+    }
+
+    useEffect(() => {
+      fetchAssets()
+    },[nftBox])
+
+    function Assets(){
+      return (
+        <>
+        {userAssets?.filter((item) => {
+        if (nftBox == "") {
+          return
+        }else if (item.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())) {
+          console.log(item.name)
+          console.log(item.asset_contract.address)
+        }
+      })}
+        </>
+      )
+    }
 
 
     async function onAdd() {
@@ -41,9 +66,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           // remove the owner check above if you want to test with NFTs you don't own.
           const assetInfo = await getAsset(nftBox, tokenId);
           setAssestsInfo(...assetsInfo, assetInfo);
-
-          const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
-          console.log(holdingAssetsInfo);
 
           setOffers(
             [
@@ -314,6 +336,10 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
                         <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                     </svg>
+                </div>
+
+                <div className='border-2 border-gum border-solid'>
+                  <Assets />
                 </div>
                 {offerTrade ? (
                 <div className='cart p-2'>
