@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
-import getAsset from '../utils/opensea';
+import {getAsset, getAssetsInCollection} from '../utils/opensea';
 
 const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade}) => {
 
@@ -40,6 +40,9 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           // remove the owner check above if you want to test with NFTs you don't own.
           const assetInfo = await getAsset(nftBox, tokenId);
           console.log(assetInfo);
+
+          const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+          console.log(holdingAssetsInfo);
 
           setOffers(
             [
