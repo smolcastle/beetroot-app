@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
-import {getAsset, getAssetsInCollection} from '../utils/opensea';
+import {getAsset, getAssetsInCollection, retrieveAssets} from '../utils/opensea';
 
 const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade}) => {
 
@@ -17,6 +17,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     const inputRef = useRef('')
     const [assetsInfo, setAssestsInfo] = useState([])
     const [userAssets, setUserAssets] = useState([])
+    const [showHelp, setShowHelp]= useState('');
 
     const reset = () => {
         inputRef.current.value = "";
@@ -24,28 +25,13 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
 
     async function fetchAssets(){
       const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+      // const holdingAssetsInfo = await retrieveAssets();
       setUserAssets(holdingAssetsInfo?.assets)
     }
 
     useEffect(() => {
       fetchAssets()
     },[nftBox])
-
-    function Assets(){
-      return (
-        <>
-        {userAssets?.filter((item) => {
-        if (nftBox == "") {
-          return
-        }else if (item.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())) {
-          console.log(item.name)
-          console.log(item.asset_contract.address)
-        }
-      })}
-        </>
-      )
-    }
-
 
     async function onAdd() {
 
@@ -220,17 +206,16 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     console.log("Considerations" ,considerations)
   }, [considerations])
 
-  const img_URL = assetsInfo.image_original_url
-
   const [selectOption, setSelectOption] = useState('ETH')
 
   function handleChange(e){
     setSelectOption(e.target.value)
   }
 
+
   return (
     <>
-        <div className="flex flex-col h-[95%] w-[95%] justify-evenly">
+        <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
             <div className="flex h-full w-full">
             <div className='flex flex-col justify-evenly w-[50%] h-full'>
                 <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
@@ -247,7 +232,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     <div className='flex text-[12px] bg-white0 justify-between p-3'>
                       <p>{truncate(sender, 14)}</p>
                       <button>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg id='cart1' width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1.09703 11.7347C1.27318 13.3812 2.59741 14.7055 4.24308 14.8889C5.46542 15.0251 6.72046 15.1422 8.00004 15.1422C9.27961 15.1422 10.5347 15.0251 11.757 14.8889C13.4027 14.7055 14.7269 13.3812 14.903 11.7347C15.0331 10.5193 15.1429 9.27147 15.1429 7.9993C15.1429 6.72712 15.0331 5.47928 14.903 4.26384C14.7269 2.61738 13.4027 1.29314 11.757 1.10971C10.5347 0.973465 9.27961 0.856445 8.00004 0.856445C6.72046 0.856445 5.46542 0.973465 4.24308 1.10971C2.59741 1.29314 1.27318 2.61738 1.09703 4.26384C0.966987 5.47928 0.857178 6.72712 0.857178 7.9993C0.857178 9.27147 0.966988 10.5193 1.09703 11.7347Z" fill="#F2F2F2" stroke="#828282"/>
                       <path d="M8.00084 8.51756C8.00084 8.10493 8.33644 7.85183 8.92854 7.4562C9.47773 7.08923 9.76742 6.61321 9.63856 5.96539C9.50971 5.31756 8.97443 4.78229 8.32661 4.65343C7.30969 4.45115 6.33105 5.25429 6.33105 6.29112" stroke="#828282" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M8 11.3765V11.0908" stroke="#828282" stroke-linecap="round" stroke-linejoin="round"/>
@@ -255,8 +240,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                       </button>
                     </div>
                 </div>
-                {/* <h3 className='text-[16px]'>Their Wallet</h3>
-                <p className='text-[12px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p> */}
+                {/* <h3 className='text-[16px]'>Their Wallet</h3> */}
+                {showHelp === 'cart2' && <p className='text-[12px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>}
                 <div onClick={() => {setAskTrade(true); setOfferTrade(false); reset()}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${askTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
                     {/* <input onChange={(e) => setOfferFor(e.target.value)} placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input> */}
                     <div className='flex justify-between py-2'>
@@ -268,8 +253,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     </div>
                     <div className='flex text-[12px] bg-white0 justify-between p-3'>
                       <p>{truncate(receiver, 14)}</p>
-                      <button>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <button onClick={() => {showHelp !== 'cart2' ? setShowHelp('cart2') : setShowHelp('')}}>
+                      <svg id='cart2' width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1.09703 11.7347C1.27318 13.3812 2.59741 14.7055 4.24308 14.8889C5.46542 15.0251 6.72046 15.1422 8.00004 15.1422C9.27961 15.1422 10.5347 15.0251 11.757 14.8889C13.4027 14.7055 14.7269 13.3812 14.903 11.7347C15.0331 10.5193 15.1429 9.27147 15.1429 7.9993C15.1429 6.72712 15.0331 5.47928 14.903 4.26384C14.7269 2.61738 13.4027 1.29314 11.757 1.10971C10.5347 0.973465 9.27961 0.856445 8.00004 0.856445C6.72046 0.856445 5.46542 0.973465 4.24308 1.10971C2.59741 1.29314 1.27318 2.61738 1.09703 4.26384C0.966987 5.47928 0.857178 6.72712 0.857178 7.9993C0.857178 9.27147 0.966988 10.5193 1.09703 11.7347Z" fill="#F2F2F2" stroke="#828282"/>
                       <path d="M8.00084 8.51756C8.00084 8.10493 8.33644 7.85183 8.92854 7.4562C9.47773 7.08923 9.76742 6.61321 9.63856 5.96539C9.50971 5.31756 8.97443 4.78229 8.32661 4.65343C7.30969 4.45115 6.33105 5.25429 6.33105 6.29112" stroke="#828282" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M8 11.3765V11.0908" stroke="#828282" stroke-linecap="round" stroke-linejoin="round"/>
@@ -309,6 +294,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     }
             </div>
             <div className='w-[50%] h-full ml-8'>
+                <p className='text-[12px] text-gum mb-2'>{offerTrade ? "Your Offer" : "Your Ask"}</p>
                 <div className='flex rounded-md items-center justify-between'>
                   <div className='flex rounded-md items-center bg-parsleytint p-1 w-[50%]'>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -346,7 +332,24 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 </div>
 
                 <div className=''>
-                  <Assets />
+                {nftBox !== "" &&
+                userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
+                    <div className='flex justify-between my-3 items-center'>
+                      <div className='w-[20%]'>
+                        <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
+                      </div>
+                      <div className='w-[60%]'>
+                        <p className='text-[12px] text-gum'>{item.name}</p>
+                      </div>
+                      <div className='w-[20%]'>
+                        <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1.09678 11.7358C1.27293 13.3823 2.59716 14.7065 4.24283 14.8899C6.77059 15.1717 9.22898 15.1717 11.7567 14.8899C13.4024 14.7065 14.7266 13.3823 14.9028 11.7358C15.0328 10.5203 15.1426 9.2725 15.1426 8.00031C15.1426 6.72814 15.0328 5.4803 14.9028 4.26486C14.7266 2.61841 13.4024 1.29417 11.7567 1.11073C9.22898 0.828975 6.77059 0.828975 4.24283 1.11073C2.59716 1.29417 1.27293 2.61841 1.09678 4.26486C0.966743 5.4803 0.856934 6.72814 0.856934 8.00031C0.856934 9.2725 0.966744 10.5203 1.09678 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
+                          <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
+                          <path d="M10.8574 8H5.14307" stroke="#AB224E" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                ))}
                 </div>
                 {offerTrade ? (
                 <div className='cart p-2'>
@@ -368,9 +371,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                           </svg>
                           <p className='mt-4'>{offer.amount}</p>
                         </div>
-                      </div>
-                      <div className='assets'>
-                        <img src={img_URL} />
                       </div>
                       </>
                     )
@@ -397,9 +397,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                             </svg>
                             <p className='mt-4'>{consideration.amount}</p>
                           </div>
-                        </div>
-                        <div className='assets'>
-                          <img src={img_URL} />
                         </div>
                         </>
                   )})}

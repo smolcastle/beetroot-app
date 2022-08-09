@@ -83,6 +83,8 @@ const Order = ({sender, truncate, receiver}) => {
                 status: 'fulfilled',
             })
         }
+        // update order list as soon as it is fulfilled
+        GetPendingOrders()
     }
 
     async function cancelFunc(orderid){
@@ -93,6 +95,8 @@ const Order = ({sender, truncate, receiver}) => {
                 status: 'cancelled',
             })
         }
+        // update order list as soon as it is cancelled
+        GetPendingOrders()
     }
 
     const showPendingOrderFunc = (id, index) => {
@@ -135,9 +139,9 @@ const Order = ({sender, truncate, receiver}) => {
                             <div className='flex justify-between'>
                                 <div className='w-[60%]'>
                                     <h1 className='my-2 text-gray2 text-[10px]'>Created: {getDateTime(order.timestamp?.seconds).date}</h1>
-                                    {order.status === 'pending' && <h1 className='text-gray2 text-[10px]'>Order Pending</h1>}
+                                    {order.status === 'pending' && <h1 className='text-gray2 text-[10px]'>Order has not been fulfilled by recipient. Waiting...</h1>}
                                     {order.status === 'cancelled' && <h1 className='text-gum text-[10px]'>Order Cancelled</h1>}
-                                    {order.status === 'fulfilled' && <h1 className='text-parsley text-[10px]'>Order Fulfilled</h1>}
+                                    {order.status === 'fulfilled' && <h1 className='text-parsley text-[10px]'>Order Complete</h1>}
                                 </div>
                                 <div className='w-[35%] mt-[4px]'>
                                     {(order.to == sender && order.status !== 'cancelled') && <button className='bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
