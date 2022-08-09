@@ -30,20 +30,26 @@ const Order = ({sender, truncate, receiver}) => {
         }
       }
     async function createOrder(offerFor) {
-        if(offers.length == 0 || considerations.length == 0){
-            alert("Order cannot be empty")
-        }
-        else{
-            setIsLoading(true)
-            const orderActions = await seaport.seaport.createOrder({
-                offer: offers,
-                consideration: considerations,
-                allowPartialFills: false,
-                restrictedByZone: false,
-            });
-            const order = await orderActions.executeAllActions();
-            console.log(order)
-            saveOrder(order, offerFor)
+        try{
+            if(offers.length == 0 || considerations.length == 0){
+                alert("Order cannot be empty")
+            }
+            else{
+                setIsLoading(true)
+                const orderActions = await seaport.seaport.createOrder({
+                    offer: offers,
+                    consideration: considerations,
+                    allowPartialFills: false,
+                    restrictedByZone: false,
+                });
+                const order = await orderActions.executeAllActions();
+                console.log(order)
+                saveOrder(order, offerFor)
+                setIsLoading(false)
+            }
+        } catch(e){
+            // hide loader when cancel is clicked on metamask notification
+            console.log("Error creating an order",e)
             setIsLoading(false)
         }
         setIsLoading(false)
