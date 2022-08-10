@@ -24,14 +24,38 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
       };
 
     async function fetchAssets(){
-      const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
-      // const holdingAssetsInfo = await retrieveAssets();
+      // const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+      const holdingAssetsInfo = await retrieveAssets();
       setUserAssets(holdingAssetsInfo?.assets)
     }
 
     useEffect(() => {
       fetchAssets()
     },[nftBox])
+
+    async function addNFT(item){
+      if (item.id) {
+        try {
+          setOffers(
+            [
+              ...offers,
+              {
+                "name": item.name,
+                "image_url": item.image_url,
+                "itemType": 2,
+                "token": item.asset_contract.address,
+                "identifier": item.id
+              }
+            ]
+          )
+          setNftBox(" ");
+          reset();
+        } catch (e) {
+          console.log(e)
+        }
+      }
+
+    }
 
     async function onAdd() {
 
@@ -44,16 +68,16 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
         if(tokenId){
         try {
           // will throw if tokenId doesn't exist.
-          // const owner = await erc721Contract.ownerOf(tokenId);
-          // if (owner != await seaport.signer.getAddress()) {
-          //   alert("You are not the owner");
-          //   return;
-          // }
+          const owner = await erc721Contract.ownerOf(tokenId);
+          if (owner != await seaport.signer.getAddress()) {
+            alert("You are not the owner");
+            return;
+          }
 
           // TODO: use assetInfo.image_url to display image.
           // remove the owner check above if you want to test with NFTs you don't own.
-          const assetInfo = await getAsset(nftBox, tokenId);
-          setAssestsInfo(...assetsInfo, assetInfo);
+          // const assetInfo = await getAsset(nftBox, tokenId);
+          // setAssestsInfo(...assetsInfo, assetInfo);
 
           setOffers(
             [
@@ -72,7 +96,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
         }
         }
 
-        if(etherBox !== ""){
+        if(etherBox !== 0){
           setOffers(
             [
               ...offers,
@@ -330,27 +354,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                     </svg>
                 </div>
-
-                <div className=''>
-                {nftBox !== "" &&
-                userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
-                    <div className='flex justify-between my-3 items-center'>
-                      <div className='w-[20%]'>
-                        <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
-                      </div>
-                      <div className='w-[60%]'>
-                        <p className='text-[12px] text-gum'>{item.name}</p>
-                      </div>
-                      <div className='w-[20%]'>
-                        <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M1.09678 11.7358C1.27293 13.3823 2.59716 14.7065 4.24283 14.8899C6.77059 15.1717 9.22898 15.1717 11.7567 14.8899C13.4024 14.7065 14.7266 13.3823 14.9028 11.7358C15.0328 10.5203 15.1426 9.2725 15.1426 8.00031C15.1426 6.72814 15.0328 5.4803 14.9028 4.26486C14.7266 2.61841 13.4024 1.29417 11.7567 1.11073C9.22898 0.828975 6.77059 0.828975 4.24283 1.11073C2.59716 1.29417 1.27293 2.61841 1.09678 4.26486C0.966743 5.4803 0.856934 6.72814 0.856934 8.00031C0.856934 9.2725 0.966744 10.5203 1.09678 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
-                          <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
-                          <path d="M10.8574 8H5.14307" stroke="#AB224E" stroke-linecap="round"/>
-                        </svg>
-                      </div>
-                    </div>
-                ))}
-                </div>
                 {offerTrade ? (
                 <div className='cart p-2'>
                   {offers.map((offer) => {
@@ -360,6 +363,10 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <div className='flex flex-col justify-center'>
                           {offer.name === 'Ethereum' && <p>Ethereum</p>}
                           {offer.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                          <div className='flex items-center justify-between'>
+                          {offer.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={offer.image_url}/>}
+                          {offer.identifier && <p>{offer.name}</p>}
+                          </div>
                         </div>
                         <div className='flex flex-col justify-center'>
                           <svg className='place-self-end cursor-pointer' onClick={() => removeItem(offer.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -402,6 +409,26 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                   )})}
                   </div>
                 )}
+                <div className='bg-gray6 rounded-[4px]'>
+                {nftBox !== "" &&
+                userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
+                    <div className='flex justify-between p-2 items-center'>
+                      <div className='w-[20%]'>
+                        <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
+                      </div>
+                      <div className='w-[60%]'>
+                        <p className='text-[12px] text-gum'>{item.name}</p>
+                      </div>
+                      <div className='w-[10%]'>
+                        <svg className='cursor-pointer' onClick={offerTrade ? async () => {await addNFT(item);} : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1.09678 11.7358C1.27293 13.3823 2.59716 14.7065 4.24283 14.8899C6.77059 15.1717 9.22898 15.1717 11.7567 14.8899C13.4024 14.7065 14.7266 13.3823 14.9028 11.7358C15.0328 10.5203 15.1426 9.2725 15.1426 8.00031C15.1426 6.72814 15.0328 5.4803 14.9028 4.26486C14.7266 2.61841 13.4024 1.29417 11.7567 1.11073C9.22898 0.828975 6.77059 0.828975 4.24283 1.11073C2.59716 1.29417 1.27293 2.61841 1.09678 4.26486C0.966743 5.4803 0.856934 6.72814 0.856934 8.00031C0.856934 9.2725 0.966744 10.5203 1.09678 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
+                          <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
+                          <path d="M10.8574 8H5.14307" stroke="#AB224E" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                ))}
+                </div>
             </div>
             </div>
         </div>
