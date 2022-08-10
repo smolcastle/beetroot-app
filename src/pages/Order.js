@@ -50,6 +50,7 @@ const Order = ({sender, truncate, receiver}) => {
         } catch(e){
             // hide loader when cancel is clicked on metamask notification
             console.log("Error creating an order",e)
+            alert("Error creating the order")
             setIsLoading(false)
         }
         setIsLoading(false)
