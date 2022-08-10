@@ -20,8 +20,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     const [showHelp, setShowHelp]= useState('');
 
     const reset = () => {
-        inputRef.current.value = "";
-      };
+      inputRef.current.value = '';
+    };
 
     async function fetchAssets(){
       // const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
@@ -36,28 +36,46 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     async function addNFT(item){
       if (item.id) {
         try {
-          setOffers(
-            [
-              ...offers,
-              {
-                "name": item.name,
-                "image_url": item.image_url,
-                "itemType": 2,
-                "token": item.asset_contract.address,
-                "identifier": item.id
-              }
-            ]
-          )
-          setNftBox(" ");
-          reset();
+          if(offerTrade) {
+            setOffers(
+              [
+                ...offers,
+                {
+                  "id": uuidv4(),
+                  "name": item.name,
+                  "image_url": item.image_url,
+                  "itemType": 2,
+                  "token": item.asset_contract.address,
+                  "identifier": item.id
+                }
+              ]
+            );
+          } else {
+            setConsiderations(
+              [
+                ...considerations,
+                {
+                  "id": uuidv4(),
+                  "name": item.name,
+                  "image_url": item.image_url,
+                  "itemType": 2,
+                  "token": item.asset_contract.address,
+                  "identifier": item.id,
+                  "recipient": sender
+                }
+              ]
+            );
+          }
+          setNftBox('');
+          setTokenId('');
         } catch (e) {
-          console.log(e)
+          console.log(e);
         }
       }
 
     }
 
-    async function onAdd() {
+    async function onAddOffers() {
 
         const erc721Contract = new ethers.Contract(
           nftBox,
@@ -89,7 +107,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               }
             ]
           )
-          setNftBox("")
+          setNftBox('');
+          setTokenId('');
         } catch (error) {
           console.log(error);
           alert("NFT doesn't exist");
@@ -108,7 +127,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               }
             ]
           )
-
+          setEtherBox('')
+          reset()
         }
         if(wEtherBox !== ""){
           setOffers(
@@ -122,11 +142,12 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               }
             ]
           )
+          setWEtherBox('')
+          reset()
         }
-        reset()
   }
 
-  async function onAdd2(){
+  async function onAddConsiderations(){
       const erc721Contract = new ethers.Contract(
         nftBox,
         erc721ABI,
@@ -186,7 +207,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
           ]
         )
       }
-      reset()
   }
 
   function Cart(){
@@ -220,7 +240,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
   }
 
   function removeItem(id){
-    setOffers(offers.filter((item) => item.id !== id));
+    setOffers(offers.filter((offer) => offer.id !== id));
   }
 
   useEffect(() => {
@@ -240,12 +260,12 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
   return (
     <>
         <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
-            <div className="flex h-full w-full">
-            <div className='flex flex-col justify-evenly w-[50%] h-full'>
+            <div className="flex h-[750px] max-h-[750px] w-full">
+            <div className='flex flex-col justify-evenly w-[50%] max-h-[90%]'>
                 <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
                 <p className='text-[12px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
                 {/* <h3 className='text-[16px]'>Your Wallet</h3> */}
-                <div onClick={() => {setAskTrade(false); setOfferTrade(true); reset()}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${offerTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
+                <div onClick={() => {setAskTrade(false); setOfferTrade(true)}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${offerTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
                     <div className='flex justify-between py-2'>
                       <p className='text-gray1 text-[12px]'>My Cart</p>
                       <div>
@@ -266,7 +286,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 </div>
                 {/* <h3 className='text-[16px]'>Their Wallet</h3> */}
                 {showHelp === 'cart2' && <p className='text-[12px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>}
-                <div onClick={() => {setAskTrade(true); setOfferTrade(false); reset()}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${askTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
+                <div onClick={() => {setAskTrade(true); setOfferTrade(false)}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${askTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
                     {/* <input onChange={(e) => setOfferFor(e.target.value)} placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input> */}
                     <div className='flex justify-between py-2'>
                       <p className='text-gray1 text-[12px]'>Their Cart</p>
@@ -317,7 +337,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     </button>
                     }
             </div>
-            <div className='w-[50%] h-full ml-8'>
+            <div className='w-[50%] ml-8'>
                 <p className='text-[12px] text-gum mb-2'>{offerTrade ? "Your Offer" : "Your Ask"}</p>
                 <div className='flex rounded-md items-center justify-between'>
                   <div className='flex rounded-md items-center bg-parsleytint p-1 w-[50%]'>
@@ -325,14 +345,14 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <path d="M7.5714 14.2859C11.2796 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2796 0.857422 7.5714 0.857422C3.86322 0.857422 0.857147 3.86349 0.857147 7.57167C0.857147 11.2798 3.86322 14.2859 7.5714 14.2859Z" fill="#DCE5D7" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M15.1429 15.1432L12.3238 12.3242" stroke="#4E7B36" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <input ref={inputRef} placeholder='NFT Collection' className='w-[80%] text-[12px] rounded-md outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'
+                    <input placeholder='NFT Collection' value={nftBox} className='w-[80%] text-[12px] rounded-md outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'
                         onChange={(e) => setNftBox(e.target.value)}
                     />
                   </div>
-                  <input ref={inputRef} placeholder='Token ID' className='w-[30%] text-[12px] rounded-md outline-none bg-parsleytint p-3 placeholder-parsley text-parsley'
+                  <input placeholder='Token ID' value={tokenId} className='w-[30%] text-[12px] rounded-md outline-none bg-parsleytint p-3 placeholder-parsley text-parsley'
                       onChange={(e) => setTokenId(e.target.value)}
                   />
-                  <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAddOffers() : async () => await onAddConsiderations()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>
                           <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
                           <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
@@ -346,20 +366,21 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                         <option value="WETH" className='bg-white0 text-gray1'>WETH</option>
                       </select>
                     </div>
-                    <input ref={inputRef} list="tokens" placeholder='Amount' className='rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley'
+                    <input list="tokens" placeholder='Amount' ref={inputRef} className='rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley'
                     onChange={(e) => {selectOption === 'ETH' ? (setEtherBox(e.target.value)) : (setWEtherBox(e.target.value)) }}/>
-                    <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAdd() : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className='cursor-pointer' onClick={ offerTrade ? async () => await onAddOffers() : async () => await onAddConsiderations()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1.097 11.7358C1.27315 13.3823 2.59738 14.7065 4.24304 14.8899C6.7708 15.1717 9.22919 15.1717 11.7569 14.8899C13.4026 14.7065 14.7269 13.3823 14.903 11.7358C15.033 10.5203 15.1429 9.2725 15.1429 8.00031C15.1429 6.72814 15.033 5.4803 14.903 4.26486C14.7269 2.61841 13.4026 1.29417 11.7569 1.11073C9.22919 0.828975 6.7708 0.828975 4.24304 1.11073C2.59738 1.29417 1.27315 2.61841 1.097 4.26486C0.966956 5.4803 0.857147 6.72814 0.857147 8.00031C0.857147 9.2725 0.966957 10.5203 1.097 11.7358Z" fill="#DCE5D7" stroke="#4E7B36"/>
                         <path d="M8 5.14258V10.8569" stroke="#4E7B36" stroke-linecap="round"/>
                         <path d="M10.8571 8H5.14285" stroke="#4E7B36" stroke-linecap="round"/>
                     </svg>
                 </div>
+                <div className='h-[90%] max-h-[500px] overflow-y-scroll'>
                 {offerTrade ? (
                 <div className='cart p-2'>
                   {offers.map((offer) => {
                     return (
                       <>
-                      <div className='flex text-[12px] text-gum justify-between items-center w-[80%] mb-3'>
+                      <div className='flex text-[12px] text-gum justify-between items-center mb-4'>
                         <div className='flex flex-col justify-center'>
                           {offer.name === 'Ethereum' && <p>Ethereum</p>}
                           {offer.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
@@ -389,10 +410,14 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     {considerations.map((consideration) => {
                       return (
                         <>
-                        <div className='flex text-[12px] text-gum justify-between items-center w-[80%]'>
+                        <div className='flex text-[12px] text-gum justify-between items-center mb-4'>
                           <div className='flex flex-col justify-center'>
                             {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                             {consideration.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                            <div className='flex items-center justify-between'>
+                            {consideration.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={consideration.image_url}/>}
+                            {consideration.identifier && <p>{consideration.name}</p>}
+                            </div>
                           </div>
                           <div className='flex flex-col justify-center'>
                             <svg className='place-self-end cursor-pointer' width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -411,23 +436,25 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 )}
                 <div className='bg-gray6 rounded-[4px]'>
                 {nftBox !== "" &&
-                userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
-                    <div className='flex justify-between p-2 items-center'>
-                      <div className='w-[20%]'>
-                        <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
+                  userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
+                      <div className='flex justify-between p-2 items-center'>
+                        <div className='w-[20%]'>
+                          <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
+                        </div>
+                        <div className='w-[60%] flex flex-col'>
+                          <p className='text-[12px] text-gum'>{item.name}</p>
+                          <p className='text-[12px] text-gum'>{truncate(item.asset_contract.address, 14)}</p>
+                        </div>
+                        <div className='w-[10%]'>
+                          <svg className='cursor-pointer' onClick={async () => {await addNFT(item)}} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.09678 11.7358C1.27293 13.3823 2.59716 14.7065 4.24283 14.8899C6.77059 15.1717 9.22898 15.1717 11.7567 14.8899C13.4024 14.7065 14.7266 13.3823 14.9028 11.7358C15.0328 10.5203 15.1426 9.2725 15.1426 8.00031C15.1426 6.72814 15.0328 5.4803 14.9028 4.26486C14.7266 2.61841 13.4024 1.29417 11.7567 1.11073C9.22898 0.828975 6.77059 0.828975 4.24283 1.11073C2.59716 1.29417 1.27293 2.61841 1.09678 4.26486C0.966743 5.4803 0.856934 6.72814 0.856934 8.00031C0.856934 9.2725 0.966744 10.5203 1.09678 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
+                            <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
+                            <path d="M10.8574 8H5.14307" stroke="#AB224E" stroke-linecap="round"/>
+                          </svg>
+                        </div>
                       </div>
-                      <div className='w-[60%]'>
-                        <p className='text-[12px] text-gum'>{item.name}</p>
-                      </div>
-                      <div className='w-[10%]'>
-                        <svg className='cursor-pointer' onClick={offerTrade ? async () => {await addNFT(item);} : async () => await onAdd2()} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M1.09678 11.7358C1.27293 13.3823 2.59716 14.7065 4.24283 14.8899C6.77059 15.1717 9.22898 15.1717 11.7567 14.8899C13.4024 14.7065 14.7266 13.3823 14.9028 11.7358C15.0328 10.5203 15.1426 9.2725 15.1426 8.00031C15.1426 6.72814 15.0328 5.4803 14.9028 4.26486C14.7266 2.61841 13.4024 1.29417 11.7567 1.11073C9.22898 0.828975 6.77059 0.828975 4.24283 1.11073C2.59716 1.29417 1.27293 2.61841 1.09678 4.26486C0.966743 5.4803 0.856934 6.72814 0.856934 8.00031C0.856934 9.2725 0.966744 10.5203 1.09678 11.7358Z" fill="#EED3DC" stroke="#AB224E"/>
-                          <path d="M8 5.14258V10.8569" stroke="#AB224E" stroke-linecap="round"/>
-                          <path d="M10.8574 8H5.14307" stroke="#AB224E" stroke-linecap="round"/>
-                        </svg>
-                      </div>
-                    </div>
-                ))}
+                  ))}
+                </div>
                 </div>
             </div>
             </div>
