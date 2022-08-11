@@ -15,6 +15,7 @@ const Order = ({sender, truncate, receiver}) => {
     const [orders, setOrders] = useState([])
     const [showPendingOrder, setShowPendingOrder] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [orderCreated, setOrderCreated] = useState(false);
 
     async function saveOrder(order, offerFor) {
         try {
@@ -45,6 +46,7 @@ const Order = ({sender, truncate, receiver}) => {
                 const order = await orderActions.executeAllActions();
                 console.log(order)
                 saveOrder(order, offerFor)
+                setOrderCreated(true);
                 setIsLoading(false)
             }
         } catch(e){
@@ -54,8 +56,6 @@ const Order = ({sender, truncate, receiver}) => {
             setIsLoading(false)
         }
         setIsLoading(false)
-        setOffers([])
-        setConsiderations([])
     }
 
 
@@ -129,7 +129,7 @@ const Order = ({sender, truncate, receiver}) => {
         }
         {showOption === 2 &&
             <TradeTab considerations={considerations} setConsiderations={setConsiderations} truncate={truncate} isLoading={isLoading} createOrder={createOrder} askTrade={askTrade} setAskTrade={setAskTrade}
-            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
+            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers} orderCreated={orderCreated}/>
         }
         {showOption === 3 && <>
             <div className='w-[70%]'>

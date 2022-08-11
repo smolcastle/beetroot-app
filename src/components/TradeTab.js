@@ -6,7 +6,7 @@ import seaport from '../utils/seaport';
 import {getAsset, getAssetsInCollection, retrieveAssets} from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
 
-const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade}) => {
+const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade, orderCreated}) => {
 
     const { v4: uuidv4} = require('uuid');
 
@@ -471,7 +471,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
             </div>
             </div>
         </div>
-        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeItem={removeItem} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading}/>}
+        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeItem={removeItem} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading} orderCreated={orderCreated} setOffers={setOffers} setConsiderations={setConsiderations}/>}
     </>
   )
 }

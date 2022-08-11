@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, createOrder, offerFor, isLoading}) => {
+const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, createOrder, offerFor, isLoading, orderCreated, setOffers, setConsiderations}) => {
 
   function Cart(){
     return (
@@ -17,10 +17,21 @@ const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, create
     <>
       <div className="w-screen h-screen justify-center items-center flex overflow-x-hidden bg-white overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div className='flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] shadow-xl'>
-            <svg className='place-self-end cursor-pointer' onClick={() => {setReviewOrder(false)}} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.5254 7.47461L7.47461 12.5254" stroke="#AB224E" stroke-linecap="round"/>
-                <path d="M12.5254 12.5254L7.47461 7.47461" stroke="#AB224E" stroke-linecap="round"/>
-            </svg>
+            <button className='place-self-end cursor-pointer' onClick={() => {
+                if(orderCreated){
+                    // if the order is created successfully empty the cart
+                    setReviewOrder(false);
+                    setOffers([]);
+                    setConsiderations([]);
+                } else {
+                    setReviewOrder(false);
+                }
+            }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.5254 7.47461L7.47461 12.5254" stroke="#AB224E" stroke-linecap="round"/>
+                    <path d="M12.5254 12.5254L7.47461 7.47461" stroke="#AB224E" stroke-linecap="round"/>
+                </svg>
+            </button>
             <h1 className='text-gum font-bold'>Review Your Order:</h1>
             <div className='flex justify-between mt-4'>
                 <div className='flex w-[40%] justify-between items-center'>
@@ -100,7 +111,7 @@ const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, create
                 })}
                 </div>
             </div>
-            {!isLoading && <button className='w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5 cursor-pointer'
+            {!isLoading && !orderCreated && <button className='w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5 cursor-pointer'
                 onClick={ async () => { await createOrder(offerFor);}}>
                      {"LOOKS GOOD"}
             </button>}
@@ -121,6 +132,9 @@ const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, create
                     </svg>
                 </button>
             }
+            {orderCreated && <button className='w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5'>
+                     {"YOUR ORDER HAS BEEN CREATED!"}
+            </button>}
             <p className='text-[10px] mt-4 text-gray1'>When you click the above button, this order request will be sent to the given recipient. Once they fulfil your request, this transcation will begin to be processed. </p>
         </div>
       </div>
