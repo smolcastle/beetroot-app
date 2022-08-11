@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, createOrder, offerFor, isLoading, orderCreated, setOffers, setConsiderations}) => {
+const ReviewOrder = ({offers, considerations, removeOffer, removeConsideration, setReviewOrder, createOrder, offerFor, isLoading, orderCreated, setOffers, setConsiderations}) => {
 
   function Cart(){
     return (
@@ -63,7 +63,12 @@ const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, create
                                 </div>
                             </div>
                             <div className='flex flex-col justify-center'>
-                            <svg className='place-self-end cursor-pointer' onClick={() => removeItem(offer.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg className={`place-self-end cursor-pointer ${orderCreated ? "opacity-25 cursor-default" : ""}`} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            onClick={() => {
+                                if(!orderCreated){
+                                    removeOffer(offer.id)
+                                }}}
+                            >
                                 <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
                                 <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
@@ -96,7 +101,12 @@ const ReviewOrder = ({offers, considerations, removeItem, setReviewOrder, create
                                 </div>
                             </div>
                             <div className='flex flex-col justify-center'>
-                            <svg className='place-self-end cursor-pointer' onClick={() => removeItem(consideration.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg className={`place-self-end cursor-pointer ${orderCreated ? "opacity-25 cursor-default" : ""}`} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            onClick={() => {
+                                if(!orderCreated){
+                                    removeConsideration(consideration.id)
+                                }}}
+                            >
                                 <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
                                 <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>

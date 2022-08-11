@@ -1,5 +1,5 @@
-import { parseEther } from 'ethers/lib/utils'
-import React, { useState, useEffect, useRef } from 'react'
+import { parseEther } from 'ethers/lib/utils';
+import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
@@ -8,16 +8,16 @@ import ReviewOrder from './ReviewOrder';
 
 const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade, orderCreated}) => {
 
-    const { v4: uuidv4} = require('uuid');
+    const { v4: uuidv4} = require('uuid'); // to generate unique ids
 
-    const [nftBox, setNftBox] = useState('')
-    const [etherBox, setEtherBox] = useState(0)
-    const [wEtherBox, setWEtherBox] = useState('')
-    const [tokenId, setTokenId] = useState('')
-    const [offerFor, setOfferFor] = useState(receiver)
-    const inputRef = useRef('')
-    const [assetsInfo, setAssestsInfo] = useState([])
-    const [userAssets, setUserAssets] = useState([])
+    const [nftBox, setNftBox] = useState('');
+    const [etherBox, setEtherBox] = useState(0);
+    const [wEtherBox, setWEtherBox] = useState('');
+    const [tokenId, setTokenId] = useState('');
+    const [offerFor, setOfferFor] = useState('');
+    const inputRef = useRef('');
+    const [assetsInfo, setAssestsInfo] = useState([]);
+    const [userAssets, setUserAssets] = useState([]);
     const [showHelp, setShowHelp]= useState('');
     const [reviewOrder, setReviewOrder] = useState(false);
 
@@ -28,11 +28,11 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     async function fetchAssets(){
       // const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
       const holdingAssetsInfo = await retrieveAssets();
-      setUserAssets(holdingAssetsInfo?.assets)
+      setUserAssets(holdingAssetsInfo?.assets);
     }
 
     useEffect(() => {
-      fetchAssets()
+      fetchAssets();
     },[nftBox])
 
     async function addNFT(item){
@@ -126,7 +126,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 "id": uuidv4(),
                 "name": "Ethereum",
                 "symbol": "ETH",
-                "enteredAmount": parseFloat(etherBox).toFixed(4),
+                "enteredAmount": parseFloat(etherBox).toFixed(4), // convert the entered amount to decimal
                 "amount":parseEther(etherBox).toString(),
               }
             ]
@@ -194,7 +194,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               "id": uuidv4(),
               "name": "Ethereum",
               "symbol": "ETH",
-              "enteredAmount": parseFloat(etherBox).toFixed(4),
+              "enteredAmount": parseFloat(etherBox).toFixed(4), // convert the entered amount to decimal
               "amount": parseEther(etherBox).toString(),
               "recipient": sender
             }
@@ -252,13 +252,13 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     )
   }
 
-  // delete item from cart
-  function removeItem(id){
-    if(offerTrade) {
+  // delete offer from cart
+  function removeOffer(id){
       setOffers(offers.filter((offer) => offer.id !== id));
-    } else {
+  }
+  // delete consideration from cart
+  function removeConsideration(id){
       setConsiderations(considerations.filter((consideration) => consideration.id !== id));
-    }
   }
 
   useEffect(() => {
@@ -268,10 +268,10 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     console.log("Considerations" ,considerations)
   }, [considerations])
 
-  const [selectOption, setSelectOption] = useState('ETH')
+  const [selectOption, setSelectOption] = useState('ETH');
 
   function handleChange(e){
-    setSelectOption(e.target.value)
+    setSelectOption(e.target.value);
   }
 
   function CartItems(){
@@ -292,7 +292,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                   </div>
                 </div>
                 <div className='flex flex-col justify-center'>
-                  <svg className='place-self-end cursor-pointer' onClick={() => removeItem(offer.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg className='place-self-end cursor-pointer' onClick={() => removeOffer(offer.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
                     <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
@@ -322,7 +322,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                     </div>
                   </div>
                   <div className='flex flex-col justify-center'>
-                    <svg className='place-self-end cursor-pointer' onClick={() => removeItem(consideration.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className='place-self-end cursor-pointer' onClick={() => removeConsideration(consideration.id)} width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0.642578 3.20996H11.3569" stroke="#AB224E" stroke-linecap="round"/>
                       <path d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z" fill="#EED3DC" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099" stroke="#AB224E" stroke-linecap="round" stroke-linejoin="round"/>
@@ -348,7 +348,6 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
             <div className='flex flex-col justify-evenly w-[50%] max-h-[90%]'>
                 <h1 className='text-[24px] text-gum font-questa'>Trade NFTS</h1>
                 <p className='text-[12px]'>Using this feature you can create an order to trade NFTs and currency with any of your existing contacts. Do this by adding NFTs in each of the 2 carts below and then clicking ‘create order’.</p>
-                {/* <h3 className='text-[16px]'>Your Wallet</h3> */}
                 <div onClick={() => {setAskTrade(false); setOfferTrade(true)}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${offerTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
                     <div className='flex justify-between py-2'>
                       <p className='text-gray1 text-[12px]'>My Cart</p>
@@ -368,10 +367,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                       </button>
                     </div>
                 </div>
-                {/* <h3 className='text-[16px]'>Their Wallet</h3> */}
                 {showHelp === 'cart2' && <p className='text-[12px]'>Paste in the field below the public address of a person you would like to trade with. You can leave this field blank if you would like this request be open to the public.</p>}
                 <div onClick={() => {setAskTrade(true); setOfferTrade(false)}} className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${askTrade ? "border-4 border-parsley/[0.5] border-solid" : ""}`}>
-                    {/* <input onChange={(e) => setOfferFor(e.target.value)} placeholder='Their Wallet Address' className='outline-none bg-parsleytint placeholder-parsley'></input> */}
                     <div className='flex justify-between py-2'>
                       <p className='text-gray1 text-[12px]'>Their Cart</p>
                       <div>
@@ -380,7 +377,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                       </div>
                     </div>
                     <div className='flex text-[12px] bg-white0 justify-between p-3'>
-                      <p>{truncate(receiver, 14)}</p>
+                      <input onChange={(e) => setOfferFor(e.target.value)} className='outline-none text-parsley placeholder-parsley'></input>
+                      {/* <p>{truncate(receiver, 14)}</p> */}
                       <button onClick={() => {showHelp !== 'cart2' ? setShowHelp('cart2') : setShowHelp('')}}>
                       <svg id='cart2' width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1.09703 11.7347C1.27318 13.3812 2.59741 14.7055 4.24308 14.8889C5.46542 15.0251 6.72046 15.1422 8.00004 15.1422C9.27961 15.1422 10.5347 15.0251 11.757 14.8889C13.4027 14.7055 14.7269 13.3812 14.903 11.7347C15.0331 10.5193 15.1429 9.27147 15.1429 7.9993C15.1429 6.72712 15.0331 5.47928 14.903 4.26384C14.7269 2.61738 13.4027 1.29314 11.757 1.10971C10.5347 0.973465 9.27961 0.856445 8.00004 0.856445C6.72046 0.856445 5.46542 0.973465 4.24308 1.10971C2.59741 1.29314 1.27318 2.61738 1.09703 4.26384C0.966987 5.47928 0.857178 6.72712 0.857178 7.9993C0.857178 9.27147 0.966988 10.5193 1.09703 11.7347Z" fill="#F2F2F2" stroke="#828282"/>
@@ -471,7 +469,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
             </div>
             </div>
         </div>
-        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeItem={removeItem} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading} orderCreated={orderCreated} setOffers={setOffers} setConsiderations={setConsiderations}/>}
+        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeOffer={removeOffer} removeConsideration={removeConsideration} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading} orderCreated={orderCreated} setOffers={setOffers} setConsiderations={setConsiderations}/>}
     </>
   )
 }
