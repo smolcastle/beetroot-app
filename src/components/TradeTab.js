@@ -6,7 +6,7 @@ import seaport from '../utils/seaport';
 import {getAsset, getAssetsInCollection, retrieveAssets} from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
 
-const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade, orderCreated}) => {
+const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade, orderCreated, setOrderCreated}) => {
 
     const { v4: uuidv4} = require('uuid'); // to generate unique ids
 
@@ -469,7 +469,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
             </div>
             </div>
         </div>
-        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeOffer={removeOffer} removeConsideration={removeConsideration} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading} orderCreated={orderCreated} setOffers={setOffers} setConsiderations={setConsiderations}/>}
+        {reviewOrder && <ReviewOrder offers={offers} considerations={considerations} removeOffer={removeOffer} removeConsideration={removeConsideration} setReviewOrder={setReviewOrder} createOrder={createOrder} offerFor={offerFor} isLoading={isLoading} orderCreated={orderCreated} setOffers={setOffers} setConsiderations={setConsiderations} setOrderCreated={setOrderCreated}/>}
     </>
   )
 }

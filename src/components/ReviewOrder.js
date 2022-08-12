@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReviewOrder = ({offers, considerations, removeOffer, removeConsideration, setReviewOrder, createOrder, offerFor, isLoading, orderCreated, setOffers, setConsiderations}) => {
+const ReviewOrder = ({offers, considerations, removeOffer, removeConsideration, setReviewOrder, createOrder, offerFor, isLoading, orderCreated, setOffers, setConsiderations, setOrderCreated}) => {
 
   function Cart(){
     return (
@@ -23,6 +23,7 @@ const ReviewOrder = ({offers, considerations, removeOffer, removeConsideration, 
                     setReviewOrder(false);
                     setOffers([]);
                     setConsiderations([]);
+                    setOrderCreated(false);
                 } else {
                     setReviewOrder(false);
                 }

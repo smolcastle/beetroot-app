@@ -22,6 +22,8 @@ const Order = ({sender, truncate, receiver}) => {
           await addDoc(collection(getFirestore(), "orders"), {
             name: sender,
             to: offerFor,
+            cartOffers: offers,
+            cartConsiderations: considerations,
             order: order,
             status: 'pending',
             timestamp: serverTimestamp(),
@@ -142,7 +144,7 @@ const Order = ({sender, truncate, receiver}) => {
         }
         {showOption === 2 &&
             <TradeTab considerations={considerations} setConsiderations={setConsiderations} truncate={truncate} isLoading={isLoading} createOrder={createOrder} askTrade={askTrade} setAskTrade={setAskTrade}
-            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers} orderCreated={orderCreated}/>
+            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers} orderCreated={orderCreated} setOrderCreated={setOrderCreated}/>
         }
         {showOption === 3 && <>
             <div className='w-[70%] max-h-[600px] overflow-y-scroll px-2'>
@@ -192,8 +194,59 @@ const Order = ({sender, truncate, receiver}) => {
                                 </div>
                             </div>
                             <div className=''>
-                                <div index={index} className={`${showPendingOrder === index ? "block" : "hidden"}`}>
-                                    Order Info
+                                <div index={index} className={`flex justify-between mt-8 ${showPendingOrder === index ? "block" : "hidden"}`}>
+                                    <div className='w-[40%] h-[auto]'>
+                                    {order.cartOffers.map((offer) => {
+                                        return (
+                                            <>
+                                            <div className='flex text-[12px] text-gum justify-between items-center mb-4 px-2'>
+                                                <div className='flex items-center justify-center'>
+                                                    <div className='flex flex-col'>
+                                                        {offer.name === 'Ethereum' && <p>Ethereum</p>}
+                                                        {offer.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                                                    </div>
+                                                    <div className='flex items-center justify-between'>
+                                                        {offer.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={offer.image_url}/>}
+                                                    </div>
+                                                    <div>
+                                                        {offer.identifier && <p>{offer.name}</p>}
+                                                        <p className='text-[8px] text-gum'>{offer.token}</p>
+                                                    </div>
+                                                </div>
+                                                <div className='flex flex-col justify-center'>
+                                                    <p className='mt-4'>{offer.enteredAmount}</p>
+                                                </div>
+                                            </div>
+                                            </>
+                                        )
+                                    })}
+                                    </div>
+                                    <div className='w-[40%] h-[auto]'>
+                                    {order.cartConsiderations.map((consideration) => {
+                                        return (
+                                            <>
+                                            <div className='flex text-[12px] text-gum justify-between items-center mb-4 px-2'>
+                                                <div className='flex items-center justify-center'>
+                                                    <div className='flex flex-col'>
+                                                        {consideration.name === 'Ethereum' && <p>Ethereum</p>}
+                                                        {consideration.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                                                    </div>
+                                                    <div className='flex items-center justify-between'>
+                                                        {consideration.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={consideration.image_url}/>}
+                                                    </div>
+                                                    <div>
+                                                        {consideration.identifier && <p>{consideration.name}</p>}
+                                                        <p className='text-[8px] text-gum'>{consideration.token}</p>
+                                                    </div>
+                                                </div>
+                                                <div className='flex flex-col justify-center'>
+                                                    <p className='mt-4'>{consideration.enteredAmount}</p>
+                                                </div>
+                                            </div>
+                                            </>
+                                        )
+                                    })}
+                                    </div>
                                 </div>
                             </div>
                         </div>
