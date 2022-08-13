@@ -9,8 +9,10 @@ const Order = ({sender, truncate, receiver}) => {
     const [openTrade, setOpenTrade] = useState(false)
     const [offerTrade, setOfferTrade] = useState(true)
     const [askTrade, setAskTrade] = useState(false)
-    const [offers, setOffers] = useState([])
-    const [considerations, setConsiderations] = useState([])
+    const storedOffers = JSON.parse(localStorage.getItem('offers')); // get the offers stored in local storage
+    const [offers, setOffers] = useState(storedOffers || []); // if any offers exist in local storage save them to this array else start with an empty array
+    const storedConsiderations = JSON.parse(localStorage.getItem('considerations'));
+    const [considerations, setConsiderations] = useState(storedConsiderations || []);
     const [showOption, setShowOption] = useState(2)
     const [orders, setOrders] = useState([])
     const [showPendingOrder, setShowPendingOrder] = useState(null)

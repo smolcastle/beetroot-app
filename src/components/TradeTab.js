@@ -274,6 +274,13 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     setSelectOption(e.target.value);
   }
 
+  // save the new offers and considerations in local storage
+  useEffect(() => {
+    localStorage.setItem("offers", JSON.stringify(offers));
+    localStorage.setItem("considerations", JSON.stringify(considerations));
+  }, [offers, considerations]);
+
+
   function CartItems(){
     return (
       <>
