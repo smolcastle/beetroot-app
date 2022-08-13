@@ -62,6 +62,15 @@ const Order = ({sender, truncate, receiver}) => {
         setIsLoading(false)
     }
 
+    // cancel an order using seaport function
+    async function cancelOrder(order){
+        try{
+            seaport.seaport.cancelOrders(order);
+            cancelFunc(order.id);
+        } catch(e) {
+            console.log('error cancelling the order', e);
+        }
+    }
 
     async function GetPendingOrders (){
         // use onSnapshot to fetch orders
@@ -105,6 +114,7 @@ const Order = ({sender, truncate, receiver}) => {
         GetPendingOrders()
     }
 
+    // update the status of order in db after cancelling
     async function cancelFunc(orderid){
         const orderRef = doc(getFirestore(), 'orders', orderid)
         const orderSnap = await getDoc(orderRef)
@@ -164,7 +174,7 @@ const Order = ({sender, truncate, receiver}) => {
                                 </div>
                                 <div className='w-[35%] mt-[4px]'>
                                     {(order.name !== sender && order.status !== 'cancelled') && <button className='bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
-                                    {(order.status !== 'cancelled') && <button className='bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]' onClick={() => cancelFunc(order.id)}>Reject</button>}
+                                    {(order.status !== 'cancelled') && <button className='bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]' onClick={() => cancelOrder(order)}>Reject</button>}
                                 </div>
                                 <div className='w-[5%]'>
                                 {showPendingOrder !== index &&
