@@ -27,7 +27,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
 
     async function fetchAssets(){
       try {
-        const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+        const holdingAssetsInfo = await getAssetsInCollection(nftBox?.toLowerCase(), sender);
         setUserAssets(holdingAssetsInfo?.assets);
       } catch(e) {
         console.log("Error while fetching assets", e);
@@ -37,6 +37,7 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     useEffect(() => {
       fetchAssets();
     },[nftBox])
+
 
     async function addNFT(item){
       if (item.id) {
@@ -99,8 +100,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
 
           // TODO: use assetInfo.image_url to display image.
           // remove the owner check above if you want to test with NFTs you don't own.
-          // const assetInfo = await getAsset(nftBox, tokenId);
-          // setAssestsInfo(...assetsInfo, assetInfo);
+          const assetInfo = await getAsset(nftBox, tokenId);
+          setAssestsInfo(...assetsInfo, assetInfo);
 
           setOffers(
             [
@@ -109,7 +110,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                 "id": uuidv4(),
                 "itemType": 2,
                 "token": nftBox,
-                "identifier": tokenId
+                "identifier": tokenId,
+                "image_url": assetInfo.image_url,
               }
             ]
           )
@@ -171,6 +173,9 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
         // user selects the fulfillment to be done by a particular address.
         await erc721Contract.tokenURI(tokenId);
 
+        const assetInfo = await getAsset(nftBox, tokenId);
+        setAssestsInfo(...assetsInfo, assetInfo);
+
         setConsiderations(
           [
             ...considerations,
@@ -179,7 +184,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
               "itemType": 2,
               "token": nftBox,
               "identifier": tokenId,
-              "recipient": sender
+              "recipient": sender,
+              "image_url": assetInfo.image_url,
             }
           ]
         )
@@ -456,9 +462,8 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                   <CartItems />
                   <div className='bg-gray6 rounded-[4px]'>
                   {nftBox !== "" &&
-                  //instead of usinf includes() which check whether a string 'includes' a sub string at any position, use startsWith()
-                  //filter out assests either with the token address or Nft name
-                    userAssets?.filter(asset => (asset.name?.toLowerCase() || asset.asset_contract.address).startsWith(nftBox.toLowerCase())).map(item => (
+                  //instead of using includes() which check whether a string 'includes' a sub string at any position, use startsWith()
+                    userAssets?.filter(asset => (asset.asset_contract.address).startsWith(nftBox.toLowerCase())).map(item => (
                         <div className='flex justify-between p-2 items-center'>
                           <div className='w-[20%]'>
                             <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
