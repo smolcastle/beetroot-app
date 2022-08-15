@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
 export default function NewChatModal({
   saveMessage,
@@ -8,10 +8,11 @@ export default function NewChatModal({
   getAllQueues,
   setSelected,
   index,
-  newModal, setNewModalState
+  newModal,
+  setNewModalState
 }) {
-  const [receiver, setReceiver] = useState("");
-  const [message, setMessage] = useState("");
+  const [receiver, setReceiver] = useState('')
+  const [message, setMessage] = useState('')
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -24,7 +25,9 @@ export default function NewChatModal({
               <button
                 className="text-themepink font-bold uppercase px-4 py-2 text-sm mr-1 mb-1 ml-20 mt-[1px]"
                 type="button"
-                onClick={() => (newModal ? setNewModalState(false) : setModalState(false))}
+                onClick={() =>
+                  newModal ? setNewModalState(false) : setModalState(false)
+                }
               >
                 Close
               </button>
@@ -39,7 +42,7 @@ export default function NewChatModal({
                   id="search"
                   class="w-full h-full outline-none text-white0 placeholder:text-white0 bg-white10 pl-4"
                   placeholder={"Enter recipient's address"}
-                  onChange={(e) => setReceiver((e.target.value).toLowerCase())}
+                  onChange={(e) => setReceiver(e.target.value.toLowerCase())}
                 />
               </div>
               <div className="flex w-full h-12 border-[1px] justify-center items-center mb-4">
@@ -50,31 +53,28 @@ export default function NewChatModal({
                   autoComplete="off"
                   id="search"
                   class="w-full h-full outline-none text-white0 placeholder:text-white0 bg-white10 pl-4"
-                  placeholder={"Write your first message"}
+                  placeholder={'Write your first message'}
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
               <button
                 onClick={() => {
                   if (receiver.match(/^(0x)[0-9a-fA-F]{40}$/)) {
-                    saveMessage(message, sender, receiver, dispatch);
-                    (newModal ? setNewModalState(false) : setModalState(false))
-                    getAllQueues(sender, dispatch);
-                    setSelected(index+1)
-                  }
-                  else{
+                    saveMessage(message, sender, receiver, dispatch)
+                    newModal ? setNewModalState(false) : setModalState(false)
+                    getAllQueues(sender, dispatch)
+                    setSelected(index + 1)
+                  } else {
                     alert('Invalid address')
                   }
                 }}
                 type="button"
-                disabled={!receiver.length }
+                disabled={!receiver.length}
                 class={`flex bg-themepink text-black h-10 w-full font-bold text-base shadow-sm rounded-sm justify-center items-center ${
-                  !receiver.length
-                    ? "cursor-not-allowed"
-                    : ""
+                  !receiver.length ? 'cursor-not-allowed' : ''
                 }`}
               >
-                {"Start New Chat"}
+                {'Start New Chat'}
               </button>
             </div>
           </div>
@@ -82,5 +82,5 @@ export default function NewChatModal({
       </div>
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </>
-  );
+  )
 }
