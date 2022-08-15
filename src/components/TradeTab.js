@@ -453,7 +453,9 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
                   <CartItems />
                   <div className='bg-gray6 rounded-[4px]'>
                   {nftBox !== "" &&
-                    userAssets?.filter(asset => asset.asset_contract.address.toLowerCase().includes(nftBox.toLowerCase())).map(item => (
+                  //instead of usinf includes() which check whether a string 'includes' a sub string at any position, use startsWith()
+                  //filter out assests either with the token address or Nft name
+                    userAssets?.filter(asset => (asset.name?.toLowerCase() || asset.asset_contract.address).startsWith(nftBox.toLowerCase())).map(item => (
                         <div className='flex justify-between p-2 items-center'>
                           <div className='w-[20%]'>
                             <img className='w-[40px] h-[40px] rounded-[8px] outline-none' src={item.image_url}/>
