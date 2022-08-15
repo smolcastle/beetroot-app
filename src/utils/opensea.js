@@ -24,12 +24,14 @@ const getAssetsInCollection = async function getAssetsInCollection(tokenAddress,
 
   const api_url = `${URL}/assets?owner=${owner}&asset_contract_address=${tokenAddress}&limit=${limit}&include_orders=false`;
 
-  const response = fetch(api_url, options)
-    .then(response => response.json())
-    .then(response => response)
-    .catch(err => console.error(err));
+  if(tokenAddress !== ''){
+    const response = await fetch(api_url, options)
+      .then(response => response.json())
+      .then(response => response)
+      .catch(err => console.error(err));
 
-  return response;
+    return response;
+  }
 }
 
 export {getAsset, getAssetsInCollection};

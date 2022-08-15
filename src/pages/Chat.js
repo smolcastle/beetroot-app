@@ -861,7 +861,9 @@ export default function Chat() {
   return (
     <div className={`flex flex-1 flex-col p-2 min-h-0 bg-white0 font-rubrik overflow-hidden ${onboarded == null ? "hidden" : "" }`}>
       <div className="flex flex-1 mt-3 h-[95%] pb-5 ml-[16px]">
-        {signatureData && signatureData?.signature && users && sender && onboarded ? (
+        {signatureData && signatureData?.signature ? (
+          <>
+        {users && sender && onboarded ? (
           <>
             <Users
               sender={sender}
@@ -893,6 +895,16 @@ export default function Chat() {
           </>
         ) : (
           <Onboarding users={users} sender={sender} onboarded={onboarded} truncate={truncate} setOnboarded={setOnboarded}/>
+        )} </>) : (
+          <>
+            <SigningModal
+              signMessage={signMessage}
+              sender={sender}
+              setSignModalState={setSignModalState}
+              dispatch={dispatch}
+              chainId={chain.id}
+            />
+          </>
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import seaport from '../utils/seaport'
 import { getDateTime } from '../helpers/Collections'
-import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { addDoc, getFirestore, collection, serverTimestamp, getDocs, doc, getDoc, updateDoc, query, onSnapshot, orderBy } from 'firebase/firestore'
 import TradeTab from '../components/TradeTab'
 import WalletTab from '../components/WalletTab'
 
@@ -9,18 +9,23 @@ const Order = ({sender, truncate, receiver}) => {
     const [openTrade, setOpenTrade] = useState(false)
     const [offerTrade, setOfferTrade] = useState(true)
     const [askTrade, setAskTrade] = useState(false)
-    const [offers, setOffers] = useState([])
-    const [considerations, setConsiderations] = useState([])
-    const [showOption, setShowOption] = useState(3)
+    const storedOffers = JSON.parse(localStorage.getItem('offers')); // get the offers stored in local storage
+    const [offers, setOffers] = useState(storedOffers || []); // if any offers exist in local storage save them to this array else start with an empty array
+    const storedConsiderations = JSON.parse(localStorage.getItem('considerations'));
+    const [considerations, setConsiderations] = useState(storedConsiderations || []);
+    const [showOption, setShowOption] = useState(2)
     const [orders, setOrders] = useState([])
     const [showPendingOrder, setShowPendingOrder] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [orderCreated, setOrderCreated] = useState(false);
 
     async function saveOrder(order, offerFor) {
         try {
           await addDoc(collection(getFirestore(), "orders"), {
             name: sender,
             to: offerFor,
+            cartOffers: offers,
+            cartConsiderations: considerations,
             order: order,
             status: 'pending',
             timestamp: serverTimestamp(),
@@ -30,31 +35,59 @@ const Order = ({sender, truncate, receiver}) => {
         }
       }
     async function createOrder(offerFor) {
-        if(offers.length == 0 || considerations.length == 0){
-            alert("Order cannot be empty")
-        }
-        else{
-            setIsLoading(true)
-            const orderActions = await seaport.seaport.createOrder({
-                offer: offers,
-                consideration: considerations,
-                allowPartialFills: false,
-                restrictedByZone: false,
-            });
-            const order = await orderActions.executeAllActions();
-            console.log(order)
-            saveOrder(order, offerFor)
+        try{
+            if(offers.length == 0 || considerations.length == 0){
+                alert("Order cannot be empty")
+            }
+            else{
+                setIsLoading(true)
+                const orderActions = await seaport.seaport.createOrder({
+                    offer: offers,
+                    consideration: considerations,
+                    allowPartialFills: false,
+                    restrictedByZone: false,
+                });
+                const order = await orderActions.executeAllActions();
+                console.log(order);
+                saveOrder(order, offerFor);
+                setOrderCreated(true);
+                setIsLoading(false);
+            }
+        } catch(e){
+            // hide loader when cancel is clicked on metamask notification
+            console.log("Error creating an order",e)
+            alert("Error creating the order")
             setIsLoading(false)
         }
         setIsLoading(false)
-        setOffers([])
-        setConsiderations([])
     }
 
+    // cancel an order using seaport function
+    async function cancelOrder(order){
+        try{
+            seaport.seaport.cancelOrders(order);
+            cancelFunc(order.id);
+        } catch(e) {
+            console.log('error cancelling the order', e);
+        }
+    }
 
     async function GetPendingOrders (){
-        const data = await getDocs(collection(getFirestore(), 'orders'))
-        setOrders(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
+        // use onSnapshot to fetch orders
+        try {
+            const ordersRef = collection(getFirestore(), "orders");
+            const q = query(ordersRef, orderBy("timestamp", "desc"));
+            onSnapshot(q, (querySnapshot) => {
+              let orders = [];
+              querySnapshot.forEach((doc) => {
+                orders.push({...doc.data(), id:doc.id});
+              });
+              setOrders(orders);
+            });
+
+        } catch (e) {
+            console.log(e)
+        }
     }
     useEffect(() => {
         GetPendingOrders()
@@ -77,8 +110,11 @@ const Order = ({sender, truncate, receiver}) => {
                 status: 'fulfilled',
             })
         }
+        // update order list as soon as it is fulfilled
+        GetPendingOrders()
     }
 
+    // update the status of order in db after cancelling
     async function cancelFunc(orderid){
         const orderRef = doc(getFirestore(), 'orders', orderid)
         const orderSnap = await getDoc(orderRef)
@@ -87,6 +123,8 @@ const Order = ({sender, truncate, receiver}) => {
                 status: 'cancelled',
             })
         }
+        // update order list as soon as it is cancelled
+        GetPendingOrders()
     }
 
     const showPendingOrderFunc = (id, index) => {
@@ -118,24 +156,25 @@ const Order = ({sender, truncate, receiver}) => {
         }
         {showOption === 2 &&
             <TradeTab considerations={considerations} setConsiderations={setConsiderations} truncate={truncate} isLoading={isLoading} createOrder={createOrder} askTrade={askTrade} setAskTrade={setAskTrade}
-            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers}/>
+            offerTrade={offerTrade} setOfferTrade={setOfferTrade} setOpenTrade={setOpenTrade} sender={sender} receiver={receiver} setOffers={setOffers} offers={offers} orderCreated={orderCreated} setOrderCreated={setOrderCreated}/>
         }
         {showOption === 3 && <>
-            <div className='w-[70%]'>
+            <div className='w-[70%] max-h-[600px] overflow-y-scroll px-2'>
                 {orders.map((order, index) => {
-                    if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
+                    if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender || order.to === "")){
                     return (
                         <div className='flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]'>
                             <div className='flex justify-between'>
                                 <div className='w-[60%]'>
                                     <h1 className='my-2 text-gray2 text-[10px]'>Created: {getDateTime(order.timestamp?.seconds).date}</h1>
-                                    {order.status === 'pending' && <h1 className='text-gray2 text-[10px]'>Order Pending</h1>}
+                                    {order.status === 'pending' && order.name === sender && <h1 className='text-gray2 text-[10px]'>Order has not been fulfilled by recipient. Waiting...</h1>}
+                                    {order.status === 'pending' && order.to === sender && <h1 className='text-gray2 text-[10px]'>Click on the fulfill button to accept the order.</h1>}
                                     {order.status === 'cancelled' && <h1 className='text-gum text-[10px]'>Order Cancelled</h1>}
-                                    {order.status === 'fulfilled' && <h1 className='text-parsley text-[10px]'>Order Fulfilled</h1>}
+                                    {order.status === 'fulfilled' && <h1 className='text-parsley text-[10px]'>Order Complete</h1>}
                                 </div>
                                 <div className='w-[35%] mt-[4px]'>
-                                    {(order.to == sender && order.status !== 'cancelled') && <button className='bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
-                                    {(order.status !== 'cancelled') && <button className='bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]' onClick={() => cancelFunc(order.id)}>Reject</button>}
+                                    {(order.name !== sender && order.status !== 'cancelled') && <button className='bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
+                                    {(order.status !== 'cancelled') && <button className='bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]' onClick={() => cancelOrder(order)}>Reject</button>}
                                 </div>
                                 <div className='w-[5%]'>
                                 {showPendingOrder !== index &&
@@ -167,8 +206,59 @@ const Order = ({sender, truncate, receiver}) => {
                                 </div>
                             </div>
                             <div className=''>
-                                <div index={index} className={`${showPendingOrder === index ? "block" : "hidden"}`}>
-                                    Order Info
+                                <div index={index} className={`flex justify-between mt-8 ${showPendingOrder === index ? "block" : "hidden"}`}>
+                                    <div className='w-[40%] h-[auto]'>
+                                    {order.cartOffers.map((offer) => {
+                                        return (
+                                            <>
+                                            <div className='flex text-[12px] text-gum justify-between items-center mb-4 px-2'>
+                                                <div className='flex items-center justify-center'>
+                                                    <div className='flex flex-col'>
+                                                        {offer.name === 'Ethereum' && <p>Ethereum</p>}
+                                                        {offer.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                                                    </div>
+                                                    <div className='flex items-center justify-between'>
+                                                        {offer.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={offer.image_url}/>}
+                                                    </div>
+                                                    <div>
+                                                        {offer.identifier && <p>{offer.name}</p>}
+                                                        <p className='text-[8px] text-gum'>{offer.token}</p>
+                                                    </div>
+                                                </div>
+                                                <div className='flex flex-col justify-center'>
+                                                    <p className='mt-4'>{offer.enteredAmount}</p>
+                                                </div>
+                                            </div>
+                                            </>
+                                        )
+                                    })}
+                                    </div>
+                                    <div className='w-[40%] h-[auto]'>
+                                    {order.cartConsiderations.map((consideration) => {
+                                        return (
+                                            <>
+                                            <div className='flex text-[12px] text-gum justify-between items-center mb-4 px-2'>
+                                                <div className='flex items-center justify-center'>
+                                                    <div className='flex flex-col'>
+                                                        {consideration.name === 'Ethereum' && <p>Ethereum</p>}
+                                                        {consideration.symbol === 'ETH' && <p className='mt-2'>ETH</p>}
+                                                    </div>
+                                                    <div className='flex items-center justify-between'>
+                                                        {consideration.identifier && <img className='w-[40px] h-[40px] rounded-[8px] mr-4' src={consideration.image_url}/>}
+                                                    </div>
+                                                    <div>
+                                                        {consideration.identifier && <p>{consideration.name}</p>}
+                                                        <p className='text-[8px] text-gum'>{consideration.token}</p>
+                                                    </div>
+                                                </div>
+                                                <div className='flex flex-col justify-center'>
+                                                    <p className='mt-4'>{consideration.enteredAmount}</p>
+                                                </div>
+                                            </div>
+                                            </>
+                                        )
+                                    })}
+                                    </div>
                                 </div>
                             </div>
                         </div>
