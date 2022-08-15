@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from "ethers";
 import erc721ABI from "../abis/erc721.json";
 import seaport from '../utils/seaport';
-import {getAsset, getAssetsInCollection, retrieveAssets} from '../utils/opensea';
+import {getAsset, getAssetsInCollection} from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
 
 const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerations, setConsiderations, truncate, isLoading, askTrade, offerTrade, setAskTrade, setOfferTrade, orderCreated, setOrderCreated}) => {
@@ -26,9 +26,12 @@ const TradeTab = ({createOrder, sender, receiver, setOffers, offers, considerati
     };
 
     async function fetchAssets(){
-      // const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
-      const holdingAssetsInfo = await retrieveAssets();
-      setUserAssets(holdingAssetsInfo?.assets);
+      try {
+        const holdingAssetsInfo = await getAssetsInCollection(nftBox, sender);
+        setUserAssets(holdingAssetsInfo?.assets);
+      } catch(e) {
+        console.log("Error while fetching assets", e);
+      }
     }
 
     useEffect(() => {
