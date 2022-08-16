@@ -25,6 +25,15 @@
   display: none;
 }
 
+.home-section {
+  background-image: url('./img/asset1.png');
+  background-repeat: no-repeat;
+}
+.footer-section {
+  background-image: url('./img/footer_img.png');
+  background-repeat: no-repeat;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }

@@ -242,29 +242,29 @@ const TradeTab = ({
         <path
           d="M1.42859 1.07129H2.09455C3.42683 1.07129 4.58227 1.99207 4.87962 3.29075L5.65197 6.66396"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M18.8607 7.8557C18.6631 9.94461 18.0707 11.683 17.5734 12.7571C17.3178 13.3091 16.8689 13.7377 16.2808 13.8927C15.5609 14.0824 14.3225 14.2859 12.3214 14.2859C10.3202 14.2859 9.08183 14.0824 8.36202 13.8927C7.77383 13.7377 7.3249 13.3091 7.06936 12.7571C6.46265 11.4465 5.71423 9.14718 5.71423 6.42871H17.4999C18.2889 6.42871 18.9349 7.07023 18.8607 7.8557Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M7.85719 19.2464C8.74018 19.2464 9.45598 18.5305 9.45598 17.6475C9.45598 16.7645 8.74018 16.0488 7.85719 16.0488C6.97422 16.0488 6.25842 16.7645 6.25842 17.6475C6.25842 18.5305 6.97422 19.2464 7.85719 19.2464Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M16.7857 19.2464C17.6687 19.2464 18.3844 18.5305 18.3844 17.6475C18.3844 16.7645 17.6687 16.0488 16.7857 16.0488C15.9027 16.0488 15.187 16.7645 15.187 17.6475C15.187 18.5305 15.9027 19.2464 16.7857 19.2464Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     );
@@ -281,42 +281,42 @@ const TradeTab = ({
         <path
           d="M1.42859 1.07129H2.09455C3.42683 1.07129 4.58227 1.99207 4.87962 3.29075L5.65197 6.66396"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M18.8607 7.8557C18.6631 9.94461 18.0707 11.683 17.5734 12.7571C17.3178 13.3091 16.8689 13.7377 16.2808 13.8927C15.5609 14.0824 14.3225 14.2859 12.3214 14.2859C10.3202 14.2859 9.08183 14.0824 8.36202 13.8927C7.77383 13.7377 7.3249 13.3091 7.06936 12.7571C6.46265 11.4465 5.71423 9.14718 5.71423 6.42871H17.4999C18.2889 6.42871 18.9349 7.07023 18.8607 7.8557Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M7.85719 19.2464C8.74018 19.2464 9.45598 18.5305 9.45598 17.6475C9.45598 16.7645 8.74018 16.0488 7.85719 16.0488C6.97422 16.0488 6.25842 16.7645 6.25842 17.6475C6.25842 18.5305 6.97422 19.2464 7.85719 19.2464Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M16.7857 19.2464C17.6687 19.2464 18.3844 18.5305 18.3844 17.6475C18.3844 16.7645 17.6687 16.0488 16.7857 16.0488C15.9027 16.0488 15.187 16.7645 15.187 17.6475C15.187 18.5305 15.9027 19.2464 16.7857 19.2464Z"
           fill="#DCE5D7"
           stroke="#4E7B36"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <g clip-path="url(#clip0_792_6747)">
+        <g clipPath="url(#clip0_792_6747)">
           <path
             d="M12.5 10.3868C14.5547 10.3868 16.2203 8.72117 16.2203 6.66653C16.2203 4.6119 14.5547 2.94629 12.5 2.94629C10.4454 2.94629 8.77979 4.6119 8.77979 6.66653C8.77979 8.72117 10.4454 10.3868 12.5 10.3868Z"
             fill="#DCE5D7"
             stroke="#4E7B36"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M14.0874 6.66699H11.1112"
             stroke="#4E7B36"
-            stroke-linecap="round"
+            strokeLinecap="round"
           />
         </g>
         <defs>
@@ -398,32 +398,32 @@ const TradeTab = ({
                         <path
                           d="M0.642578 3.20996H11.3569"
                           stroke="#AB224E"
-                          stroke-linecap="round"
+                          strokeLinecap="round"
                         />
                         <path
                           d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z"
                           fill="#EED3DC"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M4.71484 5.50195V9.04869"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M7.28223 5.50195V9.04869"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </svg>
                       <p className="mt-4">{offer.enteredAmount}</p>
@@ -469,32 +469,32 @@ const TradeTab = ({
                         <path
                           d="M0.642578 3.20996H11.3569"
                           stroke="#AB224E"
-                          stroke-linecap="round"
+                          strokeLinecap="round"
                         />
                         <path
                           d="M9.84896 3.20996H2.14698C2.02265 5.45785 2.02459 7.6884 2.35966 9.92218C2.48336 10.7468 3.19178 11.3569 4.02568 11.3569H7.97025C8.80419 11.3569 9.51253 10.7468 9.6363 9.92218C9.97136 7.6884 9.97325 5.45785 9.84896 3.20996Z"
                           fill="#EED3DC"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M3.8584 3.2099V2.78202C3.8584 2.2146 4.0838 1.67043 4.48503 1.2692C4.88625 0.867981 5.43042 0.642578 5.99784 0.642578C6.56525 0.642578 7.10942 0.867981 7.51064 1.2692C7.91186 1.67043 8.13727 2.2146 8.13727 2.78202V3.2099"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M4.71484 5.50195V9.04869"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M7.28223 5.50195V9.04869"
                           stroke="#AB224E"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </svg>
                       <p className="mt-4">{consideration.enteredAmount}</p>
@@ -571,14 +571,14 @@ const TradeTab = ({
                     <path
                       d="M8.00084 8.51756C8.00084 8.10493 8.33644 7.85183 8.92854 7.4562C9.47773 7.08923 9.76742 6.61321 9.63856 5.96539C9.50971 5.31756 8.97443 4.78229 8.32661 4.65343C7.30969 4.45115 6.33105 5.25429 6.33105 6.29112"
                       stroke="#828282"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M8 11.3765V11.0908"
                       stroke="#828282"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </button>
@@ -645,14 +645,14 @@ const TradeTab = ({
                     <path
                       d="M8.00084 8.51756C8.00084 8.10493 8.33644 7.85183 8.92854 7.4562C9.47773 7.08923 9.76742 6.61321 9.63856 5.96539C9.50971 5.31756 8.97443 4.78229 8.32661 4.65343C7.30969 4.45115 6.33105 5.25429 6.33105 6.29112"
                       stroke="#828282"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M8 11.3765V11.0908"
                       stroke="#828282"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </button>
@@ -703,14 +703,14 @@ const TradeTab = ({
                     d="M7.5714 14.2859C11.2796 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2796 0.857422 7.5714 0.857422C3.86322 0.857422 0.857147 3.86349 0.857147 7.57167C0.857147 11.2798 3.86322 14.2859 7.5714 14.2859Z"
                     fill="#DCE5D7"
                     stroke="#4E7B36"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M15.1429 15.1432L12.3238 12.3242"
                     stroke="#4E7B36"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
                 <input
@@ -747,12 +747,12 @@ const TradeTab = ({
                 <path
                   d="M8 5.14258V10.8569"
                   stroke="#4E7B36"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M10.8571 8H5.14285"
                   stroke="#4E7B36"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
               </svg>
             </div>
@@ -806,12 +806,12 @@ const TradeTab = ({
                 <path
                   d="M8 5.14258V10.8569"
                   stroke="#4E7B36"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M10.8571 8H5.14285"
                   stroke="#4E7B36"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
               </svg>
             </div>
@@ -827,7 +827,10 @@ const TradeTab = ({
                       )
                     )
                     .map((item) => (
-                      <div className="flex justify-between p-2 items-center">
+                      <div
+                        key={item.id}
+                        className="flex justify-between p-2 items-center"
+                      >
                         <div className="w-[20%]">
                           <img
                             className="w-[40px] h-[40px] rounded-[8px] outline-none"
@@ -860,12 +863,12 @@ const TradeTab = ({
                             <path
                               d="M8 5.14258V10.8569"
                               stroke="#AB224E"
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                             />
                             <path
                               d="M10.8574 8H5.14307"
                               stroke="#AB224E"
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                             />
                           </svg>
                         </div>

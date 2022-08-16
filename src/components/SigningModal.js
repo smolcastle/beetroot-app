@@ -31,7 +31,7 @@ export default function SigningModal({
                   setSignModalState(false);
                 }}
                 type="button"
-                class={
+                className={
                   'flex border-2 border-gum border-solid text-black0 h-10 w-full text-gray1 shadow-sm rounded-md justify-center items-center mt-16'
                 }
               >
