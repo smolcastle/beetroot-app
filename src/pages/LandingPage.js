@@ -7,6 +7,9 @@ import discord from '../img/discord_gum.png';
 import mediumLogo from '../img/medium_gum.png';
 import artboard from '../img/Artboard.png';
 import asset2 from '../img/asset2.png';
+import chatImg from '../img/chat_img.png';
+import tradeImg from '../img/trade_img.png';
+
 import { Link } from 'react-router-dom';
 
 function FAQList({ title }) {
@@ -46,8 +49,8 @@ function FAQList({ title }) {
 function LandingPage() {
   return (
     <div className="h-full w-screen bg-white0 font-rubrik flex flex-col relative md:py-0 md:px-0 overflow-x-hidden">
-      <section className="flex h-full justify-between lg:px-24 lg:pt-24 mb-20">
-        <div className="flex flex-col w-[60%]">
+      <section className="flex h-full justify-between lg:px-24 mb-32">
+        <div className="flex flex-col w-[60%] lg:pt-24">
           <img src={logo4} className="w-[48px]" />
           <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
             NFT marketplace for negotiators
@@ -94,8 +97,21 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className=" w-[30%]">
-          <img src={ellipse1} className="w-[200px]" />
+        <div className="w-[30%] -mb-32">
+          <div className="scroll-card overflow-y-scroll h-full relative">
+            <img src={ellipse1} className="w-[200px] translate-y-64" />
+            <div className="translate-y-[40%]">
+              <p className="reenie-beanie text-[32px] text-gum font-medium">
+                Chat to negotiate deals.....
+              </p>
+              <img src={chatImg} className="mt-6" />
+              <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
+                Create orders by adding NFTS and coins into individual carts...
+              </p>
+              <img src={tradeImg} />
+              <div className="h-[500px]"></div>
+            </div>
+          </div>
         </div>
       </section>
       <section className="home-section bg-gray7 px-24 pb-24 mb-20">
@@ -106,64 +122,102 @@ function LandingPage() {
           Because of the non-fungibility nature of NFTs, their fair prices are
           hard to determine.
         </p>
-        <div className="flex mt-40 items-center justify-center px-32">
-          <div className="w-[50%] px-16">ENCRYPTION</div>
-          <div className="w-[50%] px-16">
-            <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
-              Wallet To Wallet Deals
-            </h1>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              Negotiating deals are hard and time consuming. You can never be
-              certain that the other user is not scamming you and owns the
-              particular NFT. We make it easy to verify the ownership of NFTs.
-            </p>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              You can use Beetroot to send encrypted deals to other wallets
-              which only they can see.
-            </p>
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[550px] ">
+              <div className="grid grid-cols-5 gap-5 bg-gumlight p-16 rounded-[8px]">
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  E
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  N
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  C
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  R
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  Y
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  P
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  T
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  I
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  O
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  N
+                </div>
+              </div>
+            </div>
+            <div className="w-[400px]">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Wallet To Wallet Deals
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                Negotiating deals are hard and time consuming. You can never be
+                certain that the other user is not scamming you and owns the
+                particular NFT. We make it easy to verify the ownership of NFTs.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                You can use Beetroot to send encrypted deals to other wallets
+                which only they can see.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex mt-40 items-center justify-center px-32">
-          <div className="w-[50%] px-16">
-            <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
-              Buy With Your NFTs
-            </h1>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              Existing marketplaces only let you spend your ETH to buy NFTs. You
-              cannot use your NFT to buy another NFT without going through
-              multiple trades and paying high fees.
-            </p>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              With Beetroot, you can trade your digital currencies and/or NFTs
-              to buy other NFTs in a single trade.
-            </p>
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[400px]">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Buy With Your NFTs
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                Existing marketplaces only let you spend your ETH to buy NFTs.
+                You cannot use your NFT to buy another NFT without going through
+                multiple trades and paying high fees.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                With Beetroot, you can trade your digital currencies and/or NFTs
+                to buy other NFTs in a single trade.
+              </p>
+            </div>
+            <div className="w-[550px] bg-gumlight/[0.5] p-16 rounded-[8px]">
+              <img src={artboard} />
+            </div>
           </div>
-          <div className="w-[50%]">
-            <img src={artboard} />
-          </div>
-        </div>
-        <div className="flex mt-40 items-center justify-center px-32">
-          <div className="w-[50%]">
-            <img src={asset2} />
-          </div>
-          <div className="w-[50%] px-16">
-            <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
-              Personalised Offers
-            </h1>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              99% offers on NFTs are never aligned to meet your expectations.
-              They are mostly bots trying to grab them at huge discounts. We
-              give you the ability to negotiate those terms.
-            </p>
-            <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-              With beetroot, you can make counter offers and discuss details so
-              it suits your price expectations.
-            </p>
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[550px] h-[300px] bg-gumlight/[0.5]  rounded-[8px]">
+              <img
+                src={asset2}
+                className="h-[350px] place-self-end -mt-[50px]"
+              />
+            </div>
+            <div className="w-[400px] ">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Personalised Offers
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                99% offers on NFTs are never aligned to meet your expectations.
+                They are mostly bots trying to grab them at huge discounts. We
+                give you the ability to negotiate those terms.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                With beetroot, you can make counter offers and discuss details
+                so it suits your price expectations.
+              </p>
+            </div>
           </div>
         </div>
       </section>
-      <section className="mb-24 px-24">
-        <div className="flex px-16 justify-center">
+      <section className="mb-36 px-24">
+        <div className="flex px-24 justify-between">
           <div className="w-[50%]">
             <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
               FAQs
@@ -177,7 +231,7 @@ function LandingPage() {
               />
             </div>
           </div>
-          <div className="w-[50%] mt-16 text-[18px] text-gray1 font-normal">
+          <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
             <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
             <p className="w-[200px] mt-4">Write to us at </p>
             <span className="text-gum">hello@beetroot.ai</span>
@@ -198,26 +252,28 @@ function LandingPage() {
         </div>
       </section>
       <footer className="mb-20 px-24">
-        <div className="flex justify-evenly">
-          <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
-            <h1 className="text-[24px] font-bold">Join the community!</h1>
-            <p className="text-[14px] font-normal w-[250px] mt-2">
-              Participate in discussions, contribute to our efforts, cheer up
-              our devs with memes. Get early access, user rewards and more!
-            </p>
+        <div className="flex flex-col px-24">
+          <div className="flex justify-between">
+            <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
+              <h1 className="text-[24px] font-bold">Join the community!</h1>
+              <p className="text-[14px] font-normal w-[250px] mt-2">
+                Participate in discussions, contribute to our efforts, cheer up
+                our devs with memes. Get early access, user rewards and more!
+              </p>
+            </div>
+            <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
+              <h1 className="font-bold text-[24px] text-gray6">
+                An NFT Marketplace for negotiators
+              </h1>
+              <Link to="/chat">
+                <button className="text-gray6 text-[14px] font-medium">
+                  {'< LAUNCH APP />'}
+                </button>
+              </Link>
+            </div>
           </div>
-          <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
-            <h1 className="font-bold text-[24px] text-gray6">
-              An NFT Marketplace for negotiators
-            </h1>
-            <Link to="/chat">
-              <button className="text-gray6 text-[14px] font-medium">
-                {'< LAUNCH APP />'}
-              </button>
-            </Link>
-          </div>
+          <p className="text-gray1 text-[14px] mt-4">&copy; beetroot 2022</p>
         </div>
-        <p className="text-gray1 text-[14px] mt-4">&copy; beetroot 2022</p>
       </footer>
     </div>
   );

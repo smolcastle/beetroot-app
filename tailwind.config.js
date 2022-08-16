@@ -81,6 +81,7 @@ module.exports = {
       overlaybg: '#5B3A3E',
       gum: '#AB224E',
       gumtint: '#EED3DC',
+      gumlight: '#F7E9EE',
       parsley: '#4E7B36',
       parsleytint: '#DCE5D7',
       'nord-dark1': '#D7DFEC',
