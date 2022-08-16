@@ -1,10 +1,11 @@
-import logo4 from '../img/logo4.png'
-import ellipse1 from '../img/Ellipse1.png'
-import ellipse2 from '../img/Ellipse2.png'
-import twitter from '../img/twitter_gum.png'
-import discord from '../img/discord_gum.png'
-import mediumLogo from '../img/medium_gum.png'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import logo4 from '../img/logo4.png';
+import ellipse1 from '../img/Ellipse1.png';
+import ellipse2 from '../img/Ellipse2.png';
+import twitter from '../img/twitter_gum.png';
+import discord from '../img/discord_gum.png';
+import mediumLogo from '../img/medium_gum.png';
+import { Link } from 'react-router-dom';
 
 function LandingPage() {
   return (
@@ -58,7 +59,7 @@ function LandingPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default LandingPage
+export default LandingPage;

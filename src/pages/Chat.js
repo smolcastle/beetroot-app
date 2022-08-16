@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
 import {
   getFirestore,
@@ -15,8 +15,8 @@ import {
   updateDoc,
   doc,
   serverTimestamp
-} from 'firebase/firestore'
-import { useDispatch, useSelector } from 'react-redux'
+} from 'firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   hideLoader,
   resetMessages,
@@ -29,28 +29,27 @@ import {
   updateUsers,
   updateReceiverContacts,
   updateMsgTime
-} from '../actions/actions'
-import { getDateTime, isFunction, truncate } from '../helpers/Collections'
-import NewChatModal from '../components/NewChatModal'
-import Provider from '../utils/Provider'
-import SigningModal from '../components/SigningModal'
-import { ethers } from 'ethers'
-import { generateNonce, SiweMessage } from 'siwe'
-import Order from './Order'
-import { useAccount } from 'wagmi'
-import profile from '../img/profile.png'
-import profile0 from '../img/profile0.png'
-import { useNetwork } from 'wagmi'
-import firebase from '../utils/firebase'
-import storage from '../utils/firebase'
-import Onboarding from './Onboarding'
-import mascot from '../img/mascot-hands.png'
+} from '../actions/actions';
+import { getDateTime, isFunction, truncate } from '../helpers/Collections';
+import Provider from '../utils/Provider';
+import SigningModal from '../components/SigningModal';
+import { ethers } from 'ethers';
+import { generateNonce, SiweMessage } from 'siwe';
+import Order from './Order';
+import { useAccount } from 'wagmi';
+import profile from '../img/profile.png';
+import profile0 from '../img/profile0.png';
+import { useNetwork } from 'wagmi';
+import firebase from '../utils/firebase';
+import storage from '../utils/firebase';
+import Onboarding from './Onboarding';
+import mascot from '../img/mascot-hands.png';
 
-const db = getFirestore()
+const db = getFirestore();
 
 async function saveMessage(messageText, sender, receiver, dispatch) {
   if (!messageText?.trim().length) {
-    return
+    return;
   }
   // Add a new message entry to the Firebase database.
   try {
@@ -63,7 +62,7 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
         sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
       profilePicUrl: 'https://i.pravatar.cc/150?img=3',
       timestamp: serverTimestamp()
-    })
+    });
     await addDoc(collection(db, `address book/ ${receiver}/texts`), {
       name: sender,
       text: messageText,
@@ -73,38 +72,38 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
         sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
       profilePicUrl: 'https://i.pravatar.cc/150?img=3',
       timestamp: serverTimestamp()
-    })
+    });
   } catch (error) {
-    console.error('Error writing new message to Firebase Database', error)
+    console.error('Error writing new message to Firebase Database', error);
   }
 }
 
 async function getAllQueues(sender, dispatch) {
-  const queue_ids = {}
+  const queue_ids = {};
 
   const query1 = query(
     collection(db, `address book/ ${sender}/texts`),
     where('receiver', '==', sender),
     orderBy('timestamp', 'asc')
-  )
+  );
 
   const query2 = query(
     collection(db, `address book/ ${sender}/texts`),
     where('name', '==', sender),
     orderBy('timestamp', 'asc')
-  )
+  );
 
-  const querySnapshot1 = await getDocs(query1)
-  const querySnapshot2 = await getDocs(query2)
+  const querySnapshot1 = await getDocs(query1);
+  const querySnapshot2 = await getDocs(query2);
 
   querySnapshot1.forEach((doc) => {
-    queue_ids[doc.data().queue_id] = true
-  })
+    queue_ids[doc.data().queue_id] = true;
+  });
   querySnapshot2.forEach((doc) => {
-    queue_ids[doc.data().queue_id] = true
-  })
-  dispatch(updateQueueIds(Object.keys(queue_ids).length ? queue_ids : null))
-  dispatch(hideLoader())
+    queue_ids[doc.data().queue_id] = true;
+  });
+  dispatch(updateQueueIds(Object.keys(queue_ids).length ? queue_ids : null));
+  dispatch(hideLoader());
 }
 
 // Loads chat messages history and listens for upcoming ones.
@@ -119,45 +118,45 @@ function listenMessages(sender, receiver, dispatch) {
     // ),
     orderBy('timestamp', 'desc'),
     limit(50)
-  )
+  );
 
   const unsubscribe = onSnapshot(recentMessagesQuery, (querySnapshot) => {
-    const messages = []
+    const messages = [];
     querySnapshot.forEach((doc) => {
-      messages.push({ ...doc.data(), id: doc.id })
-    })
+      messages.push({ ...doc.data(), id: doc.id });
+    });
     // console.log(messages)
-    dispatch(updateMessages(messages.length ? messages : null))
-  })
-  return unsubscribe
+    dispatch(updateMessages(messages.length ? messages : null));
+  });
+  return unsubscribe;
 }
 
 async function getSignatureData(sender, dispatch) {
-  const signRef = doc(getFirestore(), 'signings', sender)
-  const signatureDataSnap = await getDoc(signRef)
+  const signRef = doc(getFirestore(), 'signings', sender);
+  const signatureDataSnap = await getDoc(signRef);
   if (signatureDataSnap.exists()) {
-    const signatureData = signatureDataSnap.data()
+    const signatureData = signatureDataSnap.data();
     const recoveredAddress = ethers.utils.verifyMessage(
       signatureData.message,
       signatureData.signature
-    )
+    );
     if (recoveredAddress.toLowerCase() === sender) {
-      dispatch(updateSignatureData(signatureData))
-      getAllQueues(sender, dispatch)
+      dispatch(updateSignatureData(signatureData));
+      getAllQueues(sender, dispatch);
     } else {
-      dispatch(hideLoader())
-      alert('Signature did not match')
+      dispatch(hideLoader());
+      alert('Signature did not match');
     }
   } else {
-    dispatch(hideLoader())
-    console.log('No such document!')
+    dispatch(hideLoader());
+    console.log('No such document!');
   }
 }
 
 async function signMessage(sender, dispatch, chainId, signer) {
   try {
-    dispatch(showLoader())
-    const nonce = generateNonce()
+    dispatch(showLoader());
+    const nonce = generateNonce();
     const message = new SiweMessage({
       domain: window.location.host,
       address: sender,
@@ -166,28 +165,28 @@ async function signMessage(sender, dispatch, chainId, signer) {
       version: '1',
       chainId,
       nonce
-    })
-    const msgStr = message.prepareMessage()
-    const signature = await Provider.signMessage(msgStr, signer)
+    });
+    const msgStr = message.prepareMessage();
+    const signature = await Provider.signMessage(msgStr, signer);
     const recoveredAddress = ethers.utils
       .verifyMessage(msgStr, signature)
-      .toLowerCase()
+      .toLowerCase();
     if (recoveredAddress === sender) {
-      const signingsRef = collection(getFirestore(), 'signings')
+      const signingsRef = collection(getFirestore(), 'signings');
       await setDoc(doc(signingsRef, sender), {
         address: sender,
         signature,
         message: msgStr,
         timestamp: serverTimestamp()
-      })
-      getSignatureData(sender, dispatch)
+      });
+      getSignatureData(sender, dispatch);
     } else {
-      dispatch(hideLoader())
-      alert("Signature didn't match")
+      dispatch(hideLoader());
+      alert("Signature didn't match");
     }
   } catch (error) {
-    dispatch(hideLoader())
-    console.error('Error writing new message to Firebase Database', error)
+    dispatch(hideLoader());
+    console.error('Error writing new message to Firebase Database', error);
   }
 }
 
@@ -202,19 +201,19 @@ async function saveUser(sender) {
       email: '',
       profilePic: '',
       timestamp: serverTimestamp()
-    })
+    });
   } catch (error) {
-    console.error('Error writing new user to Firebase Database', error)
+    console.error('Error writing new user to Firebase Database', error);
   }
 }
 async function getUsers(dispatch) {
   try {
-    const users = await getDocs(collection(getFirestore(), 'users'))
+    const users = await getDocs(collection(getFirestore(), 'users'));
     dispatch(
       updateUsers(users.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    )
+    );
   } catch (error) {
-    console.error('Error getting users from Firebase Database', error)
+    console.error('Error getting users from Firebase Database', error);
   }
 }
 
@@ -224,82 +223,82 @@ async function createContact(newUser, sender) {
       from: sender,
       to: newUser,
       timestamp: serverTimestamp()
-    })
+    });
   } catch (e) {
-    console.log('Error creating new contact', e)
+    console.log('Error creating new contact', e);
   }
 }
 
 async function getContacts(sender, setContacts) {
   try {
-    const contactsRef = collection(db, 'address book', sender, 'contacts')
-    const q = query(contactsRef, orderBy('timestamp', 'asc'))
+    const contactsRef = collection(db, 'address book', sender, 'contacts');
+    const q = query(contactsRef, orderBy('timestamp', 'asc'));
     onSnapshot(q, (querySnapshot) => {
-      let contacts = []
+      let contacts = [];
       querySnapshot.forEach((doc) => {
-        contacts.push(doc.data())
-      })
-      setContacts(contacts)
-    })
+        contacts.push(doc.data());
+      });
+      setContacts(contacts);
+    });
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, 'address book', receiver, 'contacts')
-      const q = query(contactsRef, orderBy('timestamp', 'asc'))
+      const contactsRef = collection(db, 'address book', receiver, 'contacts');
+      const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
-        let receiverContacts = []
+        let receiverContacts = [];
         querySnapshot.forEach((doc) => {
-          receiverContacts.push(doc.data())
-        })
-        dispatch(updateReceiverContacts(receiverContacts))
-      })
+          receiverContacts.push(doc.data());
+        });
+        dispatch(updateReceiverContacts(receiverContacts));
+      });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 }
 
 async function createLastMsgTime(sender, receiver) {
   const id =
-    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`
+    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`;
   try {
-    const msgTimeRef = doc(db, `lastMsg`, id)
-    const msgTimeSnap = await getDoc(msgTimeRef)
+    const msgTimeRef = doc(db, `lastMsg`, id);
+    const msgTimeSnap = await getDoc(msgTimeRef);
     if (msgTimeSnap.exists()) {
       await updateDoc(msgTimeRef, {
         timestamp: serverTimestamp()
-      })
-      return
+      });
+      return;
     } else {
       await setDoc(doc(db, `lastMsg`, id), {
         sender: sender,
         receiver: receiver,
         timestamp: serverTimestamp()
-      })
+      });
     }
   } catch (e) {
-    console.log('Error', e)
+    console.log('Error', e);
   }
 }
 
 async function getLastMsgTime(dispatch) {
   try {
-    const msgTimeRef = collection(db, `lastMsg`)
-    const q = query(msgTimeRef, orderBy('timestamp', 'asc'))
+    const msgTimeRef = collection(db, `lastMsg`);
+    const q = query(msgTimeRef, orderBy('timestamp', 'asc'));
     onSnapshot(q, (querySnapshot) => {
-      let msgTime = []
+      let msgTime = [];
       querySnapshot.forEach((doc) => {
-        msgTime.push(doc.data())
-      })
-      dispatch(updateMsgTime(msgTime))
-    })
+        msgTime.push(doc.data());
+      });
+      dispatch(updateMsgTime(msgTime));
+    });
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
@@ -313,54 +312,54 @@ function User({
   setReceiver
 }) {
   useEffect(() => {
-    let unsubscribe
+    let unsubscribe;
     if (isSelected) {
-      setReceiver(receiver)
-      unsubscribe = listenMessages(sender, receiver, dispatch)
+      setReceiver(receiver);
+      unsubscribe = listenMessages(sender, receiver, dispatch);
     }
 
     return () => {
-      if (isFunction(unsubscribe)) unsubscribe()
-    }
-  }, [isSelected])
+      if (isFunction(unsubscribe)) unsubscribe();
+    };
+  }, [isSelected]);
 
-  const [isVerified, setIsVerified] = useState()
+  const [isVerified, setIsVerified] = useState();
 
   async function getVerifedData() {
-    const verifyRef = doc(getFirestore(), `users/${receiver}`)
-    const verify = await getDoc(verifyRef)
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
     if (verify.exists()) {
-      const verifyData = verify.data()
-      setIsVerified(verifyData.verified)
+      const verifyData = verify.data();
+      setIsVerified(verifyData.verified);
     } else {
-      setIsVerified(false)
+      setIsVerified(false);
     }
   }
 
-  const [lastMsgTime, setLastMsgTime] = useState(null)
-  const msgTime = useSelector((state) => state.messages.msgTime)
+  const [lastMsgTime, setLastMsgTime] = useState(null);
+  const msgTime = useSelector((state) => state.messages.msgTime);
   useEffect(() => {
     msgTime.map((lastMsg) => {
       if (
         (lastMsg.receiver === receiver && lastMsg.sender === sender) ||
         (lastMsg.receiver === sender && lastMsg.sender === receiver)
       ) {
-        setLastMsgTime(lastMsg.timestamp)
-        return
+        setLastMsgTime(lastMsg.timestamp);
+        return;
       }
-    })
-  })
+    });
+  });
   useEffect(() => {
-    getVerifedData()
-  }, [receiver])
+    getVerifedData();
+  }, [receiver]);
 
   return (
     <button
       type={'button'}
       onClick={() => {
         if (!isSelected) {
-          dispatch(resetMessages())
-          setSelected(index)
+          dispatch(resetMessages());
+          setSelected(index);
         }
       }}
       className="w-[99%]"
@@ -398,7 +397,7 @@ function User({
         </div>
       </li>
     </button>
-  )
+  );
 }
 
 function Users({
@@ -412,7 +411,7 @@ function Users({
   contacts,
   setNewModalState
 }) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
 
   function AddContactBtn() {
     return (
@@ -423,17 +422,17 @@ function Users({
         <button
           className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
           onClick={() => {
-            createContact(searchTerm.toLowerCase(), sender)
-            setSearchTerm('')
+            createContact(searchTerm.toLowerCase(), sender);
+            setSearchTerm('');
           }}
         >
           Add to address book
         </button>
       </div>
-    )
+    );
   }
 
-  const contactBtn = useSelector((state) => state.contacts.addContactBtn)
+  const contactBtn = useSelector((state) => state.contacts.addContactBtn);
 
   return (
     <ul
@@ -452,26 +451,26 @@ function Users({
             d="M7.57137 14.2859C11.2795 14.2859 14.2856 11.2798 14.2856 7.57167C14.2856 3.86349 11.2795 0.857422 7.57137 0.857422C3.86319 0.857422 0.857117 3.86349 0.857117 7.57167C0.857117 11.2798 3.86319 14.2859 7.57137 14.2859Z"
             fill="#EED3DC"
             stroke="#AB224E"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M15.1429 15.1432L12.3238 12.3242"
             stroke="#AB224E"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
         <input
           className="bg-gray6 mx-4 outline-none"
           placeholder="Search or add contacts"
           onChange={(e) => {
-            setSearchTerm(e.target.value)
+            setSearchTerm(e.target.value);
           }}
         ></input>
         <button
           onClick={() => {
-            dispatch(showNewUser())
+            dispatch(showNewUser());
           }}
         >
           <svg
@@ -489,12 +488,12 @@ function Users({
             <path
               d="M8 5.14258V10.8569"
               stroke="#AB224E"
-              stroke-linecap="round"
+              strokeLinecap="round"
             />
             <path
               d="M10.8572 8H5.14288"
               stroke="#AB224E"
-              stroke-linecap="round"
+              strokeLinecap="round"
             />
           </svg>
         </button>
@@ -502,19 +501,19 @@ function Users({
       <div className="overflow-y-scroll">
         {contacts
           ?.filter((contact) => {
-            const receiver = contact.to
+            const receiver = contact.to;
             if (searchTerm == '') {
-              return receiver
+              return receiver;
             } else if (
               receiver.toLowerCase().includes(searchTerm.toLowerCase())
             ) {
-              return receiver
+              return receiver;
             }
           })
           // .reverse()
           ?.map((contact, index) => {
             if (contact.from === sender) {
-              const receiver = contact.to
+              const receiver = contact.to;
               return (
                 <>
                   <User
@@ -528,7 +527,7 @@ function Users({
                     setReceiver={setReceiver}
                   />
                 </>
-              )
+              );
             }
           })}
         {contacts.length == 0 && (
@@ -540,7 +539,7 @@ function Users({
               </p>
               <button
                 onClick={() => {
-                  dispatch(showNewUser())
+                  dispatch(showNewUser());
                 }}
               >
                 <svg
@@ -558,12 +557,12 @@ function Users({
                   <path
                     d="M12 7.71436V16.2858"
                     stroke="#AB224E"
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                   />
                   <path
                     d="M16.2857 12H7.71429"
                     stroke="#AB224E"
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                   />
                 </svg>
               </button>
@@ -572,19 +571,19 @@ function Users({
         )}
       </div>
     </ul>
-  )
+  );
 }
 
 function TopSection({ receiver }) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (copied) setCopied(false)
-    }, 1000)
+      if (copied) setCopied(false);
+    }, 1000);
 
-    return () => clearTimeout(timeout)
-  }, [copied])
+    return () => clearTimeout(timeout);
+  }, [copied]);
 
   function Clipboard() {
     return (
@@ -606,7 +605,7 @@ function TopSection({ receiver }) {
           stroke="#AB224E"
         />
       </svg>
-    )
+    );
   }
 
   function Check() {
@@ -623,27 +622,27 @@ function TopSection({ receiver }) {
           fill="#4E7B36"
         />
       </svg>
-    )
+    );
   }
 
-  const [isVerified, setIsVerified] = useState()
+  const [isVerified, setIsVerified] = useState();
 
   async function getVerifedData() {
     if (receiver) {
-      const verifyRef = doc(getFirestore(), `users/${receiver}`)
-      const verify = await getDoc(verifyRef)
+      const verifyRef = doc(getFirestore(), `users/${receiver}`);
+      const verify = await getDoc(verifyRef);
       if (verify.exists()) {
-        const verifyData = verify.data()
-        setIsVerified(verifyData.verified)
+        const verifyData = verify.data();
+        setIsVerified(verifyData.verified);
       } else {
-        setIsVerified(false)
+        setIsVerified(false);
       }
     }
   }
 
   useEffect(() => {
-    getVerifedData()
-  }, [receiver])
+    getVerifedData();
+  }, [receiver]);
 
   return (
     <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
@@ -656,8 +655,8 @@ function TopSection({ receiver }) {
           <button
             type={'button'}
             onClick={() => {
-              navigator.clipboard.writeText(receiver)
-              setCopied(true)
+              navigator.clipboard.writeText(receiver);
+              setCopied(true);
             }}
           >
             {!copied ? <Clipboard /> : <Check />}
@@ -667,29 +666,29 @@ function TopSection({ receiver }) {
         {!isVerified && <p className="text-[14px] text-gray3">Unverified</p>}
       </div>
     </div>
-  )
+  );
 }
 
 function AddUser({ dispatch, sender, contacts }) {
-  const [newUser, setNewUser] = useState('')
-  let contactExists = false
+  const [newUser, setNewUser] = useState('');
+  let contactExists = false;
   async function addNewUserFunc() {
     if (newUser !== '' && newUser.toLowerCase() !== sender) {
-      let i
+      let i;
       for (i = 0; i < contacts.length; i++) {
         if (contacts[i].to.toLowerCase() === newUser.toLowerCase()) {
-          contactExists = true
-          break
+          contactExists = true;
+          break;
         }
       }
       // if not then save this new contact
       if (contactExists == false) {
-        createContact(newUser.toLowerCase(), sender)
+        createContact(newUser.toLowerCase(), sender);
       }
-      setNewUser('')
-      dispatch(hideNewUser())
+      setNewUser('');
+      dispatch(hideNewUser());
     } else {
-      alert('Please paste an address')
+      alert('Please paste an address');
     }
   }
   return (
@@ -705,13 +704,13 @@ function AddUser({ dispatch, sender, contacts }) {
             value={newUser}
             onChange={(e) => setNewUser(e.target.value)}
             onKeyPress={(event) => {
-              event.key === 'Enter' && addNewUserFunc()
+              event.key === 'Enter' && addNewUserFunc();
             }}
           />
           <button
             className="text-gum ml-1"
             onClick={() => {
-              dispatch(hideNewUser())
+              dispatch(hideNewUser());
             }}
           >
             <svg
@@ -722,8 +721,8 @@ function AddUser({ dispatch, sender, contacts }) {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M21.04 19.1467C21.2911 19.3978 21.4321 19.7383 21.4321 20.0934C21.4321 20.4484 21.2911 20.789 21.04 21.04C20.7889 21.2911 20.4484 21.4322 20.0933 21.4322C19.7383 21.4322 19.3977 21.2911 19.1467 21.04L15.3867 17.2667L11.6133 21.04C11.3623 21.2911 11.0217 21.4322 10.6667 21.4322C10.3116 21.4322 9.97107 21.2911 9.72 21.04C9.46893 20.789 9.32788 20.4484 9.32788 20.0934C9.32788 19.9176 9.36251 19.7435 9.42979 19.581C9.49707 19.4186 9.59569 19.271 9.72 19.1467L13.4933 15.3867L9.73334 11.6C9.48227 11.349 9.34121 11.0084 9.34121 10.6534C9.34121 10.2983 9.48227 9.95777 9.73334 9.7067C9.98441 9.45563 10.3249 9.31458 10.68 9.31458C11.0351 9.31458 11.3756 9.45563 11.6267 9.7067L15.4 13.48L19.16 9.7067C19.2843 9.58238 19.4319 9.48376 19.5943 9.41648C19.7568 9.3492 19.9309 9.31458 20.1067 9.31458C20.2825 9.31458 20.4566 9.3492 20.619 9.41648C20.7814 9.48376 20.929 9.58238 21.0533 9.7067C21.1777 9.83102 21.2763 9.9786 21.3435 10.141C21.4108 10.3035 21.4455 10.4776 21.4455 10.6534C21.4455 10.8292 21.4108 11.0033 21.3435 11.1657C21.2763 11.3281 21.1777 11.4757 21.0533 11.6L17.28 15.3734L21.0533 19.1334L21.04 19.1467Z"
                 fill="#AB224E"
               />
@@ -733,7 +732,7 @@ function AddUser({ dispatch, sender, contacts }) {
         <p className="text-[14px] text-gray3">Unverified</p>
       </div>
     </div>
-  )
+  );
 }
 
 function SendMessageSection({
@@ -745,32 +744,32 @@ function SendMessageSection({
 }) {
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
-  )
+  );
   const userExists = async () => {
-    let contactExists = false
-    let i
+    let contactExists = false;
+    let i;
     for (i = 0; i < receiverContacts.length; i++) {
       if (receiverContacts[i].to.toLowerCase() === sender) {
-        contactExists = true
-        break
+        contactExists = true;
+        break;
       }
     }
 
     // if not then save this new contact
     if (contactExists == false) {
-      createContact(sender, receiver)
+      createContact(sender, receiver);
     }
-  }
+  };
 
   return (
     <form
       className="mt-2"
       onSubmit={(e) => {
-        e.preventDefault()
-        setMsgString('')
-        saveMessage(message, sender, receiver, dispatch)
-        userExists()
-        createLastMsgTime(sender, receiver)
+        e.preventDefault();
+        setMsgString('');
+        saveMessage(message, sender, receiver, dispatch);
+        userExists();
+        createLastMsgTime(sender, receiver);
       }}
     >
       <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
@@ -784,13 +783,13 @@ function SendMessageSection({
           placeholder={'Type your message here'}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
-            event.key === 'Enter' && saveMessage()
+            event.key === 'Enter' && saveMessage();
           }}
         />
         <button
           onClick={() => {
-            setMsgString('')
-            saveMessage(message, sender, receiver, dispatch)
+            setMsgString('');
+            saveMessage(message, sender, receiver, dispatch);
           }}
           type="button"
           className="h-12"
@@ -809,19 +808,19 @@ function SendMessageSection({
             <path
               d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
               stroke="#AB224E"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z"
               fill="#EED3DC"
               stroke="#AB224E"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>
       </div>
     </form>
-  )
+  );
 }
 
 function Messages({
@@ -834,38 +833,38 @@ function Messages({
   setReceiverContacts,
   receiverContacts
 }) {
-  const messages = useSelector((state) => state.messages?.messages)
-  const newUser = useSelector((state) => state.newUser.showNewUser)
-  const [showDelMessage, setShowDelMessage] = useState(null)
+  const messages = useSelector((state) => state.messages?.messages);
+  const newUser = useSelector((state) => state.newUser.showNewUser);
+  const [showDelMessage, setShowDelMessage] = useState(null);
 
   useEffect(() => {
-    getReceiverContacts(receiver, dispatch)
-  }, [receiver])
+    getReceiverContacts(receiver, dispatch);
+  }, [receiver]);
 
-  const chats = []
+  const chats = [];
   messages?.map((chat) => {
     if (
       chat.queue_id ===
       (sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`)
     ) {
-      chats.push(chat)
+      chats.push(chat);
     }
-  })
+  });
 
   const showMessageDetails = (id, index) => {
     messages.map((message) => {
       if (message.id === id) {
-        setShowDelMessage(index)
+        setShowDelMessage(index);
       }
-    })
-  }
+    });
+  };
   const hideMessageDetails = (id) => {
     messages.map((message) => {
       if (message.id === id) {
-        setShowDelMessage(null)
+        setShowDelMessage(null);
       }
-    })
-  }
+    });
+  };
 
   return (
     <ul
@@ -885,7 +884,7 @@ function Messages({
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
         {chats?.map(({ text, name, timestamp, id }, index) => {
           return (
-            <div>
+            <div key={id}>
               <div
                 className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
                   name === sender ? 'items-end' : 'items-start'
@@ -897,7 +896,7 @@ function Messages({
                       {
                         showDelMessage === index
                           ? hideMessageDetails(id)
-                          : showMessageDetails(id, index)
+                          : showMessageDetails(id, index);
                       }
                     }}
                     key={index}
@@ -921,7 +920,7 @@ function Messages({
                   )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
       {messages === null && contacts.length === 0 && (
@@ -962,12 +961,12 @@ function Messages({
               <path
                 d="M5 3.21387V6.7853"
                 stroke="#AB224E"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
               <path
                 d="M6.78578 5H3.21436"
                 stroke="#AB224E"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
             </svg>
             <p className="w-[50%]">button on the top left of this chat box</p>
@@ -994,83 +993,83 @@ function Messages({
         setReceiverContacts={setReceiverContacts}
       />
     </ul>
-  )
+  );
 }
 
 export default function Chat() {
-  const [message, setMsgString] = useState('')
-  const [receiver, setReceiver] = useState('')
-  const [selected, setSelected] = useState(0)
-  const [modal, setModalState] = useState(false)
-  const [newModal, setNewModalState] = useState(false)
-  const [signModal, setSignModalState] = useState(false)
-  const address = useAccount()
-  const result = address.address
-  const sender = (result || '').toLowerCase()
-  const queue_ids = useSelector((state) => state.messages?.queue_ids)
-  const signatureData = useSelector((state) => state.messages?.signatureData)
-  const users = useSelector((state) => state.users?.users)
-  const dispatch = useDispatch()
-  const { chain } = useNetwork()
-  const [contacts, setContacts] = useState([])
-  const [receiverContacts, setReceiverContacts] = useState([])
-  const [onboarded, setOnboarded] = useState(null)
+  const [message, setMsgString] = useState('');
+  const [receiver, setReceiver] = useState('');
+  const [selected, setSelected] = useState(0);
+  const [modal, setModalState] = useState(false);
+  const [newModal, setNewModalState] = useState(false);
+  const [signModal, setSignModalState] = useState(false);
+  const address = useAccount();
+  const result = address.address;
+  const sender = (result || '').toLowerCase();
+  const queue_ids = useSelector((state) => state.messages?.queue_ids);
+  const signatureData = useSelector((state) => state.messages?.signatureData);
+  const users = useSelector((state) => state.users?.users);
+  const dispatch = useDispatch();
+  const { chain } = useNetwork();
+  const [contacts, setContacts] = useState([]);
+  const [receiverContacts, setReceiverContacts] = useState([]);
+  const [onboarded, setOnboarded] = useState(null);
 
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
     if (users && sender !== '') {
-      const userRef = doc(getFirestore(), `users/${sender}`)
-      const user = await getDoc(userRef)
+      const userRef = doc(getFirestore(), `users/${sender}`);
+      const user = await getDoc(userRef);
       if (!user.exists()) {
-        await saveUser(sender)
-        getUsers(dispatch)
+        await saveUser(sender);
+        getUsers(dispatch);
       }
     }
     // if the users list is empty then add the new user
     if (users != null && users.length === 0 && sender !== '') {
-      saveUser(sender)
+      saveUser(sender);
     }
-  }
+  };
 
   async function showOnboarding() {
     if (users && sender !== '') {
-      const userRef = doc(getFirestore(), `users/${sender}`)
-      const user = await getDoc(userRef)
-      const userData = user.data()
+      const userRef = doc(getFirestore(), `users/${sender}`);
+      const user = await getDoc(userRef);
+      const userData = user.data();
       if (userData.has_onboarded == false && userData.has_skipped == false) {
-        setOnboarded(false)
+        setOnboarded(false);
       } else {
-        setOnboarded(true)
+        setOnboarded(true);
       }
     }
   }
 
   useEffect(() => {
-    showOnboarding()
-  }, [address])
+    showOnboarding();
+  }, [address]);
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
-      dispatch(showLoader())
-      getSignatureData(sender, dispatch)
+      dispatch(showLoader());
+      getSignatureData(sender, dispatch);
     }
-  }, [sender])
+  }, [sender]);
 
   useEffect(() => {
-    getUsers(dispatch)
-  }, [])
+    getUsers(dispatch);
+  }, []);
 
   useEffect(() => {
-    getLastMsgTime(dispatch)
-  })
+    getLastMsgTime(dispatch);
+  });
 
   useEffect(() => {
-    getContacts(sender, setContacts)
-    listenMessages(sender, receiver, dispatch)
-  }, [sender])
+    getContacts(sender, setContacts);
+    listenMessages(sender, receiver, dispatch);
+  }, [sender]);
   useEffect(() => {
-    funcNewUser()
-  }, [address])
+    funcNewUser();
+  }, [address]);
 
   if (!sender) {
     return (
@@ -1079,7 +1078,7 @@ export default function Chat() {
           {'Connect your wallet first'}
         </div>
       </div>
-    )
+    );
   }
 
   if (chain.id != 1) {
@@ -1089,7 +1088,7 @@ export default function Chat() {
           {'Please connect to Ethereum Mainnet'}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -1158,5 +1157,5 @@ export default function Chat() {
         )}
       </div>
     </div>
-  )
+  );
 }

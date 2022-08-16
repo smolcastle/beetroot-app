@@ -1,10 +1,10 @@
-import React from 'react'
-import { useBalance } from 'wagmi'
+import React from 'react';
+import { useBalance } from 'wagmi';
 
 const WalletTab = ({ receiver, truncate }) => {
   const balance = useBalance({
     addressOrName: receiver
-  })
+  });
 
   return (
     <div>
@@ -12,7 +12,7 @@ const WalletTab = ({ receiver, truncate }) => {
         {truncate(receiver, 14)}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default WalletTab
+export default WalletTab;

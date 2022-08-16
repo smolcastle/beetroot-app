@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   darkMode: 'class',
@@ -121,4 +121,4 @@ module.exports = {
     require('@tailwindcss/line-clamp'),
     require('@tailwindcss/forms')
   ]
-}
+};

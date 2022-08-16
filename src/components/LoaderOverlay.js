@@ -1,11 +1,11 @@
-import React from 'react'
-import { LoopCircleLoading } from 'react-loadingg'
-import { useSelector } from 'react-redux'
+import React from 'react';
+import { LoopCircleLoading } from 'react-loadingg';
+import { useSelector } from 'react-redux';
 
 export default function LoaderOverlay() {
-  const loading = useSelector((state) => state.loader.showLoader)
+  const loading = useSelector((state) => state.loader.showLoader);
   if (!loading) {
-    return <></>
+    return <></>;
   }
   return (
     <>
@@ -14,5 +14,5 @@ export default function LoaderOverlay() {
       </div>
       <div className=" fixed inset-0 z-40 bg-white0"></div>
     </>
-  )
+  );
 }

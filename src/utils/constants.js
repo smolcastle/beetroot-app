@@ -149,4 +149,4 @@ export const COLLECTIONS = {
   '0x7822a2151ad319040913d0ea4b93c64c0b49bf1b': {
     name: 'Wrapped Pudgy Penguin'
   }
-}
+};

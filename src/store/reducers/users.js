@@ -1,6 +1,6 @@
 const initialState = {
   users: null
-}
+};
 
 export default function Reducer(state = initialState, action) {
   switch (action.type) {
@@ -8,8 +8,8 @@ export default function Reducer(state = initialState, action) {
       return {
         ...state,
         users: action.users
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

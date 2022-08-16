@@ -1,7 +1,7 @@
 const initialState = {
   createTradeData: null,
   acceptTradeData: null
-}
+};
 
 export default function Reducer(state = initialState, action) {
   switch (action.type) {
@@ -9,13 +9,13 @@ export default function Reducer(state = initialState, action) {
       return {
         ...state,
         createTradeData: action.tradeData
-      }
+      };
     case 'UPDATE_ACCEPT_TRADE_DATA':
       return {
         ...state,
         acceptTradeData: action.tradeData
-      }
+      };
     default:
-      return state
+      return state;
   }
 }

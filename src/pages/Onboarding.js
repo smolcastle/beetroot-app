@@ -1,41 +1,41 @@
-import React, { useState } from 'react'
-import Profile from '../components/Profile'
-import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore'
+import React, { useState } from 'react';
+import Profile from '../components/Profile';
+import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
-  const [success, setSuccess] = useState()
-  const [displayName, setDisplayName] = useState('')
-  const [telegram, setTelegram] = useState(null)
-  const [email, setEmail] = useState(null)
-  const [later, setLater] = useState(null)
+  const [success, setSuccess] = useState();
+  const [displayName, setDisplayName] = useState('');
+  const [telegram, setTelegram] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [later, setLater] = useState(null);
 
   async function updateUserOnboarded() {
     if (later != null || telegram != null || email != null) {
       try {
-        const userRef = doc(getFirestore(), 'users', sender)
+        const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
           has_onboarded: true,
           telegram: telegram,
           email: email,
           verified: true
-        })
-        setSuccess(true)
+        });
+        setSuccess(true);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     } else {
-      alert('Please select the following details')
+      alert('Please select the following details');
     }
   }
   async function updateUserSkipped() {
     try {
-      const userRef = doc(getFirestore(), 'users', sender)
+      const userRef = doc(getFirestore(), 'users', sender);
       await updateDoc(userRef, {
         has_skipped: true,
         verified: true
-      })
+      });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 
@@ -68,8 +68,8 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <button
                   className="border-b border-gray1 border-solid"
                   onClick={() => {
-                    setOnboarded(true)
-                    updateUserSkipped()
+                    setOnboarded(true);
+                    updateUserSkipped();
                   }}
                 >
                   Skip
@@ -77,7 +77,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <button
                   className="border-b border-gray1 border-solid ml-[16px]"
                   onClick={() => {
-                    updateUserOnboarded()
+                    updateUserOnboarded();
                   }}
                 >
                   Next
@@ -98,7 +98,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                       value="Wallet address"
                       name="display"
                       onChange={(e) => {
-                        setDisplayName(e.target.value)
+                        setDisplayName(e.target.value);
                       }}
                     />
                     <label className="text-[14px]" htmlFor="wallet address">
@@ -113,7 +113,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                       value="ENS Name"
                       name="display"
                       onChange={(e) => {
-                        setDisplayName(e.target.value)
+                        setDisplayName(e.target.value);
                       }}
                     />
                     <label className="text-[14px]" htmlFor="ENS Name">
@@ -155,7 +155,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     className="w-[285px] outline-none rounded-[4px] mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
                     placeholder="your username"
                     onChange={(e) => {
-                      setTelegram(e.target.value)
+                      setTelegram(e.target.value);
                     }}
                   />
                 </div>
@@ -175,7 +175,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     className="outline-none rounded-[4px] w-full mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
                     placeholder="Your Email Address"
                     onChange={(e) => {
-                      setEmail(e.target.value)
+                      setEmail(e.target.value);
                     }}
                   />
                 </div>
@@ -184,7 +184,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                   <input
                     type="radio"
                     onClick={() => {
-                      setLater(true)
+                      setLater(true);
                     }}
                     className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                     id="later"
@@ -246,7 +246,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               <p className="text-gray1 text-[14px] mr-[4px]">or</p>
               <button
                 onClick={() => {
-                  setOnboarded(true)
+                  setOnboarded(true);
                 }}
                 className="text-gum underline text-[14px] mr-[4px]"
               >
@@ -258,7 +258,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Onboarding
+export default Onboarding;

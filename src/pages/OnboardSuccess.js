@@ -1,5 +1,5 @@
-import React from 'react'
-import mascot from '../img/onboarding.png'
+import React from 'react';
+import mascot from '../img/onboarding.png';
 
 const OnboardSuccess = () => {
   return (
@@ -21,7 +21,7 @@ const OnboardSuccess = () => {
         <img className="fixed" src={mascot}></img>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OnboardSuccess
+export default OnboardSuccess;

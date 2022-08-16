@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import seaport from '../utils/seaport'
-import { getDateTime } from '../helpers/Collections'
+import React, { useState, useEffect } from 'react';
+import seaport from '../utils/seaport';
+import { getDateTime } from '../helpers/Collections';
 import {
   addDoc,
   getFirestore,
@@ -13,27 +13,27 @@ import {
   query,
   onSnapshot,
   orderBy
-} from 'firebase/firestore'
-import TradeTab from '../components/TradeTab'
-import WalletTab from '../components/WalletTab'
+} from 'firebase/firestore';
+import TradeTab from '../components/TradeTab';
+import WalletTab from '../components/WalletTab';
 
 const Order = ({ sender, truncate, receiver }) => {
-  const [openTrade, setOpenTrade] = useState(false)
-  const [offerTrade, setOfferTrade] = useState(true)
-  const [askTrade, setAskTrade] = useState(false)
-  const storedOffers = JSON.parse(localStorage.getItem('offers')) // get the offers stored in local storage
-  const [offers, setOffers] = useState(storedOffers || []) // if any offers exist in local storage save them to this array else start with an empty array
+  const [openTrade, setOpenTrade] = useState(false);
+  const [offerTrade, setOfferTrade] = useState(true);
+  const [askTrade, setAskTrade] = useState(false);
+  const storedOffers = JSON.parse(localStorage.getItem('offers')); // get the offers stored in local storage
+  const [offers, setOffers] = useState(storedOffers || []); // if any offers exist in local storage save them to this array else start with an empty array
   const storedConsiderations = JSON.parse(
     localStorage.getItem('considerations')
-  )
+  );
   const [considerations, setConsiderations] = useState(
     storedConsiderations || []
-  )
-  const [showOption, setShowOption] = useState(2)
-  const [orders, setOrders] = useState([])
-  const [showPendingOrder, setShowPendingOrder] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [orderCreated, setOrderCreated] = useState(false)
+  );
+  const [showOption, setShowOption] = useState(2);
+  const [orders, setOrders] = useState([]);
+  const [showPendingOrder, setShowPendingOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [orderCreated, setOrderCreated] = useState(false);
 
   async function saveOrder(order, offerFor) {
     try {
@@ -45,117 +45,117 @@ const Order = ({ sender, truncate, receiver }) => {
         order: order,
         status: 'pending',
         timestamp: serverTimestamp()
-      })
+      });
     } catch (error) {
-      console.error('Error writing new order to Firebase Database', error)
+      console.error('Error writing new order to Firebase Database', error);
     }
   }
   async function createOrder(offerFor) {
     try {
       if (offers.length == 0 || considerations.length == 0) {
-        alert('Order cannot be empty')
+        alert('Order cannot be empty');
       } else {
-        setIsLoading(true)
+        setIsLoading(true);
         const orderActions = await seaport.seaport.createOrder({
           offer: offers,
           consideration: considerations,
           allowPartialFills: false,
           restrictedByZone: false
-        })
-        const order = await orderActions.executeAllActions()
-        console.log(order)
-        saveOrder(order, offerFor)
-        setOrderCreated(true)
-        setIsLoading(false)
+        });
+        const order = await orderActions.executeAllActions();
+        console.log(order);
+        saveOrder(order, offerFor);
+        setOrderCreated(true);
+        setIsLoading(false);
       }
     } catch (e) {
       // hide loader when cancel is clicked on metamask notification
-      console.log('Error creating an order', e)
-      alert('Error creating the order')
-      setIsLoading(false)
+      console.log('Error creating an order', e);
+      alert('Error creating the order');
+      setIsLoading(false);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   }
 
   // cancel an order using seaport function
   async function cancelOrder(order) {
     try {
-      seaport.seaport.cancelOrders(order)
-      cancelFunc(order.id)
+      seaport.seaport.cancelOrders(order);
+      cancelFunc(order.id);
     } catch (e) {
-      console.log('error cancelling the order', e)
+      console.log('error cancelling the order', e);
     }
   }
 
   async function GetPendingOrders() {
     // use onSnapshot to fetch orders
     try {
-      const ordersRef = collection(getFirestore(), 'orders')
-      const q = query(ordersRef, orderBy('timestamp', 'desc'))
+      const ordersRef = collection(getFirestore(), 'orders');
+      const q = query(ordersRef, orderBy('timestamp', 'desc'));
       onSnapshot(q, (querySnapshot) => {
-        let orders = []
+        let orders = [];
         querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), id: doc.id })
-        })
-        setOrders(orders)
-      })
+          orders.push({ ...doc.data(), id: doc.id });
+        });
+        setOrders(orders);
+      });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
   useEffect(() => {
-    GetPendingOrders()
-  }, [])
+    GetPendingOrders();
+  }, []);
 
   async function fulfillFunc(orderid) {
-    const docRef = doc(getFirestore(), 'orders', orderid)
-    const data = await getDoc(docRef)
-    const order = await data.get('order')
-    console.log(order)
+    const docRef = doc(getFirestore(), 'orders', orderid);
+    const data = await getDoc(docRef);
+    const order = await data.get('order');
+    console.log(order);
     const { executeAllActions: executeAllFulfillActions } =
       await seaport.seaport.fulfillOrder({
         order,
         accountAddress: sender
-      })
+      });
 
-    const transaction = await executeAllFulfillActions()
-    console.log(transaction)
+    const transaction = await executeAllFulfillActions();
+    console.log(transaction);
     if (data.exists()) {
       await updateDoc(docRef, {
         status: 'fulfilled'
-      })
+      });
     }
     // update order list as soon as it is fulfilled
-    GetPendingOrders()
+    GetPendingOrders();
   }
 
   // update the status of order in db after cancelling
   async function cancelFunc(orderid) {
-    const orderRef = doc(getFirestore(), 'orders', orderid)
-    const orderSnap = await getDoc(orderRef)
+    const orderRef = doc(getFirestore(), 'orders', orderid);
+    const orderSnap = await getDoc(orderRef);
     if (orderSnap.exists()) {
       await updateDoc(orderRef, {
         status: 'cancelled'
-      })
+      });
     }
     // update order list as soon as it is cancelled
-    GetPendingOrders()
+    GetPendingOrders();
   }
 
   const showPendingOrderFunc = (id, index) => {
     orders.map((order) => {
       if (order.id === id) {
-        setShowPendingOrder(index)
+        setShowPendingOrder(index);
       }
-    })
-  }
+    });
+  };
   const hidePendingOrderFunc = (id, index) => {
     orders.map((order) => {
       if (order.id === id) {
-        setShowPendingOrder(null)
+        setShowPendingOrder(null);
       }
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -417,7 +417,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                     </div>
                                   </div>
                                 </>
-                              )
+                              );
                             })}
                           </div>
                           <div className="w-[40%] h-[auto]">
@@ -458,13 +458,13 @@ const Order = ({ sender, truncate, receiver }) => {
                                     </div>
                                   </div>
                                 </>
-                              )
+                              );
                             })}
                           </div>
                         </div>
                       </div>
                     </div>
-                  )
+                  );
                 }
               })}
             </div>
@@ -472,6 +472,6 @@ const Order = ({ sender, truncate, receiver }) => {
         )}
       </div>
     </>
-  )
-}
-export default Order
+  );
+};
+export default Order;

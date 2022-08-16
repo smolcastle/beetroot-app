@@ -1,22 +1,22 @@
-import { Seaport } from '@opensea/seaport-js'
-import { ethers, Signer } from 'ethers'
+import { Seaport } from '@opensea/seaport-js';
+import { ethers, Signer } from 'ethers';
 
 function sp() {
   if (
     typeof window.ethereum !== 'undefined' ||
     typeof window.web3 !== 'undefined'
   ) {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const seaport = new Seaport(provider)
-    return { seaport: seaport, signer: provider.getSigner() }
+    const seaport = new Seaport(provider);
+    return { seaport: seaport, signer: provider.getSigner() };
   } else {
-    const provider = ethers.getDefaultProvider()
-    const seaport = new Seaport(provider)
-    return { seaport: seaport }
+    const provider = ethers.getDefaultProvider();
+    const seaport = new Seaport(provider);
+    return { seaport: seaport };
   }
 }
 
-let seaport = sp()
+let seaport = sp();
 
-export default seaport
+export default seaport;

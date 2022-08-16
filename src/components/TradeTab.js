@@ -1,10 +1,10 @@
-import { parseEther } from 'ethers/lib/utils'
-import React, { useState, useEffect, useRef } from 'react'
-import { ethers } from 'ethers'
-import erc721ABI from '../abis/erc721.json'
-import seaport from '../utils/seaport'
-import { getAsset, getAssetsInCollection } from '../utils/opensea'
-import ReviewOrder from './ReviewOrder'
+import { parseEther } from 'ethers/lib/utils';
+import React, { useState, useEffect, useRef } from 'react';
+import { ethers } from 'ethers';
+import erc721ABI from '../abis/erc721.json';
+import seaport from '../utils/seaport';
+import { getAsset, getAssetsInCollection } from '../utils/opensea';
+import ReviewOrder from './ReviewOrder';
 
 const TradeTab = ({
   createOrder,
@@ -23,38 +23,38 @@ const TradeTab = ({
   orderCreated,
   setOrderCreated
 }) => {
-  const { v4: uuidv4 } = require('uuid') // to generate unique ids
+  const { v4: uuidv4 } = require('uuid'); // to generate unique ids
 
-  const [nftBox, setNftBox] = useState('')
-  const [etherBox, setEtherBox] = useState(0)
-  const [wEtherBox, setWEtherBox] = useState('')
-  const [tokenId, setTokenId] = useState('')
-  const [offerFor, setOfferFor] = useState('')
-  const inputRef = useRef('')
-  const [assetsInfo, setAssestsInfo] = useState([])
-  const [userAssets, setUserAssets] = useState([])
-  const [showHelp, setShowHelp] = useState('')
-  const [reviewOrder, setReviewOrder] = useState(false)
+  const [nftBox, setNftBox] = useState('');
+  const [etherBox, setEtherBox] = useState(0);
+  const [wEtherBox, setWEtherBox] = useState('');
+  const [tokenId, setTokenId] = useState('');
+  const [offerFor, setOfferFor] = useState('');
+  const inputRef = useRef('');
+  const [assetsInfo, setAssestsInfo] = useState([]);
+  const [userAssets, setUserAssets] = useState([]);
+  const [showHelp, setShowHelp] = useState('');
+  const [reviewOrder, setReviewOrder] = useState(false);
 
   const reset = () => {
-    inputRef.current.value = ''
-  }
+    inputRef.current.value = '';
+  };
 
   async function fetchAssets() {
     try {
       const holdingAssetsInfo = await getAssetsInCollection(
         nftBox?.toLowerCase(),
         sender
-      )
-      setUserAssets(holdingAssetsInfo?.assets)
+      );
+      setUserAssets(holdingAssetsInfo?.assets);
     } catch (e) {
-      console.log('Error while fetching assets', e)
+      console.log('Error while fetching assets', e);
     }
   }
 
   useEffect(() => {
-    fetchAssets()
-  }, [nftBox])
+    fetchAssets();
+  }, [nftBox]);
 
   async function addNFT(item) {
     if (item.id) {
@@ -70,7 +70,7 @@ const TradeTab = ({
               token: item.asset_contract.address,
               identifier: item.id
             }
-          ])
+          ]);
         } else {
           setConsiderations([
             ...considerations,
@@ -83,12 +83,12 @@ const TradeTab = ({
               identifier: item.id,
               recipient: sender
             }
-          ])
+          ]);
         }
-        setNftBox('')
-        setTokenId('')
+        setNftBox('');
+        setTokenId('');
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
   }
@@ -98,21 +98,21 @@ const TradeTab = ({
       nftBox,
       erc721ABI,
       seaport.signer
-    )
+    );
 
     if (tokenId) {
       try {
         // will throw if tokenId doesn't exist.
-        const owner = await erc721Contract.ownerOf(tokenId)
+        const owner = await erc721Contract.ownerOf(tokenId);
         if (owner != (await seaport.signer.getAddress())) {
-          alert('You are not the owner')
-          return
+          alert('You are not the owner');
+          return;
         }
 
         // TODO: use assetInfo.image_url to display image.
         // remove the owner check above if you want to test with NFTs you don't own.
-        const assetInfo = await getAsset(nftBox, tokenId)
-        setAssestsInfo(...assetsInfo, assetInfo)
+        const assetInfo = await getAsset(nftBox, tokenId);
+        setAssestsInfo(...assetsInfo, assetInfo);
 
         setOffers([
           ...offers,
@@ -123,12 +123,12 @@ const TradeTab = ({
             identifier: tokenId,
             image_url: assetInfo.image_url
           }
-        ])
-        setNftBox('')
-        setTokenId('')
+        ]);
+        setNftBox('');
+        setTokenId('');
       } catch (error) {
-        console.log(error)
-        alert("NFT doesn't exist")
+        console.log(error);
+        alert("NFT doesn't exist");
       }
     }
 
@@ -142,9 +142,9 @@ const TradeTab = ({
           enteredAmount: parseFloat(etherBox).toFixed(4), // convert the entered amount to decimal
           amount: parseEther(etherBox).toString()
         }
-      ])
-      setEtherBox('')
-      reset()
+      ]);
+      setEtherBox('');
+      reset();
     }
     if (wEtherBox !== '') {
       setOffers([
@@ -156,9 +156,9 @@ const TradeTab = ({
           token: '0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15',
           amount: parseEther(wEtherBox)
         }
-      ])
-      setWEtherBox('')
-      reset()
+      ]);
+      setWEtherBox('');
+      reset();
     }
   }
 
@@ -167,7 +167,7 @@ const TradeTab = ({
       nftBox,
       erc721ABI,
       seaport.signer
-    )
+    );
 
     if (tokenId) {
       try {
@@ -176,10 +176,10 @@ const TradeTab = ({
         // the order to be fulfilled by anyone.
         // TODO: discuss and check if we should do an owner check here if
         // user selects the fulfillment to be done by a particular address.
-        await erc721Contract.tokenURI(tokenId)
+        await erc721Contract.tokenURI(tokenId);
 
-        const assetInfo = await getAsset(nftBox, tokenId)
-        setAssestsInfo(...assetsInfo, assetInfo)
+        const assetInfo = await getAsset(nftBox, tokenId);
+        setAssestsInfo(...assetsInfo, assetInfo);
 
         setConsiderations([
           ...considerations,
@@ -191,10 +191,10 @@ const TradeTab = ({
             recipient: sender,
             image_url: assetInfo.image_url
           }
-        ])
+        ]);
       } catch (error) {
-        console.log(error)
-        alert('NFT details not correct')
+        console.log(error);
+        alert('NFT details not correct');
       }
     }
 
@@ -209,9 +209,9 @@ const TradeTab = ({
           amount: parseEther(etherBox).toString(),
           recipient: sender
         }
-      ])
-      setEtherBox('')
-      reset()
+      ]);
+      setEtherBox('');
+      reset();
     }
     if (wEtherBox !== '') {
       setConsiderations([
@@ -224,9 +224,9 @@ const TradeTab = ({
           amount: parseEther(wEtherBox),
           recipient: sender
         }
-      ])
-      setWEtherBox('')
-      reset()
+      ]);
+      setWEtherBox('');
+      reset();
     }
   }
 
@@ -267,7 +267,7 @@ const TradeTab = ({
           stroke-linejoin="round"
         />
       </svg>
-    )
+    );
   }
   function ClearCart() {
     return (
@@ -330,38 +330,38 @@ const TradeTab = ({
           </clipPath>
         </defs>
       </svg>
-    )
+    );
   }
 
   // delete offer from cart
   function removeOffer(id) {
-    setOffers(offers.filter((offer) => offer.id !== id))
+    setOffers(offers.filter((offer) => offer.id !== id));
   }
   // delete consideration from cart
   function removeConsideration(id) {
     setConsiderations(
       considerations.filter((consideration) => consideration.id !== id)
-    )
+    );
   }
 
   useEffect(() => {
-    console.log('Offers', offers)
-  }, [offers])
+    console.log('Offers', offers);
+  }, [offers]);
   useEffect(() => {
-    console.log('Considerations', considerations)
-  }, [considerations])
+    console.log('Considerations', considerations);
+  }, [considerations]);
 
-  const [selectOption, setSelectOption] = useState('ETH')
+  const [selectOption, setSelectOption] = useState('ETH');
 
   function handleChange(e) {
-    setSelectOption(e.target.value)
+    setSelectOption(e.target.value);
   }
 
   // save the new offers and considerations in local storage
   useEffect(() => {
-    localStorage.setItem('offers', JSON.stringify(offers))
-    localStorage.setItem('considerations', JSON.stringify(considerations))
-  }, [offers, considerations])
+    localStorage.setItem('offers', JSON.stringify(offers));
+    localStorage.setItem('considerations', JSON.stringify(considerations));
+  }, [offers, considerations]);
 
   function CartItems() {
     return (
@@ -430,7 +430,7 @@ const TradeTab = ({
                     </div>
                   </div>
                 </>
-              )
+              );
             })}
           </div>
         ) : (
@@ -501,7 +501,7 @@ const TradeTab = ({
                     </div>
                   </div>
                 </>
-              )
+              );
             })}
             {considerations.length === 0 && (
               <p className="text-[12px] text-gray1">
@@ -512,7 +512,7 @@ const TradeTab = ({
           </div>
         )}
       </>
-    )
+    );
   }
 
   return (
@@ -529,8 +529,8 @@ const TradeTab = ({
             </p>
             <div
               onClick={() => {
-                setAskTrade(false)
-                setOfferTrade(true)
+                setAskTrade(false);
+                setOfferTrade(true);
               }}
               className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${
                 offerTrade ? 'border-4 border-parsley/[0.5] border-solid' : ''
@@ -545,7 +545,7 @@ const TradeTab = ({
                   <button
                     className="mx-3"
                     onClick={() => {
-                      setOffers([])
+                      setOffers([]);
                     }}
                   >
                     <ClearCart />
@@ -593,8 +593,8 @@ const TradeTab = ({
             )}
             <div
               onClick={() => {
-                setAskTrade(true)
-                setOfferTrade(false)
+                setAskTrade(true);
+                setOfferTrade(false);
               }}
               className={`flex flex-col bg-parsleytint/[0.5] text-parsley p-2 rounded-[8px] justify-between ${
                 askTrade ? 'border-4 border-parsley/[0.5] border-solid' : ''
@@ -609,7 +609,7 @@ const TradeTab = ({
                   <button
                     className="mx-3"
                     onClick={() => {
-                      setConsiderations([])
+                      setConsiderations([]);
                     }}
                   >
                     <ClearCart />
@@ -626,7 +626,7 @@ const TradeTab = ({
                   onClick={() => {
                     showHelp !== 'cart2'
                       ? setShowHelp('cart2')
-                      : setShowHelp('')
+                      : setShowHelp('');
                   }}
                 >
                   <svg
@@ -677,9 +677,9 @@ const TradeTab = ({
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
               onClick={() => {
                 if (offers.length == 0 || considerations.length == 0) {
-                  alert('Order cannot be empty')
+                  alert('Order cannot be empty');
                 } else {
-                  setReviewOrder(true)
+                  setReviewOrder(true);
                 }
               }}
             >
@@ -782,7 +782,7 @@ const TradeTab = ({
                 onChange={(e) => {
                   selectOption === 'ETH'
                     ? setEtherBox(e.target.value)
-                    : setWEtherBox(e.target.value)
+                    : setWEtherBox(e.target.value);
                 }}
               />
               <svg
@@ -844,7 +844,7 @@ const TradeTab = ({
                           <svg
                             className="cursor-pointer"
                             onClick={async () => {
-                              await addNFT(item)
+                              await addNFT(item);
                             }}
                             width="16"
                             height="16"
@@ -893,7 +893,7 @@ const TradeTab = ({
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default TradeTab
+export default TradeTab;
