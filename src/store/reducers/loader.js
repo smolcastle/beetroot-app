@@ -1,18 +1,18 @@
 const initialState = {
-  showLoader: null,
+  showLoader: null
 };
 
 export default function Reducer(state = initialState, action) {
   switch (action.type) {
-    case "SHOW_LOADER":
+    case 'SHOW_LOADER':
       return {
         ...state,
-        showLoader: true,
+        showLoader: true
       };
-    case "HIDE_LOADER":
+    case 'HIDE_LOADER':
       return {
         ...state,
-        showLoader: false,
+        showLoader: false
       };
     default:
       return state;

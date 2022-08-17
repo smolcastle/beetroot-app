@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 export function useFirestoreQuery(query) {
   const [docs, setDocs] = useState([]);
@@ -26,7 +26,7 @@ export function useFirestoreQuery(query) {
       // Get all documents from collection - with IDs
       const data = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
-        id: doc.id,
+        id: doc.id
       }));
       // Update state
       setDocs(data);

@@ -1,4 +1,4 @@
-import { COLLECTIONS } from "../utils/constants";
+import { COLLECTIONS } from '../utils/constants';
 
 export function getCollectionsList(data, label_id) {
   const collections = {};
@@ -9,7 +9,7 @@ export function getCollectionsList(data, label_id) {
       to_address,
       from_address,
       token_symbol,
-      tx_id,
+      tx_id
     } = trade;
     if (COLLECTIONS[address]) {
       if (!collections[address]) {
@@ -17,13 +17,13 @@ export function getCollectionsList(data, label_id) {
           address,
           name: COLLECTIONS[address] ? COLLECTIONS[address].name : null,
           image_url:
-            "https://lh3.googleusercontent.com/Y8yUsNKfprQ-n0gJ9hnoU0wrApIu06BNoiyY6F89uabke3LpBYY0QzJMJp11-C_dT6SjmeapQkkZF-9xhvo7eKOxMJUjrUyenvVZXw=s300",
+            'https://lh3.googleusercontent.com/Y8yUsNKfprQ-n0gJ9hnoU0wrApIu06BNoiyY6F89uabke3LpBYY0QzJMJp11-C_dT6SjmeapQkkZF-9xhvo7eKOxMJUjrUyenvVZXw=s300'
         };
         collections[address].items = {};
         collections[address].trade = [];
       }
       collections[address].trade.push(trade);
-      if (token_standard === "ERC721" || token_standard === "ERC1155") {
+      if (token_standard === 'ERC721' || token_standard === 'ERC1155') {
         if (to_address === label_id) {
           collections[address].items[token_symbol] = trade;
         }
@@ -42,14 +42,14 @@ export function isFunction(functionToCheck) {
   var getType = {};
   return (
     functionToCheck &&
-    getType.toString.call(functionToCheck) === "[object Function]"
+    getType.toString.call(functionToCheck) === '[object Function]'
   );
 }
 
 export function truncate(fullStr, strLen, separator) {
   if (fullStr.length <= strLen) return fullStr;
 
-  separator = separator || "...";
+  separator = separator || '...';
 
   var sepLen = separator.length,
     charsToShow = strLen - sepLen,
@@ -73,5 +73,10 @@ export function getDateTime(timestamp) {
   let minutes = dateObj.getMinutes();
   let totalTime = dateObj.getTime();
 
-  return {date: day + "." + month + "." + year, time: hours + ":" + minutes, hours: hours, totalTime: totalTime};
+  return {
+    date: day + '.' + month + '.' + year,
+    time: hours + ':' + minutes,
+    hours: hours,
+    totalTime: totalTime
+  };
 }

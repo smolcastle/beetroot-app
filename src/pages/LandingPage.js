@@ -1,129 +1,324 @@
-import { useEffect, useState } from "react";
-import discord from "../img/discord.png";
-import twitter from "../img/twitter.png";
-import mascot from "../img/mascot.png"
-import grass1 from "../img/grass1.png"
-import grass2 from "../img/grass2.png"
-import logo from "../img/logo.png"
+import React, { useEffect, useState } from 'react';
+import logo4 from '../img/logo4.png';
+import ellipse1 from '../img/Ellipse1.png';
+import ellipse2 from '../img/Ellipse2.png';
+import twitter from '../img/twitter_gum.png';
+import discord from '../img/discord_gum.png';
+import mediumLogo from '../img/medium_gum.png';
+import artboard from '../img/Artboard.png';
+import asset2 from '../img/asset2.png';
+import chatImg from '../img/chat_img.png';
+import tradeImg from '../img/trade_img.png';
+import { Link } from 'react-router-dom';
 
-function HeaderBtn({ title }) {
+function FAQList({ id, title, answer }) {
+  const [showFAQ, setShowFAQ] = useState(null);
+
   return (
-    <button
-      type="button"
-      className="py-2 text-grey2 text-[12px] w-20 h-10 md:text-[12px] md:w-24 lg:w-32 mr-4 font-termina eye_cursor"
-    >
-      {title}
-    </button>
-  );
-}
-function ConnectBtn({ title }) {
-  return (
-    <button
-      type="button"
-      className="py-2 bg-beetroot1 text-white0 h-10 md:text-[10px] lg:text-[12px] md:w-24 lg:w-32 mr-4 font-termina eye_cursor"
-    >
-      {title}
-    </button>
+    <>
+      <div className="flex items-center justify-between w-[600px] my-4">
+        <p className="text-parsley font-questa text-[24px] font-medium">
+          {title}
+        </p>
+        {!showFAQ && (
+          <svg
+            onClick={() => setShowFAQ(id)}
+            className="cursor-pointer"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 7.17397L12 16.8252"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M7.95749 13.3614C9.18417 14.9113 10.0197 15.6325 11.2648 16.5758C11.7054 16.9096 12.2834 16.9096 12.7239 16.5758C13.9691 15.6325 14.8046 14.9113 16.0312 13.3614"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+        {showFAQ && (
+          <svg
+            onClick={() => setShowFAQ(null)}
+            className="cursor-pointer"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 16.826L12 7.1748"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16.0347 10.6386C14.808 9.08875 13.9725 8.36748 12.7274 7.42416C12.2868 7.09039 11.7088 7.09039 11.2682 7.42416C10.0231 8.36748 9.18761 9.08875 7.96094 10.6386"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </div>
+      {showFAQ === id && (
+        <p className="text-parsley text-[16px] w-[400px]">{answer}</p>
+      )}
+
+      <div className="border-b-[2px] border-solid border-gray4 w-[625px]"></div>
+    </>
   );
 }
 
 function LandingPage() {
-
-  const [] = useState();
-  const [showMenu, setShowMenu] = useState(false);
-
   return (
-    <div className="h-full w-screen bg-gradient-to-r from-nord-light via-nord-dark1 to-nord-dark2 flex flex-col relative md:py-0 md:px-0">
-
-        <div className="flex absolute lg:left-2/4 lg:-translate-x-2/4 w-4/12 sm:w-1/6 xl:w-1/12 lg:w-2/12 justify-evenly sm:left-1/12 sm:-translate-x-5/6 bottom-[24px] sm:bottom-10 z-10 items-center">
-          <img
-              className="w-8 h-8 xs:w-10 xs:h-10 object-contain cursor-pointer hover:scale-110 eye_cursor"
-              src={discord}
-              alt=""
-          />
-          <a href="https://twitter.com/beetrootai" target="_blank">
-            <img
-              className="w-8 h-8 xs:w-10 xs:h-10 object-contain cursor-pointer hover:scale-110"
-              src={twitter}
-              alt=""
+    <div className="h-full w-screen bg-white0 font-rubrik flex flex-col relative md:py-0 md:px-0 overflow-x-hidden">
+      <section className="flex h-full justify-between lg:px-24 mb-32">
+        <div className="flex flex-col w-[60%] lg:pt-24">
+          <img src={logo4} className="w-[48px]" />
+          <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
+            NFT marketplace for negotiators
+          </h1>
+          <div className="mt-16">
+            <Link to="/chat">
+              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px]">
+                {'< LAUNCH APP />'}
+              </button>
+            </Link>
+          </div>
+          <div className="flex justify-between mt-4">
+            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor">
+              Read Launch Announcement
+            </button>
+            <div className="w-[370px] flex flex-col">
+              <p className="text-gray1 text-right text-[36px] font-light">
+                Beetroot makes it easy for NFT traders to negogiate deals on
+                extraordinary NFTS
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div>
+              <a
+                href="https://twitter.com/beetrootai"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img className="w-[30px] cursor-pointer" src={twitter} />
+              </a>
+              <img
+                className="w-[30px] cursor-pointer eye_cursor mt-4"
+                src={discord}
               />
-          </a>
-        </div>
-      <div className="flex flex-1 flex-col">
-        <div className="flex items-center h-40 w-full z-10">
-          <div className="flex justify-start items-center w-full md:w-52 ml-5 sm:ml-10 sm:justify-start lg:justify-center relative">
-            <img
-                className="w-10 h-10 xs:w-12 xs:h-12 lg:w-16 lg:h-16 object-contain"
-                src={logo}
-                alt=""
-            />
-          </div>
-          <div className="md:hidden" onClick={() => setShowMenu(!showMenu)}>
-            {showMenu ?
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mr-5 stroke-beetroot1 z-30" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            :
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-5 stroke-beetroot1 z-30" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            }
-          </div>
-          <div className= {
-              showMenu ? "flex flex-col md:flex md:flex-row md:relative flex-1 justify-end items-center md:pr-5 lg:pr-8 xl:pr-12"
-              :
-               "hidden md:flex flex-1 justify-end items-center md:pr-5 lg:pr-8 xl:pr-12"} >
-            <HeaderBtn title={"Chats"} />
-            <HeaderBtn title={"Deal History"} />
-            <HeaderBtn title={"About Us"} />
-            <ConnectBtn title={"Connect"} />
+              <img
+                className="w-[30px] cursor-pointer eye_cursor mt-4"
+                src={mediumLogo}
+              />
+            </div>
+            <div>
+              <img className="w-[50px] place-self-end mt-4" src={ellipse2} />
+              <img className="w-[50px] place-self-end mt-2" src={ellipse2} />
+            </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center z-10 font-inter text-gray2  md:text-3xl lg:text-4xl 2xl:text-5xl leading-[2.2rem] md:leading-[3rem] lg:leading-[4rem] 2xl:leading-[5rem] md:mt-5 lg:mt-10">
-          <div className="flex flex-row text-center items-center z-10 font-bold text-[24px] xs:text-[36px] md:text-[48px] lg:text-[64px] xl:text-[72px]">
-            {"Negotiate Deals,"}
-            <br/>
-            {"Swap your NFTs"}
+        <div className="w-[30%] -mb-32">
+          <div className="scroll-card overflow-y-scroll h-full relative">
+            <img src={ellipse1} className="w-[200px] translate-y-64" />
+            <div className="translate-y-[40%]">
+              <p className="reenie-beanie text-[32px] text-gum font-medium">
+                Chat to negotiate deals.....
+              </p>
+              <img src={chatImg} className="mt-6" />
+              <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
+                Create orders by adding NFTS and coins into individual carts...
+              </p>
+              <img src={tradeImg} />
+              <div className="h-[500px]"></div>
+            </div>
           </div>
-          <p className="text-beetroot1 leading-normal text-center text-[16px] xs:text-[18px] md:text-[20px] lg:text-[24px] mt-10 mb-5 w-10/12 xl:w-5/12 lg:w-9/12 xl:w-3/6 lg:mt-10 lg:mb-5">
-            {"Beetroot is a P2P marketplace which allows users to send wallet-to-wallet messages and negotiate NFT deals securely. NFT traders can trustlessly reach out to other NFT holders to negotiate prices without revealing their true identity."}
-          </p>
-          <p className="text-black1 leading-normal text-center font-bold text-[14px] xs:text-[16px] w-5/6 sm:w-3/6">
-            {"Powered by 🌊 "}
-            <a href="https://opensea.io/blog/announcements/introducing-seaport-protocol/" target="_blank" className="underline underline-offset-4">
-              {"Seaport Protocol"}
-            </a>
-          </p>
-          <button
-            type="button"
-            onClick={() =>
-              window.open("https://forms.gle/H2BQF67whA81wXyW9")
-            }
-            className="bg-beetroot1 font-termina font-extralight text-white0 text-[14px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] h-[40px] md:h-[46px] lg:h-[52px] 2xl:h-[58px] w-[143px] md:w-[163px] lg:w-[184px] xl:w-[204px] mt-5 sm:mt-[40px] lg:mt-[60px] leading-[20px]"
-          >
-            {"Join the waitlist"}
-          </button>
         </div>
-      </div>
-      <div className="absolute h-1/4 sm:h-2/6 xl:h-2/5 w-full bottom-0 ">
-        <div className="flex h-full w-full relative">
-          <img
-            className="absolute left-0 h-full invisible lg:visible"
-            src={grass1}
-            alt=""
-          />
-          <img
-            className="absolute right-0 h-full"
-            src={grass2}
-            alt=""
-          />
-          <img
-            className="absolute right-0 lg:right-20 sm:right-5 h-full"
-            src={mascot}
-            alt=""
-          />
+      </section>
+      <section className="home-section bg-gray7 px-24 pb-24 mb-20">
+        <h1 className="text-[92px] font-medium font-questa text-gum mt-32">
+          Discuss every deal that you do.
+        </h1>
+        <p className="text-[20px] text-gum font-light">
+          Because of the non-fungibility nature of NFTs, their fair prices are
+          hard to determine.
+        </p>
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[550px] ">
+              <div className="grid grid-cols-5 gap-5 bg-gumlight p-16 rounded-[8px]">
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  E
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  N
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  C
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  R
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  Y
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  P
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  T
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  I
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  O
+                </div>
+                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
+                  N
+                </div>
+              </div>
+            </div>
+            <div className="w-[400px]">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Wallet To Wallet Deals
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                Negotiating deals are hard and time consuming. You can never be
+                certain that the other user is not scamming you and owns the
+                particular NFT. We make it easy to verify the ownership of NFTs.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                You can use Beetroot to send encrypted deals to other wallets
+                which only they can see.
+              </p>
+            </div>
+          </div>
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[400px]">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Buy With Your NFTs
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                Existing marketplaces only let you spend your ETH to buy NFTs.
+                You cannot use your NFT to buy another NFT without going through
+                multiple trades and paying high fees.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                With Beetroot, you can trade your digital currencies and/or NFTs
+                to buy other NFTs in a single trade.
+              </p>
+            </div>
+            <div className="w-[550px] bg-gumlight/[0.5] p-16 rounded-[8px]">
+              <img src={artboard} />
+            </div>
+          </div>
+          <div className="flex mt-40 items-center justify-between w-[70%]">
+            <div className="w-[550px] h-[300px] bg-gumlight/[0.5]  rounded-[8px]">
+              <img
+                src={asset2}
+                className="h-[350px] place-self-end -mt-[50px]"
+              />
+            </div>
+            <div className="w-[400px] ">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+                Personalised Offers
+              </h1>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                99% offers on NFTs are never aligned to meet your expectations.
+                They are mostly bots trying to grab them at huge discounts. We
+                give you the ability to negotiate those terms.
+              </p>
+              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+                With beetroot, you can make counter offers and discuss details
+                so it suits your price expectations.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+      <section className="mb-36 px-24">
+        <div className="flex px-24 justify-between">
+          <div className="w-[50%]">
+            <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+              FAQs
+            </h1>
+            <div className="mt-8">
+              <FAQList
+                id={1}
+                title={'How are messages encrypted?'}
+                answer={''}
+              />
+              <FAQList
+                id={2}
+                title={'How does NFT trading work on beetroot?'}
+                answer={''}
+              />
+              <FAQList id={3} title={'What are NFTS?'} answer={''} />
+              <FAQList
+                id={4}
+                title={'Can I receive notifications when I’m offline?'}
+                answer={
+                  'Yes. You can receive notifications on your telegram, discord or email even when you are offline.'
+                }
+              />
+            </div>
+          </div>
+          <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
+            <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
+            <p className="w-[200px] mt-4">Write to us at </p>
+            <span className="text-gum">hello@beetroot.ai</span>
+            <p className="w-[200px]">
+              and we will try our best to answer your query at the earliest.
+            </p>
+            <div>
+              <img
+                className="w-[50px] place-self-end mt-8 rotate-180"
+                src={ellipse2}
+              />
+              <img
+                className="w-[50px] place-self-end mt-2 rotate-180"
+                src={ellipse2}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer className="mb-20 px-24">
+        <div className="flex flex-col px-24">
+          <div className="flex justify-between">
+            <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
+              <h1 className="text-[24px] font-bold">Join the community!</h1>
+              <p className="text-[14px] font-normal w-[250px] mt-2">
+                Participate in discussions, contribute to our efforts, cheer up
+                our devs with memes. Get early access, user rewards and more!
+              </p>
+            </div>
+            <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
+              <h1 className="font-bold text-[24px] text-gray6">
+                An NFT Marketplace for negotiators
+              </h1>
+              <Link to="/chat">
+                <button className="text-gray6 text-[14px] font-medium">
+                  {'< LAUNCH APP />'}
+                </button>
+              </Link>
+            </div>
+          </div>
+          <p className="text-gray1 text-[14px] mt-4">&copy; beetroot 2022</p>
+        </div>
+      </footer>
     </div>
   );
 }

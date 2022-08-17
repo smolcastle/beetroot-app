@@ -1,6 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { useSigner } from "wagmi";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useSigner } from 'wagmi';
 
 export default function SigningModal({
   signMessage,
@@ -9,8 +9,7 @@ export default function SigningModal({
   dispatch,
   chainId
 }) {
-
-  const {data: signer} = useSigner();
+  const { data: signer } = useSigner();
 
   return (
     <>
@@ -32,11 +31,11 @@ export default function SigningModal({
                   setSignModalState(false);
                 }}
                 type="button"
-                class={
-                  "flex border-2 border-gum border-solid text-black0 h-10 w-full text-gray1 shadow-sm rounded-md justify-center items-center mt-16"
+                className={
+                  'flex border-2 border-gum border-solid text-black0 h-10 w-full text-gray1 shadow-sm rounded-md justify-center items-center mt-16'
                 }
               >
-                {"Authenticate"}
+                {'Authenticate'}
               </button>
             </div>
           </div>
