@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo4 from '../img/logo4.png';
 import ellipse1 from '../img/Ellipse1.png';
 import ellipse2 from '../img/Ellipse2.png';
@@ -9,38 +9,70 @@ import artboard from '../img/Artboard.png';
 import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
-
 import { Link } from 'react-router-dom';
 
-function FAQList({ title }) {
+function FAQList({ id, title, answer }) {
+  const [showFAQ, setShowFAQ] = useState(null);
+
   return (
     <>
       <div className="flex items-center justify-between w-[600px] my-4">
         <p className="text-parsley font-questa text-[24px] font-medium">
           {title}
         </p>
-        <svg
-          className="cursor-pointer"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 7.17397L12 16.8252"
-            stroke="#4E7B36"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M7.95749 13.3614C9.18417 14.9113 10.0197 15.6325 11.2648 16.5758C11.7054 16.9096 12.2834 16.9096 12.7239 16.5758C13.9691 15.6325 14.8046 14.9113 16.0312 13.3614"
-            stroke="#4E7B36"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {!showFAQ && (
+          <svg
+            onClick={() => setShowFAQ(id)}
+            className="cursor-pointer"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 7.17397L12 16.8252"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M7.95749 13.3614C9.18417 14.9113 10.0197 15.6325 11.2648 16.5758C11.7054 16.9096 12.2834 16.9096 12.7239 16.5758C13.9691 15.6325 14.8046 14.9113 16.0312 13.3614"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+        {showFAQ && (
+          <svg
+            onClick={() => setShowFAQ(null)}
+            className="cursor-pointer"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 16.826L12 7.1748"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16.0347 10.6386C14.808 9.08875 13.9725 8.36748 12.7274 7.42416C12.2868 7.09039 11.7088 7.09039 11.2682 7.42416C10.0231 8.36748 9.18761 9.08875 7.96094 10.6386"
+              stroke="#4E7B36"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
       </div>
+      {showFAQ === id && (
+        <p className="text-parsley text-[16px] w-[400px]">{answer}</p>
+      )}
+
       <div className="border-b-[2px] border-solid border-gray4 w-[625px]"></div>
     </>
   );
@@ -223,11 +255,23 @@ function LandingPage() {
               FAQs
             </h1>
             <div className="mt-8">
-              <FAQList title={'How are messages encrypted?'} />
-              <FAQList title={'How does NFT trading work on beetroot?'} />
-              <FAQList title={'What are NFTS?'} />
               <FAQList
+                id={1}
+                title={'How are messages encrypted?'}
+                answer={''}
+              />
+              <FAQList
+                id={2}
+                title={'How does NFT trading work on beetroot?'}
+                answer={''}
+              />
+              <FAQList id={3} title={'What are NFTS?'} answer={''} />
+              <FAQList
+                id={4}
                 title={'Can I receive notifications when I’m offline?'}
+                answer={
+                  'Yes. You can receive notifications on your telegram, discord or email even when you are offline.'
+                }
               />
             </div>
           </div>
