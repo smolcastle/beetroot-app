@@ -134,7 +134,7 @@ function LandingPage() {
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
               <p className="reenie-beanie text-[32px] text-gum font-medium">
-                Chat to negotiate deals.....
+                Chat to negotiate deals...
               </p>
               <img src={chatImg} className="mt-6" />
               <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
@@ -151,7 +151,7 @@ function LandingPage() {
           Discuss every deal that you do.
         </h1>
         <p className="text-[20px] text-gum font-light">
-          Because of the non-fungibility nature of NFTs, their fair prices are
+          Due to non-fungible nature of NFTs, their fair prices are
           hard to determine.
         </p>
         <div className="flex flex-col items-center justify-center">
@@ -195,7 +195,7 @@ function LandingPage() {
                 Wallet To Wallet Deals
               </h1>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                Negotiating deals are hard and time consuming. You can never be
+                Negotiating deals is hard and time consuming. You can never be
                 certain that the other user is not scamming you and owns the
                 particular NFT. We make it easy to verify the ownership of NFTs.
               </p>
@@ -216,7 +216,7 @@ function LandingPage() {
                 multiple trades and paying high fees.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With Beetroot, you can trade your digital currencies and/or NFTs
+                With Beetroot, you can use digital currencies and/or NFTs
                 to buy other NFTs in a single trade.
               </p>
             </div>
@@ -241,7 +241,7 @@ function LandingPage() {
                 give you the ability to negotiate those terms.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With beetroot, you can make counter offers and discuss details
+                With Beetroot, you can make counter offers and discuss details
                 so it suits your price expectations.
               </p>
             </div>
@@ -262,7 +262,7 @@ function LandingPage() {
               />
               <FAQList
                 id={2}
-                title={'How does NFT trading work on beetroot?'}
+                title={'How does NFT trading work on Beetroot?'}
                 answer={''}
               />
               <FAQList id={3} title={'What are NFTS?'} answer={''} />
@@ -316,7 +316,7 @@ function LandingPage() {
               </Link>
             </div>
           </div>
-          <p className="text-gray1 text-[14px] mt-4">&copy; beetroot 2022</p>
+          <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
         </div>
       </footer>
     </div>
