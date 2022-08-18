@@ -5,6 +5,8 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
+import { getDateTime } from '../helpers/Collections';
+import { getTime } from 'date-fns';
 
 const TradeTab = ({
   createOrder,
@@ -515,6 +517,12 @@ const TradeTab = ({
     );
   }
 
+  const [inputExpiryDate, setInputExpiryDate] = useState(null); // get the expiry date from the input field
+  const [expiryHours, setExpiryHours] = useState();
+
+  const d1 = new Date(inputExpiryDate); // create a new date object with a specified date i.e. expiry date
+  const expiryDate = d1.getTime(); // convert the above obj in milliseconds
+
   return (
     <>
       <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
@@ -663,14 +671,17 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[60%]">
+            <div className="flex justify-between items-center text-[12px] w-[70%]">
               <input
-                placeholder="yyyy/mm/dd"
-                className=" w-[90px] outline-none placeholder:text-center bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
+                type="date"
+                onChange={(e) => {
+                  setInputExpiryDate(e.target.value);
+                }}
+                className=" w-[120px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint rounded-md placeholder-parsley text-parsley"
               ></input>
               <input
                 placeholder="00.00 HRS"
-                className="w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
+                className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-md p-[11px] placeholder-parsley text-parsley"
               ></input>
             </div>
             <button
@@ -893,6 +904,7 @@ const TradeTab = ({
           setOffers={setOffers}
           setConsiderations={setConsiderations}
           setOrderCreated={setOrderCreated}
+          expiryDate={expiryDate}
         />
       )}
     </>

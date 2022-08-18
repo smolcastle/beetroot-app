@@ -12,7 +12,8 @@ const ReviewOrder = ({
   orderCreated,
   setOffers,
   setConsiderations,
-  setOrderCreated
+  setOrderCreated,
+  expiryDate
 }) => {
   function Cart() {
     return (
@@ -270,7 +271,7 @@ const ReviewOrder = ({
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5 cursor-pointer"
               onClick={async () => {
-                await createOrder(offerFor);
+                await createOrder(offerFor, expiryDate);
               }}
             >
               {'LOOKS GOOD'}
