@@ -10,6 +10,7 @@ import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';
+import '../animation.css';
 
 function FAQList({ id, title, answer }) {
   const [showFAQ, setShowFAQ] = useState(null);
@@ -157,37 +158,17 @@ function LandingPage() {
         <div className="flex flex-col items-center justify-center">
           <div className="flex mt-40 items-center justify-between w-[70%]">
             <div className="w-[550px] ">
-              <div className="grid grid-cols-5 gap-5 bg-gumlight p-16 rounded-[8px]">
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  E
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  N
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  C
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  R
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  Y
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  P
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  T
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  I
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  O
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  N
-                </div>
+              <div className="encryption grid grid-cols-5 gap-5 bg-gumlight/[0.5] p-16 rounded-[8px] hover:bg-gumlight">
+                <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
+                <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="C bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="R bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="Y bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="P bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="T bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="I bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="O bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
               </div>
             </div>
             <div className="w-[400px]">
