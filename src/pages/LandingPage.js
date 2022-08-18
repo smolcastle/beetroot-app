@@ -5,6 +5,9 @@ import ellipse2 from '../img/Ellipse2.png';
 import twitter from '../img/twitter_gum.png';
 import discord from '../img/discord_gum.png';
 import mediumLogo from '../img/medium_gum.png';
+import twitter_f from '../img/twitter_footer.png';
+import discord_f from '../img/discord_footer.png';
+import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
 import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
@@ -281,10 +284,21 @@ function LandingPage() {
           <div className="flex justify-between">
             <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
               <h1 className="text-[24px] font-bold">Join the community!</h1>
-              <p className="text-[14px] font-normal w-[250px] mt-2">
+              <p className="text-[14px] font-normal w-[250px] mt-4">
                 Participate in discussions, contribute to our efforts, cheer up
                 our devs with memes. Get early access, user rewards and more!
               </p>
+              <div className="flex mt-6 w-[30%] justify-between">
+                <a
+                  href="https://twitter.com/beetrootai"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img className="cursor-pointer" src={twitter_f} />
+                </a>
+                <img className="cursor-pointer eye_cursor" src={discord_f} />
+                <img className="cursor-pointer eye_cursor" src={medium_f} />
+              </div>
             </div>
             <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
               <h1 className="font-bold text-[24px] text-gray6">
