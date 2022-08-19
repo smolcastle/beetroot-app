@@ -1,0 +1,126 @@
+@keyframes changeLetter1 {
+  0% {
+    content: 'Z';
+  }
+  10% {
+    content: 'L';
+  }
+  20% {
+    content: 'A';
+  }
+  30% {
+    content: 'Q';
+  }
+  40% {
+    content: 'T';
+  }
+  50% {
+    content: 'B';
+  }
+  60% {
+    content: 'M';
+  }
+  70% {
+    content: 'S';
+  }
+  80% {
+    content: 'H';
+  }
+  90% {
+    content: 'X';
+  }
+  100% {
+    content: 'M';
+  }
+}
+@keyframes changeLetter2 {
+  0% {
+    content: 'D';
+  }
+  10% {
+    content: 'N';
+  }
+  20% {
+    content: 'R';
+  }
+  30% {
+    content: 'Y';
+  }
+  40% {
+    content: 'X';
+  }
+  50% {
+    content: 'K';
+  }
+  60% {
+    content: 'V';
+  }
+  70% {
+    content: 'G';
+  }
+  80% {
+    content: 'J';
+  }
+  90% {
+    content: 'F';
+  }
+  100% {
+    content: 'U';
+  }
+}
+
+.E::after {
+  content: 'E';
+}
+.N::after {
+  content: 'N';
+}
+.C::after {
+  content: 'C';
+}
+.R::after {
+  content: 'R';
+}
+.Y::after {
+  content: 'Y';
+}
+.P::after {
+  content: 'P';
+}
+.T::after {
+  content: 'T';
+}
+.I::after {
+  content: 'I';
+}
+.O::after {
+  content: 'O';
+}
+
+.encryption:hover > .E::after {
+  animation: changeLetter1 1s linear alternate;
+}
+.encryption:hover > .N::after {
+  animation: changeLetter2 1.2s linear 0.2s alternate;
+}
+.encryption:hover > .C::after {
+  animation: changeLetter1 1.3s linear 0.3s alternate;
+}
+.encryption:hover > .R::after {
+  animation: changeLetter2 1s linear 0.1s alternate;
+}
+.encryption:hover > .Y::after {
+  animation: changeLetter1 1s linear 0.2s alternate;
+}
+.encryption:hover > .P::after {
+  animation: changeLetter2 1s linear 0.3s alternate;
+}
+.encryption:hover > .T::after {
+  animation: changeLetter1 1.1s linear 0.2s alternate;
+}
+.encryption:hover > .I::after {
+  animation: changeLetter2 1s linear 0.15s alternate;
+}
+.encryption:hover > .O::after {
+  animation: changeLetter1 1.2s linear alternate;
+}
