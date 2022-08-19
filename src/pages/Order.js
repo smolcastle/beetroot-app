@@ -164,10 +164,19 @@ const Order = ({ sender, truncate, receiver }) => {
   const d2 = new Date();
   const today = d2.getTime();
 
-  function OrderExpiry({ orderExpiryDate, expireStatus }) {
+  function OrderExpiry({ orderId, orderExpiryDate, expireStatus }) {
+    // check if present date is past the expiry date if yes update the status in db
+    if (orderExpiryDate !== 0 && orderExpiryDate < today) {
+      const docRef = doc(getFirestore(), 'orders', orderId);
+      updateDoc(docRef, {
+        expired: true
+      });
+    }
     if (orderExpiryDate > today) {
       // calculate the no. of days between the expiry date and present date
-      const date = Math.ceil((orderExpiryDate - today) / (1000 * 60 * 60 * 24));
+      const date = Math.floor(
+        (orderExpiryDate - today) / (1000 * 60 * 60 * 24)
+      );
       return (
         <>
           <h1>Order expires in about {date} day/s.</h1>
@@ -285,6 +294,7 @@ const Order = ({ sender, truncate, receiver }) => {
                             order.status === 'fulfilled') && (
                             <div className="text-gum text-[10px] mt-1">
                               <OrderExpiry
+                                orderId={order.id}
                                 orderExpiryDate={order.expiryDate}
                                 expireStatus={order.expired}
                               />
