@@ -6,7 +6,7 @@ import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
 import { getDateTime } from '../helpers/Collections';
-import { getTime } from 'date-fns';
+import { getMinutes, getTime } from 'date-fns';
 
 const TradeTab = ({
   createOrder,
@@ -516,13 +516,28 @@ const TradeTab = ({
       </>
     );
   }
+  // get the expiry date from the input field
+  const [inputExpiryDate, setInputExpiryDate] = useState(0);
+  const [inputExpiryMonth, setInputExpiryMonth] = useState(0);
+  const [inputExpiryYear, setInputExpiryYear] = useState(0);
+  const [expiryHours, setExpiryHours] = useState(0);
+  let expiryDate = 0;
+  const dateObj = new Date();
 
-  const [inputExpiryDate, setInputExpiryDate] = useState(null); // get the expiry date from the input field
-  const [expiryHours, setExpiryHours] = useState();
-
-  const d1 = new Date(inputExpiryDate); // create a new date object with a specified date i.e. expiry date
-  const expiryDate = d1.getTime(); // convert the above obj in milliseconds
-
+  // create a date object only if the input fields are not empty
+  if (
+    (inputExpiryDate && inputExpiryMonth && inputExpiryYear) !== 0 ||
+    expiryHours !== 0
+  ) {
+    const d1 = new Date(
+      inputExpiryYear,
+      inputExpiryMonth - 1,
+      inputExpiryDate,
+      expiryHours,
+      dateObj.getMinutes()
+    ); // create a new date object with a specified date i.e. expiry date
+    expiryDate = d1.getTime(); // convert the above obj in milliseconds
+  }
   return (
     <>
       <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
@@ -672,16 +687,37 @@ const TradeTab = ({
               field empty to let the order remain active forever.{' '}
             </p>
             <div className="flex justify-between items-center text-[12px] w-[70%]">
+              <div className="flex justify-evenly bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  onChange={(e) => {
+                    setInputExpiryYear(e.target.value);
+                  }}
+                  placeholder="yyyy"
+                  className=" w-[35px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">-</span>
+                <input
+                  onChange={(e) => {
+                    setInputExpiryMonth(e.target.value);
+                  }}
+                  placeholder="mm"
+                  className=" w-[25px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">-</span>
+                <input
+                  onChange={(e) => {
+                    setInputExpiryDate(e.target.value);
+                  }}
+                  placeholder="dd"
+                  className=" w-[25px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+              </div>
               <input
-                type="date"
                 onChange={(e) => {
-                  setInputExpiryDate(e.target.value);
+                  setExpiryHours(e.target.value);
                 }}
-                className=" w-[120px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint rounded-md placeholder-parsley text-parsley"
-              ></input>
-              <input
                 placeholder="00.00 HRS"
-                className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-md p-[11px] placeholder-parsley text-parsley"
+                className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-[4px] p-3 placeholder-parsley text-parsley"
               ></input>
             </div>
             <button

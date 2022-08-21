@@ -37,7 +37,6 @@ const Order = ({ sender, truncate, receiver }) => {
 
   async function saveOrder(order, offerFor, expiryDate) {
     try {
-      console.log(expiryDate);
       await addDoc(collection(getFirestore(), 'orders'), {
         name: sender,
         to: offerFor,
@@ -47,7 +46,7 @@ const Order = ({ sender, truncate, receiver }) => {
         status: 'pending',
         expiryDate: expiryDate,
         // check if user has given any expiry date if not set status to ''
-        expired: expiryDate !== 0 ? (expiryDate > today ? false : true) : '',
+        expired: expiryDate > 0 ? (expiryDate > today ? false : true) : 0,
         timestamp: serverTimestamp()
       });
     } catch (error) {
@@ -161,7 +160,14 @@ const Order = ({ sender, truncate, receiver }) => {
     });
   };
 
-  const d2 = new Date();
+  const dateObj = new Date();
+  const currDate = dateObj.getDate();
+  const currMonth = dateObj.getMonth();
+  const currYear = dateObj.getFullYear();
+  const currHour = dateObj.getHours();
+  const currMinute = dateObj.getMinutes();
+
+  const d2 = new Date(currYear, currMonth, currDate, currHour, currMinute);
   const today = d2.getTime();
 
   function OrderExpiry({ orderId, orderExpiryDate, expireStatus }) {
@@ -177,9 +183,15 @@ const Order = ({ sender, truncate, receiver }) => {
       const date = Math.floor(
         (orderExpiryDate - today) / (1000 * 60 * 60 * 24)
       );
+      const hours = Math.ceil((orderExpiryDate - today) / (1000 * 60 * 60));
       return (
         <>
-          <h1>Order expires in about {date} day/s.</h1>
+          {date === 0 ? (
+            // if the date is 0 day it means value is less than 24 hours. so show expiry date in hours format
+            <h1>Order expires in about {hours} hours.</h1>
+          ) : (
+            <h1>Order expires in about {date} day/s.</h1>
+          )}
         </>
       );
     }
