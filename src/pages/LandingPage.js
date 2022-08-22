@@ -148,7 +148,6 @@ function LandingPage() {
                 Create orders by adding NFTS and coins into individual carts...
               </p>
               <img src={tradeImg} />
-              <div className="h-[500px]"></div>
             </div>
           </div>
         </div>
@@ -265,7 +264,9 @@ function LandingPage() {
           <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
             <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
             <p className="w-[200px] mt-4">Write to us at </p>
-            <span className="text-gum">hello@beetroot.ai</span>
+            <a href="mailto:hello@beetroot.ai">
+              <span className="text-gum">hello@beetroot.ai</span>
+            </a>
             <p className="w-[200px]">
               and we will try our best to answer your query at the earliest.
             </p>
