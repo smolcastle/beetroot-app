@@ -143,7 +143,18 @@ const TradeTab = ({
       reset();
     }
 
+    const wethContract = new ethers.Contract(
+      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      weth,
+      seaport.signer
+    );
+    const wethBalance = await wethContract.balanceOf(sender);
+
     if (wEtherBox !== '') {
+      if (parseEther(wEtherBox) > wethBalance) {
+        alert('Insufficient Balance');
+        return;
+      }
       setOffers([
         ...offers,
         {
@@ -151,6 +162,7 @@ const TradeTab = ({
           name: 'Wrapped Ethereum',
           symbol: 'WETH',
           token: '0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15',
+          enteredAmount: parseFloat(wEtherBox).toFixed(4),
           amount: parseEther(wEtherBox)
         }
       ]);
@@ -218,6 +230,7 @@ const TradeTab = ({
           name: 'Wrapped Ethereum',
           symbol: 'WETH',
           token: '0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15',
+          enteredAmount: parseFloat(wEtherBox).toFixed(4),
           amount: parseEther(wEtherBox),
           recipient: sender
         }
@@ -428,9 +441,6 @@ const TradeTab = ({
                         />
                       </svg>
                       <p className="mt-4">{offer.enteredAmount}</p>
-                      {offer.symbol === 'WETH' && (
-                        <p className="mt-2">{offer.amount.hex}</p>
-                      )}
                     </div>
                   </div>
                 </>
@@ -508,9 +518,6 @@ const TradeTab = ({
                         />
                       </svg>
                       <p className="mt-4">{consideration.enteredAmount}</p>
-                      {consideration.symbol === 'WETH' && (
-                        <p className="mt-2">{consideration.amount.hex}</p>
-                      )}
                     </div>
                   </div>
                 </>
