@@ -1,10 +1,10 @@
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 import {
   hideLoader,
   resetSignatureData,
   showLoader,
-  updateAcceptTradeData
-} from '../actions/actions';
+  updateAcceptTradeData,
+} from "../actions/actions";
 
 class ProviderClass {
   constructor() {
@@ -25,7 +25,7 @@ class ProviderClass {
   };
 
   signMessage = async (message, signer) => {
-    this.signer = await signer;
+    this.signer = await signer
     return await this.signer?.signMessage(message);
   };
 
