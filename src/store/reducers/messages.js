@@ -1,41 +1,46 @@
 const initialState = {
   messages: null,
   queue_ids: null,
-  signatureData: null,
+  signatureData: null
 };
 
 export default function Reducer(state = initialState, action) {
   switch (action.type) {
-    case "UPDATE_MESSAGES":
+    case 'UPDATE_MESSAGES':
       return {
         ...state,
-        messages: action.messages,
+        messages: action.messages
       };
-    case "RESET_MESSAGES":
+    case 'RESET_MESSAGES':
       return {
         ...state,
-        messages: null,
+        messages: null
       };
-    case "UPDATE_QUEUE_IDS":
+    case 'UPDATE_MSG_TIME':
       return {
         ...state,
-        queue_ids: action.queue_ids,
+        msgTime: action.msgTime
       };
-    case "UPDATE_SIGNING_DATA":
+    case 'UPDATE_QUEUE_IDS':
       return {
         ...state,
-        signatureData: action.signatureData,
+        queue_ids: action.queue_ids
       };
-    case "RESET_SIGNING_DATA":
+    case 'UPDATE_SIGNING_DATA':
       return {
         ...state,
-        signatureData: null,
+        signatureData: action.signatureData
       };
-    case "UPDATE_MESSAGE":
+    case 'RESET_SIGNING_DATA':
+      return {
+        ...state,
+        signatureData: null
+      };
+    case 'UPDATE_MESSAGE':
       if (action.message) {
         return {
           ...state,
-          messages: [...(state.messages || [])].concat(action.message),
+          messages: [...(state.messages || [])].concat(action.message)
         };
       }
       return state;
