@@ -101,35 +101,30 @@ const TradeTab = ({
     );
 
     if (tokenId) {
-      try {
-        // will throw if tokenId doesn't exist.
-        const owner = await erc721Contract.ownerOf(tokenId);
-        if (owner != (await seaport.signer.getAddress())) {
-          alert('You are not the owner');
-          return;
-        }
-
-        // TODO: use assetInfo.image_url to display image.
-        // remove the owner check above if you want to test with NFTs you don't own.
-        const assetInfo = await getAsset(nftBox, tokenId);
-        setAssestsInfo(...assetsInfo, assetInfo);
-
-        setOffers([
-          ...offers,
-          {
-            id: uuidv4(),
-            itemType: 2,
-            token: nftBox,
-            identifier: tokenId,
-            image_url: assetInfo.image_url ? assetInfo.image_url : ''
-          }
-        ]);
-        setNftBox('');
-        setTokenId('');
-      } catch (error) {
-        console.log(error);
-        alert("NFT doesn't exist");
+      // will throw if tokenId doesn't exist.
+      const owner = await erc721Contract.ownerOf(tokenId);
+      if (owner != (await seaport.signer.getAddress())) {
+        alert('You are not the owner');
+        return;
       }
+
+      // TODO: use assetInfo.image_url to display image.
+      // remove the owner check above if you want to test with NFTs you don't own.
+      const assetInfo = await getAsset(nftBox, tokenId);
+      setAssestsInfo(...assetsInfo, assetInfo);
+
+      setOffers([
+        ...offers,
+        {
+          id: uuidv4(),
+          itemType: 2,
+          token: nftBox,
+          identifier: tokenId,
+          image_url: assetInfo.image_url ? assetInfo.image_url : ''
+        }
+      ]);
+      setNftBox('');
+      setTokenId('');
     }
 
     if (etherBox !== 0) {
