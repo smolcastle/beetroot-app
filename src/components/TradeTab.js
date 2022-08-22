@@ -5,6 +5,7 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
+import weth from '../abis/weth.json';
 
 const TradeTab = ({
   createOrder,
@@ -141,7 +142,19 @@ const TradeTab = ({
       setEtherBox('');
       reset();
     }
+
+    const wethContract = new ethers.Contract(
+      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      weth,
+      seaport.signer
+    );
+    const wethBalance = await wethContract.balanceOf(sender);
+
     if (wEtherBox !== '') {
+      if (wEtherBox > wethBalance) {
+        alert('Insufficient Balance');
+        return;
+      }
       setOffers([
         ...offers,
         {
@@ -370,6 +383,10 @@ const TradeTab = ({
                     <div className="flex flex-col justify-center">
                       {offer.name === 'Ethereum' && <p>Ethereum</p>}
                       {offer.symbol === 'ETH' && <p className="mt-2">ETH</p>}
+                      {offer.name === 'Wrapped Ethereum' && (
+                        <p>Wrapped Ethereum</p>
+                      )}
+                      {offer.symbol === 'WETH' && <p className="mt-2">WETH</p>}
                       <div className="flex items-center justify-between">
                         {offer.identifier && (
                           <img
@@ -422,6 +439,9 @@ const TradeTab = ({
                         />
                       </svg>
                       <p className="mt-4">{offer.enteredAmount}</p>
+                      {offer.symbol === 'WETH' && (
+                        <p className="mt-2">{offer.amount.hex}</p>
+                      )}
                     </div>
                   </div>
                 </>
@@ -438,6 +458,12 @@ const TradeTab = ({
                       {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                       {consideration.symbol === 'ETH' && (
                         <p className="mt-2">ETH</p>
+                      )}
+                      {consideration.name === 'Wrapped Ethereum' && (
+                        <p>Wrapped Ethereum</p>
+                      )}
+                      {consideration.symbol === 'WETH' && (
+                        <p className="mt-2">WETH</p>
                       )}
                       <div className="flex items-center justify-between">
                         {consideration.identifier && (
@@ -493,6 +519,9 @@ const TradeTab = ({
                         />
                       </svg>
                       <p className="mt-4">{consideration.enteredAmount}</p>
+                      {consideration.symbol === 'WETH' && (
+                        <p className="mt-2">{consideration.amount.hex}</p>
+                      )}
                     </div>
                   </div>
                 </>
@@ -753,33 +782,51 @@ const TradeTab = ({
             </div>
             <div className="flex items-center my-3 justify-between">
               <div className="flex rounded-md text-parsley w-[50%] bg-parsleytint items-center px-2 py-1 justify-between">
-                {/* <input placeholder='ETH' className='w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input> */}
-                <select
-                  name="tokens"
-                  value={selectOption}
-                  onChange={handleChange}
-                  id="tokens"
-                  className="w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley"
-                >
-                  <option value="ETH" className="bg-white0 text-gray1">
-                    ETH
-                  </option>
-                  <option value="WETH" className="bg-white0 text-gray1">
+                {offerTrade && (
+                  <p className="w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley">
                     WETH
-                  </option>
-                </select>
+                  </p>
+                )}
+                {askTrade && (
+                  <select
+                    name="tokens"
+                    value={selectOption}
+                    onChange={handleChange}
+                    id="tokens"
+                    className="w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley"
+                  >
+                    <option value="ETH" className="bg-white0 text-gray1">
+                      ETH
+                    </option>
+                    <option value="WETH" className="bg-white0 text-gray1">
+                      WETH
+                    </option>
+                  </select>
+                )}
               </div>
-              <input
-                list="tokens"
-                placeholder="Amount"
-                ref={inputRef}
-                className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
-                onChange={(e) => {
-                  selectOption === 'ETH'
-                    ? setEtherBox(e.target.value)
-                    : setWEtherBox(e.target.value);
-                }}
-              />
+              {askTrade && (
+                <input
+                  list="tokens"
+                  placeholder="Amount"
+                  ref={inputRef}
+                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                  onChange={(e) => {
+                    selectOption === 'ETH'
+                      ? setEtherBox(e.target.value)
+                      : setWEtherBox(e.target.value);
+                  }}
+                />
+              )}
+              {offerTrade && (
+                <input
+                  placeholder="Amount"
+                  ref={inputRef}
+                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                  onChange={(e) => {
+                    setWEtherBox(e.target.value);
+                  }}
+                />
+              )}
               <svg
                 className="cursor-pointer"
                 onClick={
