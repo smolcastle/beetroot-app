@@ -1,19 +1,12 @@
 import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultWallets
-} from '@rainbow-me/rainbowkit';
-import {
-  chain,
-  configureChains,
-  createClient
-} from 'wagmi';
+import { getDefaultWallets } from '@rainbow-me/rainbowkit';
+import { chain, configureChains, createClient } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 
 const RainbowWal = () => {
-
   const { chains, provider } = configureChains(
-    [ chain.mainnet ],
-    [ publicProvider()]
+    [chain.mainnet],
+    [publicProvider()]
   );
 
   const { connectors } = getDefaultWallets({
@@ -25,11 +18,9 @@ const RainbowWal = () => {
     autoConnect: true,
     connectors,
     provider
-  })
+  });
 
-  return (
-    {wagmiClient, chains, provider}
-  )
-}
+  return { wagmiClient, chains, provider };
+};
 
-export default RainbowWal
+export default RainbowWal;
