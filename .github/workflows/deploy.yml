@@ -42,8 +42,7 @@ env:
 jobs:
   deploy:
     name: main-deploy
-    # if: github.event.pull_request.merged == true
-    if: false
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
