@@ -65,7 +65,7 @@ const TradeTab = ({
             {
               id: uuidv4(),
               name: item.name,
-              image_url: item.image_url,
+              image_url: item.image_url ? item.image_url : '',
               itemType: 2,
               token: item.asset_contract.address,
               identifier: item.id
@@ -77,7 +77,7 @@ const TradeTab = ({
             {
               id: uuidv4(),
               name: item.name,
-              image_url: item.image_url,
+              image_url: item.image_url ? item.image_url : '',
               itemType: 2,
               token: item.asset_contract.address,
               identifier: item.id,
@@ -121,7 +121,7 @@ const TradeTab = ({
             itemType: 2,
             token: nftBox,
             identifier: tokenId,
-            image_url: assetInfo.image_url
+            image_url: assetInfo.image_url ? assetInfo.image_url : ''
           }
         ]);
         setNftBox('');
@@ -189,7 +189,7 @@ const TradeTab = ({
             token: nftBox,
             identifier: tokenId,
             recipient: sender,
-            image_url: assetInfo.image_url
+            image_url: assetInfo.image_url ? assetInfo.image_url : ''
           }
         ]);
       } catch (error) {
