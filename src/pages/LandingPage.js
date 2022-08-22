@@ -76,7 +76,6 @@ function FAQList({ id, title, answer }) {
       {showFAQ === id && (
         <p className="text-parsley text-[16px] w-[400px]">{answer}</p>
       )}
-
       <div className="border-b-[2px] border-solid border-gray4 w-[625px]"></div>
     </>
   );
