@@ -22,7 +22,7 @@ const getAssetsInCollection = async function getAssetsInCollection(
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'X-API-KEY': process.env.REACT_APP_OPENSEA_KEY
+      'X-API-KEY': process.env.OPENSEA_KEY
     }
   };
 

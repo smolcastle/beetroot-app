@@ -1,12 +1,9 @@
 version: '3.9'
 
 services:
-  react-app:
-    container_name: beetroot-container
+  web:
+    image: beetroot
     restart: always
     build: .
     ports:
-      - '80:80'
-    volumes:
-      - ./:/app
-      - /app/node_modules
+      - '8000:80'
