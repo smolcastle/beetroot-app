@@ -373,55 +373,6 @@ const Order = ({ sender, truncate, receiver }) => {
                               {truncate(order.to, 14)}
                             </h1>
                           )}
-                    </div>
-                    {!isLoading && <button className='w-full bg-pink80 rounded-sm text-pinktint10 h-10 font-inter mt-5 cursor-pointer'
-                    onClick={
-                        async () => {
-                            await createOrder()
-                        }
-                    }>{"Create Order"}
-                    </button>}
-                    {isLoading &&
-                    <button className='w-full bg-pink80 text-pinktint10 h-10 cursor-pointer flex justify-center items-center'>
-                        <svg className='w-[10%]' version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        viewBox="0 0 100 100" enable-background="new 0 0 0 0" xmlSpace="preserve">
-                          <path fill="#fff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
-                            <animateTransform
-                               attributeName="transform"
-                               attributeType="XML"
-                               type="rotate"
-                               dur="1s"
-                               from="0 50 50"
-                               to="360 50 50"
-                               repeatCount="indefinite" />
-                        </path>
-                      </svg>
-                      </button>
-                    }
-                </div>
-            </>}
-        {showOption == 2 && <>
-            <div>
-                {orders.map((order) => {
-                    if((order.name == sender || order.name == receiver) && (order.to == receiver || order.to == sender)){
-                    return (
-                        <div className='flex justify-around bg-white10 rounded-lg p-3 mb-4'>
-                            <div>
-                                {(order.to == sender) && <h1 className='text-white0'>You: {truncate(order.to, 16)}</h1>}
-                                {(order.to != sender) && <h1 className='text-white0'>You: {truncate(order.name, 16)}</h1>}
-                                <h1 className='my-2 text-white0'>Created: {getDateTime(order.timestamp?.seconds)}</h1>
-                                {(order.to == sender) && <button className='bg-green1 rounded-sm p-2 text-white0' onClick={() => fulfillFunc(order.id)}>Fulfill</button>}
-                            </div>
-                            <svg className='self-center w-[100px]' width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M24 7.47266L1.09492 7.4409L1.0918 5.41933L18.9984 5.44416L15.8071 2.04263L17.7491 0.809924L24 7.47266Z" fill="white" fill-opacity="0.9"/>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00087 12.5584L9.19246 15.96L7.25057 17.1927L0.998844 10.5296L23.9042 10.5626L23.9072 12.5842L6.00087 12.5584Z" fill="white" fill-opacity="0.9"/>
-                            </svg>
-                            <div>
-                                {(order.to == sender) && <h1 className='text-white0'>Them: {truncate(order.name, 16)}</h1>}
-                                {(order.to != sender) && <h1 className='text-white0'>Them: {truncate(order.to, 16)}</h1>}
-                                <h1 className='my-2 text-white0'>Expires in: 1 week</h1>
-                                {(order.to == sender) && <button className='bg-red rounded-sm p-2 text-white0'>Reject</button>}
-                            </div>
                         </div>
                       </div>
                       <div className="">
