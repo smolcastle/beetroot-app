@@ -143,18 +143,7 @@ const TradeTab = ({
       reset();
     }
 
-    const wethContract = new ethers.Contract(
-      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      weth,
-      seaport.signer
-    );
-    const wethBalance = await wethContract.balanceOf(sender);
-
     if (wEtherBox !== '') {
-      if (wEtherBox > wethBalance) {
-        alert('Insufficient Balance');
-        return;
-      }
       setOffers([
         ...offers,
         {
