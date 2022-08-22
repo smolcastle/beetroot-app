@@ -1048,6 +1048,8 @@ export default function Chat() {
     showOnboarding();
   }, [address]);
 
+  const { chain } = useNetwork()
+
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
       dispatch(showLoader());
