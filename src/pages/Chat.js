@@ -1010,6 +1010,7 @@ export default function Chat() {
   const signatureData = useSelector((state) => state.messages?.signatureData);
   const users = useSelector((state) => state.users?.users);
   const dispatch = useDispatch();
+  const { chain } = useNetwork();
   const [contacts, setContacts] = useState([]);
   const [receiverContacts, setReceiverContacts] = useState([]);
   const [onboarded, setOnboarded] = useState(null);
@@ -1046,8 +1047,6 @@ export default function Chat() {
   useEffect(() => {
     showOnboarding();
   }, [address]);
-
-  const { chain } = useNetwork()
 
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
