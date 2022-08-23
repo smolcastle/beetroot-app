@@ -20,13 +20,17 @@ function FAQList({ id, title, answer }) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-[600px] my-4">
+      <div
+        onClick={() => {
+          showFAQ === null ? setShowFAQ(id) : setShowFAQ(null);
+        }}
+        className="flex items-center justify-between w-[600px] my-4 cursor-pointer"
+      >
         <p className="text-parsley font-questa text-[24px] font-medium">
           {title}
         </p>
         {!showFAQ && (
           <svg
-            onClick={() => setShowFAQ(id)}
             className="cursor-pointer"
             width="24"
             height="24"
@@ -50,7 +54,6 @@ function FAQList({ id, title, answer }) {
         )}
         {showFAQ && (
           <svg
-            onClick={() => setShowFAQ(null)}
             className="cursor-pointer"
             width="24"
             height="24"
@@ -91,7 +94,7 @@ function LandingPage() {
             NFT marketplace for negotiators
           </h1>
           <div className="mt-16">
-            <Link to="/chat">
+            <Link to="/chat" target="_blank" rel="noopener noreferrer">
               <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px]">
                 {'< LAUNCH APP />'}
               </button>
@@ -144,7 +147,6 @@ function LandingPage() {
                 Create orders by adding NFTS and coins into individual carts...
               </p>
               <img src={tradeImg} />
-              <div className="h-[500px]"></div>
             </div>
           </div>
         </div>
@@ -154,13 +156,13 @@ function LandingPage() {
           Discuss every deal that you do.
         </h1>
         <p className="text-[20px] text-gum font-light">
-          Due to non-fungible nature of NFTs, their fair prices are
-          hard to determine.
+          Due to non-fungible nature of NFTs, their fair prices are hard to
+          determine.
         </p>
         <div className="flex flex-col items-center justify-center">
           <div className="flex mt-40 items-center justify-between w-[70%]">
             <div className="w-[550px] ">
-              <div className="encryption grid grid-cols-5 gap-5 bg-gumlight/[0.5] p-16 rounded-[8px] hover:bg-gumlight">
+              <div className="encryption font-mono grid grid-cols-5 gap-5 p-16 rounded-[8px] bg-gumlight">
                 <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
                 <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
                 <div className="C bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
@@ -199,8 +201,8 @@ function LandingPage() {
                 multiple trades and paying high fees.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With Beetroot, you can use digital currencies and/or NFTs
-                to buy other NFTs in a single trade.
+                With Beetroot, you can use digital currencies and/or NFTs to buy
+                other NFTs in a single trade.
               </p>
             </div>
             <div className="w-[550px] bg-gumlight/[0.5] p-16 rounded-[8px]">
@@ -261,7 +263,9 @@ function LandingPage() {
           <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
             <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
             <p className="w-[200px] mt-4">Write to us at </p>
-            <span className="text-gum">hello@beetroot.ai</span>
+            <a href="mailto:hello@beetroot.ai">
+              <span className="text-gum">hello@beetroot.ai</span>
+            </a>
             <p className="w-[200px]">
               and we will try our best to answer your query at the earliest.
             </p>
@@ -299,16 +303,16 @@ function LandingPage() {
                 <img className="cursor-pointer eye_cursor" src={medium_f} />
               </div>
             </div>
-            <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
-              <h1 className="font-bold text-[24px] text-gray6">
-                An NFT Marketplace for negotiators
-              </h1>
-              <Link to="/chat">
-                <button className="text-gray6 text-[14px] font-medium">
-                  {'< LAUNCH APP />'}
-                </button>
-              </Link>
-            </div>
+            <Link to="/chat" target="_blank" rel="noopener noreferrer">
+              <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12 cursor-pointer">
+                <h1 className="font-bold text-[24px] text-gray6">
+                  An NFT Marketplace for negotiators
+                </h1>
+                <h1 className="text-gray6 text-[14px] font-medium">
+                  {'< Launch App />'}
+                </h1>
+              </div>
+            </Link>
           </div>
           <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
         </div>
