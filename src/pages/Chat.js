@@ -34,7 +34,7 @@ import { getDateTime, isFunction, truncate } from '../helpers/Collections';
 import Provider from '../utils/Provider';
 import SigningModal from '../components/SigningModal';
 import { ethers } from 'ethers';
-import { toEthAddress } from '../utils/ens';
+import { toEthAddress, toEns } from '../utils/ens';
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';
@@ -350,8 +350,15 @@ function User({
       }
     });
   });
+  const [ensName, setEnsName] = useState('');
+  async function getEnsName() {
+    let ens = await toEns(receiver);
+    setEnsName(ens);
+  }
+
   useEffect(() => {
     getVerifedData();
+    getEnsName();
   }, [receiver]);
 
   return (
@@ -377,7 +384,12 @@ function User({
               <img src={profile} className="w-[48px]"></img>
             </div>
             <div className="flex flex-col items-start w-[50%] ">
-              <p className="text-[16px]">{truncate(receiver, 14)}</p>
+              {ensName ? (
+                <p className="text-[16px]">{ensName}</p>
+              ) : (
+                <p className="text-[16px]">{truncate(receiver, 14)}</p>
+              )}
+
               {isVerified && (
                 <p className="text-[14px] text-parsley">Verified</p>
               )}
@@ -441,20 +453,20 @@ function Users({
   let contactExists = false;
 
   async function addNewUserFunc(searchTerm) {
-    if (searchTerm !== '' && searchTerm.toLowerCase() !== sender) {
+    let address = await toEthAddress(searchTerm);
+    if (address && address !== '' && address.toLowerCase() !== sender) {
       let i;
       for (i = 0; i < contacts.length; i++) {
-        if (contacts[i].to.toLowerCase() === searchTerm.toLowerCase()) {
+        if (contacts[i].to.toLowerCase() === address.toLowerCase()) {
           contactExists = true;
           break;
         }
       }
       // if not then save this new contact
       if (contactExists == false) {
-        createContact(searchTerm.toLowerCase(), sender);
-        setSearchTerm('');
+        createContact(address.toLowerCase(), sender);
       }
-      setSearchTerm('');
+      dispatch(hideNewUser());
     } else {
       alert('Please paste an address');
     }
