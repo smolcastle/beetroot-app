@@ -524,19 +524,26 @@ const TradeTab = ({
   let expiryDate = 0;
   const dateObj = new Date();
 
-  // create a date object only if the input fields are not empty
-  if (
-    (inputExpiryDate && inputExpiryMonth && inputExpiryYear) !== 0 ||
-    expiryHours !== 0
-  ) {
-    const d1 = new Date(
-      inputExpiryYear,
-      inputExpiryMonth - 1,
-      inputExpiryDate,
-      expiryHours,
-      dateObj.getMinutes()
-    ); // create a new date object with a specified date i.e. expiry date
-    expiryDate = d1.getTime(); // convert the above obj in milliseconds
+  function addExpiryDate() {
+    // create a date object only if the input fields are not empty
+    if (
+      (inputExpiryDate && inputExpiryMonth && inputExpiryYear !== 0) ||
+      (inputExpiryDate &&
+        inputExpiryMonth &&
+        inputExpiryYear !== 0 &&
+        expiryHours !== 0)
+    ) {
+      const d1 = new Date(
+        inputExpiryYear,
+        inputExpiryMonth - 1,
+        inputExpiryDate,
+        dateObj.getHours() + parseInt(expiryHours),
+        dateObj.getMinutes()
+      ); // create a new date object with a specified date i.e. expiry date
+      expiryDate = d1.getTime(); // convert the above obj in milliseconds
+    } else {
+      alert('Please add the complete expiry date');
+    }
   }
   return (
     <>
@@ -686,14 +693,14 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[70%]">
+            <div className="flex justify-between items-center text-[12px] w-[80%]">
               <div className="flex justify-evenly bg-parsleytint rounded-[4px] px-2 py-3">
                 <input
                   onChange={(e) => {
                     setInputExpiryYear(e.target.value);
                   }}
                   placeholder="yyyy"
-                  className=" w-[35px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[35px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
                 <span className="text-parsley">-</span>
                 <input
@@ -701,15 +708,15 @@ const TradeTab = ({
                     setInputExpiryMonth(e.target.value);
                   }}
                   placeholder="mm"
-                  className=" w-[25px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
-                <span className="text-parsley">-</span>
+                <span className="text-parsley pl-1">-</span>
                 <input
                   onChange={(e) => {
                     setInputExpiryDate(e.target.value);
                   }}
                   placeholder="dd"
-                  className=" w-[25px] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
               </div>
               <input
@@ -719,6 +726,14 @@ const TradeTab = ({
                 placeholder="00.00 HRS"
                 className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-[4px] p-3 placeholder-parsley text-parsley"
               ></input>
+              <button
+                className="border-[1px] border-parsley border-solid rounded-[2px] bg-parsleytint text-parsley px-2"
+                onClick={() => {
+                  addExpiryDate();
+                }}
+              >
+                Add
+              </button>
             </div>
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
