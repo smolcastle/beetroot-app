@@ -58,7 +58,7 @@ const ReviewOrder = ({
   return (
     <>
       <div className="w-screen h-screen justify-center items-center flex overflow-x-hidden bg-white overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] shadow-xl">
+        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] border-2 border-slate-50">
           <button
             className="place-self-end cursor-pointer"
             onClick={() => {
