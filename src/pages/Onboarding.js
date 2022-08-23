@@ -166,9 +166,9 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     id="email"
                     name="contact"
                   />
-                  <lable htmlFor="email" className="text-[14px]">
+                  <label htmlFor="email" className="text-[14px]">
                     {'Email:'}
-                  </lable>
+                  </label>
                 </div>
                 <div className="flex items-center w-[300px]">
                   <input

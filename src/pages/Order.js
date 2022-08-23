@@ -81,10 +81,26 @@ const Order = ({ sender, truncate, receiver }) => {
   }
 
   // cancel an order using seaport function
-  async function cancelOrder(order) {
+  async function cancelOrder(orderid) {
     try {
-      seaport.seaport.cancelOrders(order);
-      cancelFunc(order.id);
+      const docRef = doc(getFirestore(), 'orders', orderid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        console.log("order doesn't exist");
+      }
+
+      const order = await docSnap.get('order');
+      console.log(order);
+      await seaport.seaport.cancelOrders([order.parameters], order.offerer).transact();
+
+      // update the status of order in db after cancelling
+      await updateDoc(orderRef, {
+        status: 'cancelled'
+      });
+
+      // update order list as soon as it is cancelled
+      GetPendingOrders();
+
     } catch (e) {
       console.log('error cancelling the order', e);
     }
@@ -129,19 +145,6 @@ const Order = ({ sender, truncate, receiver }) => {
       });
     }
     // update order list as soon as it is fulfilled
-    GetPendingOrders();
-  }
-
-  // update the status of order in db after cancelling
-  async function cancelFunc(orderid) {
-    const orderRef = doc(getFirestore(), 'orders', orderid);
-    const orderSnap = await getDoc(orderRef);
-    if (orderSnap.exists()) {
-      await updateDoc(orderRef, {
-        status: 'cancelled'
-      });
-    }
-    // update order list as soon as it is cancelled
     GetPendingOrders();
   }
 

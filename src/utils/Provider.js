@@ -1,9 +1,5 @@
-import { ethers } from 'ethers';
 import {
-  hideLoader,
   resetSignatureData,
-  showLoader,
-  updateAcceptTradeData
 } from '../actions/actions';
 
 class ProviderClass {

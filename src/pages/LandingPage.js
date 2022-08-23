@@ -5,11 +5,15 @@ import ellipse2 from '../img/Ellipse2.png';
 import twitter from '../img/twitter_gum.png';
 import discord from '../img/discord_gum.png';
 import mediumLogo from '../img/medium_gum.png';
+import twitter_f from '../img/twitter_footer.png';
+import discord_f from '../img/discord_footer.png';
+import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
 import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';
+import '../animation.css';
 
 function FAQList({ id, title, answer }) {
   const [showFAQ, setShowFAQ] = useState(null);
@@ -72,7 +76,6 @@ function FAQList({ id, title, answer }) {
       {showFAQ === id && (
         <p className="text-parsley text-[16px] w-[400px]">{answer}</p>
       )}
-
       <div className="border-b-[2px] border-solid border-gray4 w-[625px]"></div>
     </>
   );
@@ -134,7 +137,7 @@ function LandingPage() {
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
               <p className="reenie-beanie text-[32px] text-gum font-medium">
-                Chat to negotiate deals.....
+                Chat to negotiate deals...
               </p>
               <img src={chatImg} className="mt-6" />
               <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
@@ -151,43 +154,23 @@ function LandingPage() {
           Discuss every deal that you do.
         </h1>
         <p className="text-[20px] text-gum font-light">
-          Because of the non-fungibility nature of NFTs, their fair prices are
+          Due to non-fungible nature of NFTs, their fair prices are
           hard to determine.
         </p>
         <div className="flex flex-col items-center justify-center">
           <div className="flex mt-40 items-center justify-between w-[70%]">
             <div className="w-[550px] ">
-              <div className="grid grid-cols-5 gap-5 bg-gumlight p-16 rounded-[8px]">
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  E
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  N
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  C
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  R
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  Y
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  P
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  T
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  I
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  O
-                </div>
-                <div className="bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]">
-                  N
-                </div>
+              <div className="encryption grid grid-cols-5 gap-5 bg-gumlight/[0.5] p-16 rounded-[8px] hover:bg-gumlight">
+                <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
+                <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="C bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="R bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="Y bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="P bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="T bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="I bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="O bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
+                <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
               </div>
             </div>
             <div className="w-[400px]">
@@ -195,7 +178,7 @@ function LandingPage() {
                 Wallet To Wallet Deals
               </h1>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                Negotiating deals are hard and time consuming. You can never be
+                Negotiating deals is hard and time consuming. You can never be
                 certain that the other user is not scamming you and owns the
                 particular NFT. We make it easy to verify the ownership of NFTs.
               </p>
@@ -216,7 +199,7 @@ function LandingPage() {
                 multiple trades and paying high fees.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With Beetroot, you can trade your digital currencies and/or NFTs
+                With Beetroot, you can use digital currencies and/or NFTs
                 to buy other NFTs in a single trade.
               </p>
             </div>
@@ -241,7 +224,7 @@ function LandingPage() {
                 give you the ability to negotiate those terms.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With beetroot, you can make counter offers and discuss details
+                With Beetroot, you can make counter offers and discuss details
                 so it suits your price expectations.
               </p>
             </div>
@@ -262,7 +245,7 @@ function LandingPage() {
               />
               <FAQList
                 id={2}
-                title={'How does NFT trading work on beetroot?'}
+                title={'How does NFT trading work on Beetroot?'}
                 answer={''}
               />
               <FAQList id={3} title={'What are NFTS?'} answer={''} />
@@ -300,10 +283,21 @@ function LandingPage() {
           <div className="flex justify-between">
             <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
               <h1 className="text-[24px] font-bold">Join the community!</h1>
-              <p className="text-[14px] font-normal w-[250px] mt-2">
+              <p className="text-[14px] font-normal w-[250px] mt-4">
                 Participate in discussions, contribute to our efforts, cheer up
                 our devs with memes. Get early access, user rewards and more!
               </p>
+              <div className="flex mt-6 w-[30%] justify-between">
+                <a
+                  href="https://twitter.com/beetrootai"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img className="cursor-pointer" src={twitter_f} />
+                </a>
+                <img className="cursor-pointer eye_cursor" src={discord_f} />
+                <img className="cursor-pointer eye_cursor" src={medium_f} />
+              </div>
             </div>
             <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
               <h1 className="font-bold text-[24px] text-gray6">
@@ -316,7 +310,7 @@ function LandingPage() {
               </Link>
             </div>
           </div>
-          <p className="text-gray1 text-[14px] mt-4">&copy; beetroot 2022</p>
+          <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
         </div>
       </footer>
     </div>
