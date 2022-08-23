@@ -1,8 +1,8 @@
 const initialState = {
   selectedTab: 1,
   tabs: [
-    { name: 'Settings', to: '/', index: 0 },
-    { name: 'Chat', to: '/chat', index: 1 }
+    // { name: 'Settings', to: '/', index: 0 },
+    // { name: 'Chat', to: '/chat', index: 1 }
   ]
 };
 
