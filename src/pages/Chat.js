@@ -354,49 +354,53 @@ function User({
   }, [receiver]);
 
   return (
-    <button
-      type={'button'}
-      onClick={() => {
-        if (!isSelected) {
-          dispatch(resetMessages());
-          setSelected(index);
-        }
-      }}
-      className="w-[99%]"
-    >
-      <li
-        index={index}
-        className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-          isSelected ? 'bg-gray6' : ' '
-        }`}
+    <>
+      <button
+        type={'button'}
+        onClick={() => {
+          if (!isSelected) {
+            dispatch(resetMessages());
+            setSelected(index);
+          }
+        }}
+        className="w-[99%]"
       >
-        <div className="flex-1 flex items-center p-3">
-          <div className="w-[30%]">
-            <img src={profile} className="w-[48px]"></img>
-          </div>
-          <div className="flex flex-col items-start w-[50%] ">
-            <p className="text-[16px]">{truncate(receiver, 14)}</p>
-            {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
-            {!isVerified && (
-              <p className="text-[14px] text-gray3">Unverified</p>
-            )}
-          </div>
-          <div className="flex flex-col items-end w-[20%]">
-            <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]">
-              <p>4</p>
+        <li
+          index={index}
+          className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
+            isSelected ? 'bg-gray6' : ' '
+          }`}
+        >
+          <div className="flex-1 flex items-center p-3">
+            <div className="w-[30%]">
+              <img src={profile} className="w-[48px]"></img>
             </div>
-            {lastMsgTime && (
-              <p className={`text-[14px] text-gray3`}>
-                {getDateTime(lastMsgTime?.seconds).time}
-              </p>
-            )}
-            {lastMsgTime === null && (
-              <p className="text-[14px] text-gray3">-</p>
-            )}
+            <div className="flex flex-col items-start w-[50%] ">
+              <p className="text-[16px]">{truncate(receiver, 14)}</p>
+              {isVerified && (
+                <p className="text-[14px] text-parsley">Verified</p>
+              )}
+              {!isVerified && (
+                <p className="text-[14px] text-gray3">Unverified</p>
+              )}
+            </div>
+            <div className="flex flex-col items-end w-[20%]">
+              <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]">
+                <p>4</p>
+              </div>
+              {lastMsgTime && (
+                <p className={`text-[14px] text-gray3`}>
+                  {getDateTime(lastMsgTime?.seconds).time}
+                </p>
+              )}
+              {lastMsgTime === null && (
+                <p className="text-[14px] text-gray3">-</p>
+              )}
+            </div>
           </div>
-        </div>
-      </li>
-    </button>
+        </li>
+      </button>
+    </>
   );
 }
 
@@ -412,6 +416,7 @@ function Users({
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAddContactBtn, setShowAddContactBtn] = useState(false);
 
   function AddContactBtn() {
     return (
@@ -424,6 +429,7 @@ function Users({
           onClick={() => {
             createContact(searchTerm.toLowerCase(), sender);
             setSearchTerm('');
+            setShowAddContactBtn(false);
           }}
         >
           Add to address book
@@ -431,8 +437,28 @@ function Users({
       </div>
     );
   }
+  let contactExists = false;
 
-  const contactBtn = useSelector((state) => state.contacts.addContactBtn);
+  async function addNewUserFunc(searchTerm) {
+    if (searchTerm !== '' && searchTerm.toLowerCase() !== sender) {
+      let i;
+      for (i = 0; i < contacts.length; i++) {
+        if (contacts[i].to.toLowerCase() === searchTerm.toLowerCase()) {
+          contactExists = true;
+          break;
+        }
+      }
+      // if not then save this new contact
+      if (contactExists == false) {
+        createContact(searchTerm.toLowerCase(), sender);
+        setSearchTerm('');
+      }
+      setSearchTerm('');
+    } else {
+      alert('Please paste an address');
+    }
+    setSearchTerm('');
+  }
 
   return (
     <ul
@@ -464,13 +490,14 @@ function Users({
         <input
           className="bg-gray6 mx-4 outline-none"
           placeholder="Search or add contacts"
+          value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
           }}
         ></input>
         <button
           onClick={() => {
-            dispatch(showNewUser());
+            addNewUserFunc(searchTerm);
           }}
         >
           <svg
@@ -502,10 +529,13 @@ function Users({
         {contacts
           ?.filter((contact) => {
             const receiver = contact.to;
-            if (searchTerm == '') {
+            if (searchTerm === '') {
+              if (showAddContactBtn === true) {
+                setShowAddContactBtn(false);
+              }
               return receiver;
             } else if (
-              receiver.toLowerCase().includes(searchTerm.toLowerCase())
+              receiver.toLowerCase().startsWith(searchTerm.toLowerCase())
             ) {
               return receiver;
             }
@@ -530,6 +560,7 @@ function Users({
               );
             }
           })}
+        {showAddContactBtn && <AddContactBtn />}
         {contacts.length == 0 && (
           <>
             <div className="flex flex-col justify-center items-center">
@@ -871,16 +902,8 @@ function Messages({
       role="list"
       className="flex flex-[4] flex-col py-5 bg-white10 w-full relative"
     >
-      {newUser ? (
-        <AddUser
-          receiver={receiver}
-          contacts={contacts}
-          sender={sender}
-          dispatch={dispatch}
-        />
-      ) : (
-        <TopSection receiver={receiver} />
-      )}
+      <TopSection receiver={receiver} />
+
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
         {chats?.map(({ text, name, timestamp, id }, index) => {
           return (
