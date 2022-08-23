@@ -17,3 +17,13 @@ export async function toEthAddress(addressOrEns) {
     return false
   }
 }
+
+export async function toEns(address) {
+  if (ethers.utils.isAddress(address)) {
+    var name = await seaport.provider.lookupAddress(address);
+    return name
+  } else {
+    alert('Invalid Ethereum address');
+    return false
+  }
+}
