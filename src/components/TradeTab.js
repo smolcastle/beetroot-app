@@ -578,7 +578,7 @@ const TradeTab = ({
                 </div>
               </div>
               <div className="flex text-[12px] bg-white0 justify-between p-3">
-                <p>{truncate(sender, 14)}</p>
+                <p className="w-[80%]">{truncate(sender, 14)}</p>
                 <button>
                   <svg
                     id="cart1"
@@ -644,7 +644,7 @@ const TradeTab = ({
               <div className="flex text-[12px] bg-white0 justify-between p-3">
                 <input
                   onChange={(e) => setOfferFor(e.target.value)}
-                  className="outline-none text-parsley placeholder-parsley"
+                  className="outline-none text-parsley placeholder-parsley w-[80%]"
                 ></input>
                 {/* <p>{truncate(receiver, 14)}</p> */}
                 <button

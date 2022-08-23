@@ -210,11 +210,11 @@ const Order = ({ sender, truncate, receiver }) => {
 
   return (
     <>
-      <div className="trade flex-[4] mx-10 my-5">
-        <div className="trade-links flex w-2/5 text-[12px] justify-between cursor:pointer text-parsley mb-5">
+      <div className="trade flex-[4] my-5">
+        <div className="trade-links flex w-2/5 text-[12px] justify-between cursor:pointer text-parsley">
           <button
             onClick={() => setShowOption(1)}
-            className={`bg-parsleytint px-[12px] py-[6px] rounded-md ${
+            className={`bg-parsleytint px-[12px] py-[6px] rounded-md w-[30%] ${
               showOption == 1 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -222,7 +222,7 @@ const Order = ({ sender, truncate, receiver }) => {
           </button>
           <button
             onClick={() => setShowOption(2)}
-            className={`bg-parsleytint px-3 rounded-md ${
+            className={`bg-parsleytint px-3 rounded-md w-[30%] ${
               showOption == 2 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -230,7 +230,7 @@ const Order = ({ sender, truncate, receiver }) => {
           </button>
           <button
             onClick={() => setShowOption(3)}
-            className={`bg-parsleytint px-3 rounded-md ${
+            className={`bg-parsleytint px-3 rounded-md w-[30%] ${
               showOption == 3 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -262,7 +262,7 @@ const Order = ({ sender, truncate, receiver }) => {
         )}
         {showOption === 3 && (
           <>
-            <div className="w-[70%] max-h-[600px] overflow-y-scroll px-2">
+            <div className="w-[70%] max-h-[600px] overflow-y-scroll px-2 mt-4">
               {orders.map((order, index) => {
                 if (
                   (order.name == sender || order.name == receiver) &&

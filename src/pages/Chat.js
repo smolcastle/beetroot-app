@@ -387,7 +387,7 @@ function User({
             </div>
             <div className="flex flex-col items-end w-[20%]">
               <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]">
-                <p>4</p>
+                <p></p>
               </div>
               {lastMsgTime && (
                 <p className={`text-[14px] text-gray3`}>
@@ -464,7 +464,7 @@ function Users({
   return (
     <ul
       role="list"
-      className="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10"
+      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1"
     >
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg
@@ -903,7 +903,7 @@ function Messages({
   return (
     <ul
       role="list"
-      className="flex flex-[4] flex-col py-5 bg-white10 w-full relative"
+      className="flex flex-[4] flex-col py-5 bg-white10 w-full relative mx-1"
     >
       <TopSection receiver={receiver} />
 
@@ -1152,7 +1152,7 @@ export default function Chat() {
                   receiverContacts={receiverContacts}
                   setReceiverContacts={setReceiverContacts}
                 />
-                <div className="flex flex-[6] flex-col">
+                <div className="flex flex-[6] flex-col ml-5">
                   <Order
                     sender={sender}
                     receiver={receiver}

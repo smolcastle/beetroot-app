@@ -8,7 +8,7 @@ const WalletTab = ({ receiver, truncate }) => {
 
   return (
     <div>
-      <div className="bg-parsleytint text-parsley p-2 text-[12px] rounded-[4px] w-[40%]">
+      <div className="bg-parsleytint text-parsley p-2 text-[12px] rounded-[4px] w-[40%] mt-4">
         {truncate(receiver, 14)}
       </div>
     </div>
