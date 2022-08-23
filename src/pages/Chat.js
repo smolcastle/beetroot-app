@@ -783,7 +783,7 @@ function SendMessageSection({
           autoComplete="off"
           id="search"
           className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
-          placeholder={'Type your message here'}
+          placeholder={'Write a message...'}
           onChange={(e) => setMsgString(e.target.value)}
           onKeyPress={(event) => {
             event.key === 'Enter' && saveMessage();
