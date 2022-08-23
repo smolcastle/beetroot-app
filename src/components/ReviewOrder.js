@@ -12,7 +12,8 @@ const ReviewOrder = ({
   orderCreated,
   setOffers,
   setConsiderations,
-  setOrderCreated
+  setOrderCreated,
+  expiryDate
 }) => {
   function Cart() {
     return (
@@ -57,7 +58,7 @@ const ReviewOrder = ({
   return (
     <>
       <div className="w-screen h-screen justify-center items-center flex overflow-x-hidden bg-white overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] shadow-xl">
+        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] border-2 border-slate-50">
           <button
             className="place-self-end cursor-pointer"
             onClick={() => {
@@ -270,7 +271,7 @@ const ReviewOrder = ({
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5 cursor-pointer"
               onClick={async () => {
-                await createOrder(offerFor);
+                await createOrder(offerFor, expiryDate);
               }}
             >
               {'LOOKS GOOD'}

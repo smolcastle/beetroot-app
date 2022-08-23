@@ -5,6 +5,8 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
+import { getDateTime } from '../helpers/Collections';
+import { getMinutes, getTime } from 'date-fns';
 
 const TradeTab = ({
   createOrder,
@@ -509,7 +511,35 @@ const TradeTab = ({
       </>
     );
   }
+  // get the expiry date from the input field
+  const [inputExpiryDate, setInputExpiryDate] = useState(0);
+  const [inputExpiryMonth, setInputExpiryMonth] = useState(0);
+  const [inputExpiryYear, setInputExpiryYear] = useState(0);
+  const [expiryHours, setExpiryHours] = useState(0);
+  let expiryDate = 0;
+  const dateObj = new Date();
 
+  function addExpiryDate() {
+    // create a date object only if the input fields are not empty
+    if (
+      (inputExpiryDate && inputExpiryMonth && inputExpiryYear !== 0) ||
+      (inputExpiryDate &&
+        inputExpiryMonth &&
+        inputExpiryYear !== 0 &&
+        expiryHours !== 0)
+    ) {
+      const d1 = new Date(
+        inputExpiryYear,
+        inputExpiryMonth - 1,
+        inputExpiryDate,
+        dateObj.getHours() + parseInt(expiryHours),
+        dateObj.getMinutes()
+      ); // create a new date object with a specified date i.e. expiry date
+      expiryDate = d1.getTime(); // convert the above obj in milliseconds
+    } else {
+      alert('Please add the complete expiry date');
+    }
+  }
   return (
     <>
       <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
@@ -548,7 +578,7 @@ const TradeTab = ({
                 </div>
               </div>
               <div className="flex text-[12px] bg-white0 justify-between p-3">
-                <p>{truncate(sender, 14)}</p>
+                <p className="w-[80%]">{truncate(sender, 14)}</p>
                 <button>
                   <svg
                     id="cart1"
@@ -614,7 +644,7 @@ const TradeTab = ({
               <div className="flex text-[12px] bg-white0 justify-between p-3">
                 <input
                   onChange={(e) => setOfferFor(e.target.value)}
-                  className="outline-none text-parsley placeholder-parsley"
+                  className="outline-none text-parsley placeholder-parsley w-[80%]"
                 ></input>
                 {/* <p>{truncate(receiver, 14)}</p> */}
                 <button
@@ -658,15 +688,47 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[60%]">
+            <div className="flex justify-between items-center text-[12px] w-[80%]">
+              <div className="flex justify-evenly bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  onChange={(e) => {
+                    setInputExpiryYear(e.target.value);
+                  }}
+                  placeholder="yyyy"
+                  className=" w-[35px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">-</span>
+                <input
+                  onChange={(e) => {
+                    setInputExpiryMonth(e.target.value);
+                  }}
+                  placeholder="mm"
+                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley pl-1">-</span>
+                <input
+                  onChange={(e) => {
+                    setInputExpiryDate(e.target.value);
+                  }}
+                  placeholder="dd"
+                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+              </div>
               <input
-                placeholder="yyyy/mm/dd"
-                className=" w-[90px] outline-none placeholder:text-center bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
-              ></input>
-              <input
+                onChange={(e) => {
+                  setExpiryHours(e.target.value);
+                }}
                 placeholder="00.00 HRS"
-                className="w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
+                className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-[4px] p-3 placeholder-parsley text-parsley"
               ></input>
+              <button
+                className="border-[1px] border-parsley border-solid rounded-[2px] bg-parsleytint text-parsley px-2"
+                onClick={() => {
+                  addExpiryDate();
+                }}
+              >
+                Add
+              </button>
             </div>
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
@@ -888,6 +950,7 @@ const TradeTab = ({
           setOffers={setOffers}
           setConsiderations={setConsiderations}
           setOrderCreated={setOrderCreated}
+          expiryDate={expiryDate}
         />
       )}
     </>
