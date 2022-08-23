@@ -689,27 +689,40 @@ function TopSection({ receiver }) {
   }, [receiver]);
 
   return (
-    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
-      <div className="w-[15%]">
-        <img src={profile} className="w-[48px]"></img>
-      </div>
-      <div className="flex flex-col items-start w-[20%] ">
-        <div className="flex">
-          <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
-          <button
-            type={'button'}
-            onClick={() => {
-              navigator.clipboard.writeText(receiver);
-              setCopied(true);
-            }}
-          >
-            {!copied ? <Clipboard /> : <Check />}
-          </button>
+    <>
+      {receiver === '' && (
+        <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+          <div className="w-[15%]">
+            <img src={profile} className="w-[48px]"></img>
+          </div>
         </div>
-        {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
-        {!isVerified && <p className="text-[14px] text-gray3">Unverified</p>}
-      </div>
-    </div>
+      )}
+      {receiver !== '' && (
+        <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+          <div className="w-[15%]">
+            <img src={profile} className="w-[48px]"></img>
+          </div>
+          <div className="flex flex-col items-start w-[20%] ">
+            <div className="flex">
+              <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
+              <button
+                type={'button'}
+                onClick={() => {
+                  navigator.clipboard.writeText(receiver);
+                  setCopied(true);
+                }}
+              >
+                {!copied ? <Clipboard /> : <Check />}
+              </button>
+            </div>
+            {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
+            {!isVerified && (
+              <p className="text-[14px] text-gray3">Unverified</p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -818,53 +831,62 @@ function SendMessageSection({
         createLastMsgTime(sender, receiver);
       }}
     >
-      <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
-        <input
-          value={message}
-          type="text"
-          name="search"
-          autoComplete="off"
-          id="search"
-          className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
-          placeholder={'Write a message...'}
-          onChange={(e) => setMsgString(e.target.value)}
-          onKeyPress={(event) => {
-            event.key === 'Enter' && saveMessage();
-          }}
-        />
-        <button
-          onClick={() => {
-            setMsgString('');
-            saveMessage(message, sender, receiver, dispatch);
-          }}
-          type="button"
-          className="h-12"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+      {receiver === '' && (
+        <div className="flex w-full h-14 p-[6px] bg-gray6 rounded-lg items-center">
+          <p className="text-black/[0.5] pl-2 text-[14px]">
+            Type in search field and add a new address to start messaging
+          </p>
+        </div>
+      )}
+      {receiver !== '' && (
+        <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
+          <input
+            value={message}
+            type="text"
+            name="search"
+            autoComplete="off"
+            id="search"
+            className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
+            placeholder={'Write a message...'}
+            onChange={(e) => setMsgString(e.target.value)}
+            onKeyPress={(event) => {
+              event.key === 'Enter' && saveMessage();
+            }}
+          />
+          <button
+            onClick={() => {
+              setMsgString('');
+              saveMessage(message, sender, receiver, dispatch);
+            }}
+            type="button"
+            className="h-12"
           >
-            <path
-              d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
-              fill="white"
-            />
-            <path
-              d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
-              stroke="#AB224E"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z"
-              fill="#EED3DC"
-              stroke="#AB224E"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-      </div>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
+                fill="white"
+              />
+              <path
+                d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
+                stroke="#AB224E"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z"
+                fill="#EED3DC"
+                stroke="#AB224E"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </form>
   );
 }
@@ -920,103 +942,70 @@ function Messages({
       <TopSection receiver={receiver} />
 
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
-        {chats?.map(({ text, name, timestamp, id }, index) => {
-          return (
-            <div key={id}>
-              <div
-                className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
-                  name === sender ? 'items-end' : 'items-start'
-                } `}
-              >
-                <div className="flex items-center">
-                  <div
-                    onClick={() => {
-                      {
-                        showDelMessage === index
-                          ? hideMessageDetails(id)
-                          : showMessageDetails(id, index);
-                      }
-                    }}
-                    key={index}
-                    className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
-                      name === sender
-                        ? 'text-parsley bg-parsleytint'
-                        : 'text-gum bg-gumtint'
-                    }`}
-                  >
-                    {text}
-                  </div>
-                </div>
-                {name === sender &&
-                  showDelMessage === index &&
-                  timestamp?.seconds && (
-                    <div className="text-gray3 text-[11px] capitalize p-2 flex w-[120px] justify-between">
-                      <p>{getDateTime(timestamp?.seconds).date},</p>
-                      <p>{getDateTime(timestamp?.seconds).time} </p>
-                      <p>{'(UTC)'}</p>
+        {messages !== null &&
+          chats?.map(({ text, name, timestamp, id }, index) => {
+            return (
+              <div key={id}>
+                <div
+                  className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                    name === sender ? 'items-end' : 'items-start'
+                  } `}
+                >
+                  <div className="flex items-center">
+                    <div
+                      onClick={() => {
+                        {
+                          showDelMessage === index
+                            ? hideMessageDetails(id)
+                            : showMessageDetails(id, index);
+                        }
+                      }}
+                      key={index}
+                      className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
+                        name === sender
+                          ? 'text-parsley bg-parsleytint'
+                          : 'text-gum bg-gumtint'
+                      }`}
+                    >
+                      {text}
                     </div>
-                  )}
+                  </div>
+                  {name === sender &&
+                    showDelMessage === index &&
+                    timestamp?.seconds && (
+                      <div className="text-gray3 text-[11px] capitalize p-2 flex w-[120px] justify-between">
+                        <p>{getDateTime(timestamp?.seconds).date},</p>
+                        <p>{getDateTime(timestamp?.seconds).time} </p>
+                        <p>{'(UTC)'}</p>
+                      </div>
+                    )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        {messages === null && (
+          <div className="flex flex-col justify-center items-center mt-[20%]">
+            <p className="text-[12px] text-gray2 text-center w-[80%]">
+              No messages here yet. Send your first message below.
+            </p>
+          </div>
+        )}
       </div>
       {messages === null && contacts.length === 0 && (
-        <div className="flex flex-col text-[12px] text-center text-gray2 h-[400px] justify-evenly items-center mt-4 absolute top-[20%] w-full">
-          <p className="text-[24px]">👋</p>
-          <p className="w-[50%]">
-            Be polite and respectful while communcating with other users using
-            Beetrot chat.
-          </p>
-          <p className="w-[50%]">Useful Tips:</p>
-          <div className="w-full flex flex-col items-center">
-            <p className="text-parsley w-[50%]">Verfied:</p>
-            <p className="w-[50%]">
-              This address has been authenticated with Beetroot using a
-              signature.
-            </p>
-          </div>
-          <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Unverfied:</p>
-            <p className="w-[50%]">
-              This address has not been authenticated with Beetroot.
-            </p>
-          </div>
-          <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Start chatting by clicking the</p>
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0.68555 7.33425C0.795645 8.36332 1.62329 9.19097 2.65183 9.30561C4.23168 9.48168 5.76817 9.48168 7.348 9.30561C8.37657 9.19097 9.20422 8.36332 9.31429 7.33425C9.39557 6.5746 9.46422 5.7947 9.46422 4.99959C9.46422 4.20448 9.39557 3.42458 9.31429 2.66493C9.20422 1.63589 8.37657 0.808243 7.348 0.693597C5.76817 0.517499 4.23168 0.517499 2.65183 0.693597C1.62329 0.808243 0.795645 1.63589 0.68555 2.66493C0.604275 3.42458 0.535645 4.20448 0.535645 4.99959C0.535645 5.7947 0.604276 6.5746 0.68555 7.33425Z"
-                fill="#EED3DC"
-                stroke="#AB224E"
-              />
-              <path
-                d="M5 3.21387V6.7853"
-                stroke="#AB224E"
-                strokeLinecap="round"
-              />
-              <path
-                d="M6.78578 5H3.21436"
-                stroke="#AB224E"
-                strokeLinecap="round"
-              />
-            </svg>
-            <p className="w-[50%]">button on the top left of this chat box</p>
-          </div>
-        </div>
-      )}
-      {messages === null && contacts.length === 1 && (
-        <div className="flex flex-col justify-center items-center absolute top-[20%]">
-          <p className="text-[24px]">🍻</p>
-          <p className="text-[12px] text-gray2 text-center w-[50%]">
-            Yay! You have added your first contact to your address book. Use the
-            input field below to send them a message.
+        <div className="flex flex-col text-[12px] text-left text-gray2 p-4 mb-4 justify-evenly absolute bottom-[10%] w-full border-dotted border-2">
+          <p className="w-[90%]">
+            <span className="font-bold">Some useful tips: </span>
+            <br />
+            Be polite and respectful while communcating with other.
+            <br />
+            <br />
+            <span className="text-parsley font-bold">VERIFIED:</span> A verified
+            account on Beetroot has authenticated its address using
+            cryptographic signature.
+            <br />
+            <br />
+            <span className="text-gray3 font-bold">UNVERIFIED:</span> This means
+            that the address has not yet created an account on Beetroot.
           </p>
         </div>
       )}
