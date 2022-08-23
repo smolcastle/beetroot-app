@@ -23,7 +23,7 @@ const Navigation = () => {
           className={`flex items-center text-base font-normal font-newrubrik px-4 h-10 ${
             link.index === selectedTab
               ? 'text-gum '
-              : 'hover:text-gum eye_cursor text-gumtint'
+              : 'eye_cursor text-gumtint'
           }`}
         >
           {link.name}

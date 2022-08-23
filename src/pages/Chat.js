@@ -34,6 +34,7 @@ import { getDateTime, isFunction, truncate } from '../helpers/Collections';
 import Provider from '../utils/Provider';
 import SigningModal from '../components/SigningModal';
 import { ethers } from 'ethers';
+import { toEthAddress } from '../utils/ens'
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';
@@ -463,7 +464,7 @@ function Users({
         </svg>
         <input
           className="bg-gray6 mx-4 outline-none"
-          placeholder="Search or add contacts"
+          placeholder="Search / Add"
           onChange={(e) => {
             setSearchTerm(e.target.value);
           }}
@@ -673,17 +674,18 @@ function AddUser({ dispatch, sender, contacts }) {
   const [newUser, setNewUser] = useState('');
   let contactExists = false;
   async function addNewUserFunc() {
-    if (newUser !== '' && newUser.toLowerCase() !== sender) {
+    let address = await toEthAddress(newUser);
+    if (address && address !== '' && address.toLowerCase() !== sender) {
       let i;
       for (i = 0; i < contacts.length; i++) {
-        if (contacts[i].to.toLowerCase() === newUser.toLowerCase()) {
+        if (contacts[i].to.toLowerCase() === address.toLowerCase()) {
           contactExists = true;
           break;
         }
       }
       // if not then save this new contact
       if (contactExists == false) {
-        createContact(newUser.toLowerCase(), sender);
+        createContact(address.toLowerCase(), sender);
       }
       setNewUser('');
       dispatch(hideNewUser());
@@ -691,6 +693,7 @@ function AddUser({ dispatch, sender, contacts }) {
       alert('Please paste an address');
     }
   }
+
   return (
     <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
       <div className="w-[15%]">
@@ -700,7 +703,7 @@ function AddUser({ dispatch, sender, contacts }) {
         <div className="flex">
           <input
             className="bg-gray6 outline-none w-[150px]"
-            placeholder="Paste Address Here"
+            placeholder="Address / ENS"
             value={newUser}
             onChange={(e) => setNewUser(e.target.value)}
             onKeyPress={(event) => {

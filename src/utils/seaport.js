@@ -9,11 +9,11 @@ function sp() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     const seaport = new Seaport(provider);
-    return { seaport: seaport, signer: provider.getSigner() };
+    return { seaport: seaport, signer: provider.getSigner(), provider: provider };
   } else {
     const provider = ethers.getDefaultProvider();
     const seaport = new Seaport(provider);
-    return { seaport: seaport };
+    return { seaport: seaport, provider: provider };
   }
 }
 
