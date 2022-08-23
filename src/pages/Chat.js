@@ -34,7 +34,7 @@ import { getDateTime, isFunction, truncate } from '../helpers/Collections';
 import Provider from '../utils/Provider';
 import SigningModal from '../components/SigningModal';
 import { ethers } from 'ethers';
-import { toEthAddress } from '../utils/ens'
+import { toEthAddress } from '../utils/ens';
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';

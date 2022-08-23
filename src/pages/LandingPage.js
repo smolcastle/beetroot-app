@@ -154,8 +154,8 @@ function LandingPage() {
           Discuss every deal that you do.
         </h1>
         <p className="text-[20px] text-gum font-light">
-          Due to non-fungible nature of NFTs, their fair prices are
-          hard to determine.
+          Due to non-fungible nature of NFTs, their fair prices are hard to
+          determine.
         </p>
         <div className="flex flex-col items-center justify-center">
           <div className="flex mt-40 items-center justify-between w-[70%]">
@@ -199,8 +199,8 @@ function LandingPage() {
                 multiple trades and paying high fees.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With Beetroot, you can use digital currencies and/or NFTs
-                to buy other NFTs in a single trade.
+                With Beetroot, you can use digital currencies and/or NFTs to buy
+                other NFTs in a single trade.
               </p>
             </div>
             <div className="w-[550px] bg-gumlight/[0.5] p-16 rounded-[8px]">

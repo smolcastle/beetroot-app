@@ -88,7 +88,9 @@ const Order = ({ sender, truncate, receiver }) => {
 
       const order = await docSnap.get('order');
       console.log(order);
-      await seaport.seaport.cancelOrders([order.parameters], order.offerer).transact();
+      await seaport.seaport
+        .cancelOrders([order.parameters], order.offerer)
+        .transact();
 
       // update the status of order in db after cancelling
       await updateDoc(orderRef, {
@@ -97,7 +99,6 @@ const Order = ({ sender, truncate, receiver }) => {
 
       // update order list as soon as it is cancelled
       GetPendingOrders();
-
     } catch (e) {
       console.log('error cancelling the order', e);
     }

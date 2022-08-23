@@ -21,9 +21,7 @@ const Navigation = () => {
           key={link.name}
           onClick={onTabClick(link.index)}
           className={`flex items-center text-base font-normal font-newrubrik px-4 h-10 ${
-            link.index === selectedTab
-              ? 'text-gum '
-              : 'eye_cursor text-gumtint'
+            link.index === selectedTab ? 'text-gum ' : 'eye_cursor text-gumtint'
           }`}
         >
           {link.name}
