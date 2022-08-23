@@ -20,7 +20,8 @@ module.exports = {
         inter: ['Inter', 'sans-serif'],
         rubrik: ['New Rubrik Edge', 'sans-serif'],
         rubrikL: ['New Rubrik Edge Light', 'sans-serif'],
-        questa: ['Questa Slab', 'sans-serif']
+        questa: ['Questa Slab', 'sans-serif'],
+        mono: ['Input Mono', 'sans-serif']
       },
       backgroundImage: {
         bg: "url('/src/img/bg.png')",
