@@ -983,7 +983,7 @@ function Messages({
               </div>
             );
           })}
-        {messages === null && (
+        {messages === null && contacts.length !== 0 && (
           <div className="flex flex-col justify-center items-center mt-[20%]">
             <p className="text-[12px] text-gray2 text-center w-[80%]">
               No messages here yet. Send your first message below.
