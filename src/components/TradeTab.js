@@ -688,14 +688,14 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[80%]">
-              <div className="flex justify-evenly bg-parsleytint rounded-[4px] px-2 py-3">
+            <div className="flex justify-between items-center text-[12px] w-full">
+              <div className="flex justify-evenly w-[40%] bg-parsleytint rounded-[4px] px-2 py-3">
                 <input
                   onChange={(e) => {
                     setInputExpiryYear(e.target.value);
                   }}
                   placeholder="yyyy"
-                  className=" w-[35px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[40%] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
                 <span className="text-parsley">-</span>
                 <input
@@ -703,7 +703,7 @@ const TradeTab = ({
                     setInputExpiryMonth(e.target.value);
                   }}
                   placeholder="mm"
-                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[30%] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
                 <span className="text-parsley pl-1">-</span>
                 <input
@@ -711,7 +711,7 @@ const TradeTab = ({
                     setInputExpiryDate(e.target.value);
                   }}
                   placeholder="dd"
-                  className=" w-[25px] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                  className=" w-[30%] pl-1 text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
                 ></input>
               </div>
               <input
@@ -719,10 +719,10 @@ const TradeTab = ({
                   setExpiryHours(e.target.value);
                 }}
                 placeholder="00.00 HRS"
-                className="w-[90px] text-[12px] outline-none bg-parsleytint rounded-[4px] p-3 placeholder-parsley text-parsley"
+                className="w-[30%] text-[12px] outline-none bg-parsleytint rounded-[4px] p-3 placeholder-parsley text-parsley"
               ></input>
               <button
-                className="border-[1px] border-parsley border-solid rounded-[2px] bg-parsleytint text-parsley px-2"
+                className="border-[1px] border-parsley border-solid w-[20%] rounded-[2px] bg-parsleytint text-parsley p-2"
                 onClick={() => {
                   addExpiryDate();
                 }}

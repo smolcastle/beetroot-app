@@ -431,8 +431,6 @@ function Users({
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddContactBtn, setShowAddContactBtn] = useState(false);
 
-  console.log(selected);
-
   function AddContactBtn() {
     return (
       <div className="p-[4px]">
@@ -694,7 +692,7 @@ function TopSection({ receiver }) {
       {receiver === '' && (
         <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
           <div className="w-[15%]">
-            <img src={profile} className="w-[48px]"></img>
+            <img src={profile0} className="w-[48px]"></img>
           </div>
         </div>
       )}
@@ -905,8 +903,6 @@ function Messages({
   const messages = useSelector((state) => state.messages?.messages);
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null);
-
-  console.log(receiver);
 
   useEffect(() => {
     getReceiverContacts(receiver, dispatch);
