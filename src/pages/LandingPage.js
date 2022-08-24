@@ -87,8 +87,8 @@ function FAQList({ id, title, answer }) {
 function LandingPage() {
   return (
     <div className="h-full w-screen bg-white0 font-rubrik flex flex-col relative md:py-0 md:px-0 overflow-x-hidden">
-      <section className="flex h-full justify-between lg:px-24 mb-32">
-        <div className="flex flex-col w-[60%] lg:pt-24">
+      <section className="flex h-full justify-between ">
+        <div className="flex absolute flex-col w-[55%] lg:pl-24 mb-32 lg:pt-24">
           <img src={logo4} className="w-[48px]" />
           <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
             NFT marketplace for negotiators
@@ -135,18 +135,19 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="w-[30%] -mb-32">
-          <div className="scroll-card overflow-y-scroll h-full relative">
+        <div className="w-[100%] flex justify-end scroll-card overflow-y-scroll lg:pr-24 mb-32 z-20 -mb-32">
+          <div className=" h-full relative">
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
               <p className="reenie-beanie text-[32px] text-gum font-medium">
                 Chat to negotiate deals...
               </p>
               <img src={chatImg} className="mt-6" />
-              <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
+              <p className="reenie-beanie text-[32px] w-[450px] text-gum font-medium mt-24">
                 Create orders by adding NFTS and coins into individual carts...
               </p>
               <img src={tradeImg} />
+              <div className="h-[300px]"></div>
             </div>
           </div>
         </div>
