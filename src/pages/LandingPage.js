@@ -135,7 +135,7 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="w-[100%] flex justify-end scroll-card overflow-y-scroll lg:pr-24 mb-32 z-20 -mb-32">
+        <div className="w-[100%] flex justify-end scroll-card overflow-y-scroll lg:pr-24 mb-32 z-10 -mb-32">
           <div className=" h-full relative">
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
@@ -152,7 +152,7 @@ function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="home-section bg-gray7 px-24 pb-24 mb-20">
+      <section className="home-section bg-gray7 px-24 pb-24 z-20 mb-20">
         <h1 className="text-[92px] font-medium font-questa text-gum mt-32">
           Discuss every deal that you do.
         </h1>
