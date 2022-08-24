@@ -220,7 +220,7 @@ async function getUsers(dispatch) {
 
 async function createContact(newUser, sender) {
   try {
-    await addDoc(collection(db, 'address book', sender, 'contacts'), {
+    await addDoc(collection(db, `address book/ ${sender}/contacts`), {
       from: sender,
       to: newUser,
       timestamp: serverTimestamp()
@@ -232,7 +232,7 @@ async function createContact(newUser, sender) {
 
 async function getContacts(sender, setContacts) {
   try {
-    const contactsRef = collection(db, 'address book', sender, 'contacts');
+    const contactsRef = collection(db, `address book/ ${sender}/contacts`);
     const q = query(contactsRef, orderBy('timestamp', 'asc'));
     onSnapshot(q, (querySnapshot) => {
       let contacts = [];
@@ -309,12 +309,13 @@ function User({
   dispatch,
   index,
   setSelected,
-  isSelected,
-  setReceiver
+  selected,
+  setReceiver,
+  setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (isSelected) {
+    if (selected === receiver) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
     }
@@ -322,7 +323,7 @@ function User({
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [isSelected]);
+  }, [selected]);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -366,17 +367,15 @@ function User({
       <button
         type={'button'}
         onClick={() => {
-          if (!isSelected) {
-            dispatch(resetMessages());
-            setSelected(index);
-          }
+          setSelected(receiver);
+          setSearchTerm('');
         }}
         className="w-[99%]"
       >
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-            isSelected ? 'bg-gray6' : ' '
+            selected === receiver ? 'bg-gray6' : ' '
           }`}
         >
           <div className="flex-1 flex items-center p-3">
@@ -426,10 +425,13 @@ function Users({
   queue_ids,
   setSelected,
   contacts,
+  setContacts,
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddContactBtn, setShowAddContactBtn] = useState(false);
+
+  console.log(selected);
 
   function AddContactBtn() {
     return (
@@ -471,6 +473,7 @@ function Users({
       alert('Please paste an address');
     }
     setSearchTerm('');
+    getContacts(sender, setContacts);
   }
 
   return (
@@ -543,9 +546,6 @@ function Users({
           ?.filter((contact) => {
             const receiver = contact.to;
             if (searchTerm === '') {
-              if (showAddContactBtn === true) {
-                setShowAddContactBtn(false);
-              }
               return receiver;
             } else if (
               receiver.toLowerCase().startsWith(searchTerm.toLowerCase())
@@ -553,7 +553,7 @@ function Users({
               return receiver;
             }
           })
-          // .reverse()
+          .reverse()
           ?.map((contact, index) => {
             if (contact.from === sender) {
               const receiver = contact.to;
@@ -564,10 +564,11 @@ function Users({
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    isSelected={selected === index}
+                    selected={selected}
                     index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
+                    setSearchTerm={setSearchTerm}
                   />
                 </>
               );
@@ -905,6 +906,8 @@ function Messages({
   const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null);
 
+  console.log(receiver);
+
   useEffect(() => {
     getReceiverContacts(receiver, dispatch);
   }, [receiver]);
@@ -1044,7 +1047,7 @@ export default function Chat() {
 
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
-    if (users && sender !== '') {
+    if ((await users) && sender !== '') {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       if (!user.exists()) {
@@ -1053,7 +1056,7 @@ export default function Chat() {
       }
     }
     // if the users list is empty then add the new user
-    if (users != null && users.length === 0 && sender !== '') {
+    if ((await users) != null && users.length === 0 && sender !== '') {
       saveUser(sender);
     }
   };
@@ -1088,7 +1091,7 @@ export default function Chat() {
 
   useEffect(() => {
     getLastMsgTime(dispatch);
-  });
+  }, [contacts]);
 
   useEffect(() => {
     getContacts(sender, setContacts);
@@ -1141,6 +1144,7 @@ export default function Chat() {
                   setSignModalState={setSignModalState}
                   signModal={signModal}
                   contacts={contacts}
+                  setContacts={setContacts}
                 />
                 <Messages
                   message={message}
