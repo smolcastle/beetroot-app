@@ -60,3 +60,6 @@
 .scroll-card::-webkit-scrollbar {
   display: none;
 }
+.scroll-card {
+  scrollbar-width: none;
+}

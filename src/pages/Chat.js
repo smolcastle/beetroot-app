@@ -220,7 +220,7 @@ async function getUsers(dispatch) {
 
 async function createContact(newUser, sender) {
   try {
-    await addDoc(collection(db, 'address book', sender, 'contacts'), {
+    await addDoc(collection(db, `address book/ ${sender}/contacts`), {
       from: sender,
       to: newUser,
       timestamp: serverTimestamp()
@@ -232,8 +232,8 @@ async function createContact(newUser, sender) {
 
 async function getContacts(sender, setContacts) {
   try {
-    const contactsRef = collection(db, 'address book', sender, 'contacts');
-    const q = query(contactsRef, orderBy('timestamp', 'asc'));
+    const contactsRef = collection(db, `address book/ ${sender}/contacts`);
+    const q = query(contactsRef, orderBy('timestamp', 'desc'));
     onSnapshot(q, (querySnapshot) => {
       let contacts = [];
       querySnapshot.forEach((doc) => {
@@ -309,12 +309,13 @@ function User({
   dispatch,
   index,
   setSelected,
-  isSelected,
-  setReceiver
+  selected,
+  setReceiver,
+  setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (isSelected) {
+    if (selected === receiver) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
     }
@@ -322,7 +323,7 @@ function User({
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [isSelected]);
+  }, [selected]);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -337,9 +338,10 @@ function User({
     }
   }
 
-  const [lastMsgTime, setLastMsgTime] = useState(null);
+  const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
-  useEffect(() => {
+
+  async function fetchLastMsgTime() {
     msgTime.map((lastMsg) => {
       if (
         (lastMsg.receiver === receiver && lastMsg.sender === sender) ||
@@ -349,7 +351,8 @@ function User({
         return;
       }
     });
-  });
+  }
+
   const [ensName, setEnsName] = useState('');
   async function getEnsName() {
     let ens = await toEns(receiver);
@@ -359,24 +362,40 @@ function User({
   useEffect(() => {
     getVerifedData();
     getEnsName();
-  }, [receiver]);
+    fetchLastMsgTime();
+  });
+
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
 
   return (
     <>
       <button
         type={'button'}
         onClick={() => {
-          if (!isSelected) {
-            dispatch(resetMessages());
-            setSelected(index);
-          }
+          setSelected(receiver);
+          setSearchTerm('');
         }}
-        className="w-[99%]"
+        className="w-[99%] relative"
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
       >
+        {hover && (
+          <p className="absolute text-[10px] w-[100%] px-2 rounded-[2px] text-gray1 bg-gray4/[0.7]">
+            {receiver}
+          </p>
+        )}
+
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-            isSelected ? 'bg-gray6' : ' '
+            selected === receiver ? 'bg-gray6' : ' '
           }`}
         >
           <div className="flex-1 flex items-center p-3">
@@ -406,9 +425,7 @@ function User({
                   {getDateTime(lastMsgTime?.seconds).time}
                 </p>
               )}
-              {lastMsgTime === null && (
-                <p className="text-[14px] text-gray3">-</p>
-              )}
+              {!lastMsgTime && <p className="text-[14px] text-gray3">-</p>}
             </div>
           </div>
         </li>
@@ -426,6 +443,7 @@ function Users({
   queue_ids,
   setSelected,
   contacts,
+  setContacts,
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -467,10 +485,13 @@ function Users({
         createContact(address.toLowerCase(), sender);
       }
       dispatch(hideNewUser());
+      setReceiver(address.toLowerCase());
+      setSelected(address.toLowerCase());
     } else {
       alert('Please paste an address');
     }
     setSearchTerm('');
+    getContacts(sender, setContacts);
   }
 
   return (
@@ -543,9 +564,6 @@ function Users({
           ?.filter((contact) => {
             const receiver = contact.to;
             if (searchTerm === '') {
-              if (showAddContactBtn === true) {
-                setShowAddContactBtn(false);
-              }
               return receiver;
             } else if (
               receiver.toLowerCase().startsWith(searchTerm.toLowerCase())
@@ -564,10 +582,11 @@ function Users({
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    isSelected={selected === index}
+                    selected={selected}
                     index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
+                    setSearchTerm={setSearchTerm}
                   />
                 </>
               );
@@ -693,7 +712,7 @@ function TopSection({ receiver }) {
       {receiver === '' && (
         <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
           <div className="w-[15%]">
-            <img src={profile} className="w-[48px]"></img>
+            <img src={profile0} className="w-[48px]"></img>
           </div>
         </div>
       )}
@@ -983,13 +1002,16 @@ function Messages({
               </div>
             );
           })}
-        {messages === null && contacts.length !== 0 && (
-          <div className="flex flex-col justify-center items-center mt-[20%]">
-            <p className="text-[12px] text-gray2 text-center w-[80%]">
-              No messages here yet. Send your first message below.
-            </p>
-          </div>
-        )}
+        {messages !== null &&
+          chats.length === 0 &&
+          contacts.length !== 0 &&
+          receiver !== '' && (
+            <div className="flex flex-col justify-center items-center mt-[20%]">
+              <p className="text-[12px] text-gray2 text-center w-[80%]">
+                No messages here yet. Send your first message below.
+              </p>
+            </div>
+          )}
       </div>
       {messages === null && contacts.length === 0 && (
         <div className="flex flex-col text-[12px] text-left text-gray2 p-4 mb-4 justify-evenly absolute bottom-[10%] w-full border-dotted border-2">
@@ -1044,17 +1066,19 @@ export default function Chat() {
 
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
-    if (users && sender !== '') {
+    if ((await users) && sender !== '') {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       if (!user.exists()) {
         await saveUser(sender);
         getUsers(dispatch);
+        console.log('users not null');
       }
     }
     // if the users list is empty then add the new user
-    if (users != null && users.length === 0 && sender !== '') {
+    if ((await users) != null && users.length === 0 && sender !== '') {
       saveUser(sender);
+      console.log('users null');
     }
   };
 
@@ -1088,7 +1112,7 @@ export default function Chat() {
 
   useEffect(() => {
     getLastMsgTime(dispatch);
-  });
+  }, []);
 
   useEffect(() => {
     getContacts(sender, setContacts);
@@ -1141,6 +1165,7 @@ export default function Chat() {
                   setSignModalState={setSignModalState}
                   signModal={signModal}
                   contacts={contacts}
+                  setContacts={setContacts}
                 />
                 <Messages
                   message={message}
