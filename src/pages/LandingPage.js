@@ -93,15 +93,15 @@ function LandingPage() {
           <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
             NFT marketplace for negotiators
           </h1>
-          <div className="mt-16">
+          <div className="mt-16 z-20">
             <Link to="/chat" target="_blank" rel="noopener noreferrer">
-              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px]">
+              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px] ">
                 {'< LAUNCH APP />'}
               </button>
             </Link>
           </div>
           <div className="flex justify-between mt-4">
-            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor">
+            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor z-20">
               Read Launch Announcement
             </button>
             <div className="w-[370px] flex flex-col">
@@ -112,13 +112,13 @@ function LandingPage() {
             </div>
           </div>
           <div className="flex justify-between">
-            <div>
+            <div className="z-20">
               <a
                 href="https://twitter.com/beetrootai"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img className="w-[30px] cursor-pointer" src={twitter} />
+                <img className="w-[30px] cursor-pointer " src={twitter} />
               </a>
               <img
                 className="w-[30px] cursor-pointer eye_cursor mt-4"
