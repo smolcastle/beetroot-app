@@ -233,7 +233,7 @@ async function createContact(newUser, sender) {
 async function getContacts(sender, setContacts) {
   try {
     const contactsRef = collection(db, `address book/ ${sender}/contacts`);
-    const q = query(contactsRef, orderBy('timestamp', 'asc'));
+    const q = query(contactsRef, orderBy('timestamp', 'desc'));
     onSnapshot(q, (querySnapshot) => {
       let contacts = [];
       querySnapshot.forEach((doc) => {
@@ -338,9 +338,10 @@ function User({
     }
   }
 
-  const [lastMsgTime, setLastMsgTime] = useState(null);
+  const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
-  useEffect(() => {
+
+  async function fetchLastMsgTime() {
     msgTime.map((lastMsg) => {
       if (
         (lastMsg.receiver === receiver && lastMsg.sender === sender) ||
@@ -350,7 +351,8 @@ function User({
         return;
       }
     });
-  });
+  }
+
   const [ensName, setEnsName] = useState('');
   async function getEnsName() {
     let ens = await toEns(receiver);
@@ -360,7 +362,17 @@ function User({
   useEffect(() => {
     getVerifedData();
     getEnsName();
-  }, [receiver]);
+    fetchLastMsgTime();
+  });
+
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
 
   return (
     <>
@@ -370,8 +382,16 @@ function User({
           setSelected(receiver);
           setSearchTerm('');
         }}
-        className="w-[99%]"
+        className="w-[99%] relative"
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
       >
+        {hover && (
+          <p className="absolute text-[10px] w-[100%] px-2 rounded-[2px] text-gray1 bg-gray4/[0.7]">
+            {receiver}
+          </p>
+        )}
+
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
@@ -405,9 +425,7 @@ function User({
                   {getDateTime(lastMsgTime?.seconds).time}
                 </p>
               )}
-              {lastMsgTime === null && (
-                <p className="text-[14px] text-gray3">-</p>
-              )}
+              {!lastMsgTime && <p className="text-[14px] text-gray3">-</p>}
             </div>
           </div>
         </li>
@@ -467,6 +485,8 @@ function Users({
         createContact(address.toLowerCase(), sender);
       }
       dispatch(hideNewUser());
+      setReceiver(address.toLowerCase());
+      setSelected(address.toLowerCase());
     } else {
       alert('Please paste an address');
     }
@@ -551,7 +571,7 @@ function Users({
               return receiver;
             }
           })
-          .reverse()
+          // .reverse()
           ?.map((contact, index) => {
             if (contact.from === sender) {
               const receiver = contact.to;
@@ -933,9 +953,6 @@ function Messages({
     });
   };
 
-  console.log(messages);
-  console.log(chats);
-
   return (
     <ul
       role="list"
@@ -985,13 +1002,16 @@ function Messages({
               </div>
             );
           })}
-        {messages !== null && chats.length === 0 && contacts.length !== 0 && (
-          <div className="flex flex-col justify-center items-center mt-[20%]">
-            <p className="text-[12px] text-gray2 text-center w-[80%]">
-              No messages here yet. Send your first message below.
-            </p>
-          </div>
-        )}
+        {messages !== null &&
+          chats.length === 0 &&
+          contacts.length !== 0 &&
+          receiver !== '' && (
+            <div className="flex flex-col justify-center items-center mt-[20%]">
+              <p className="text-[12px] text-gray2 text-center w-[80%]">
+                No messages here yet. Send your first message below.
+              </p>
+            </div>
+          )}
       </div>
       {messages === null && contacts.length === 0 && (
         <div className="flex flex-col text-[12px] text-left text-gray2 p-4 mb-4 justify-evenly absolute bottom-[10%] w-full border-dotted border-2">
@@ -1052,11 +1072,13 @@ export default function Chat() {
       if (!user.exists()) {
         await saveUser(sender);
         getUsers(dispatch);
+        console.log('users not null');
       }
     }
     // if the users list is empty then add the new user
     if ((await users) != null && users.length === 0 && sender !== '') {
       saveUser(sender);
+      console.log('users null');
     }
   };
 
@@ -1090,7 +1112,7 @@ export default function Chat() {
 
   useEffect(() => {
     getLastMsgTime(dispatch);
-  }, [contacts]);
+  }, []);
 
   useEffect(() => {
     getContacts(sender, setContacts);
