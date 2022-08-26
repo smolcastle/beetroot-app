@@ -309,21 +309,20 @@ function User({
   dispatch,
   index,
   setSelected,
-  selected,
+  isSelected,
   setReceiver,
   setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (selected === receiver) {
+    if (isSelected) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
     }
-
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [selected]);
+  }, []);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -379,7 +378,10 @@ function User({
       <button
         type={'button'}
         onClick={() => {
-          setSelected(receiver);
+          if (!isSelected) {
+            dispatch(resetMessages());
+            setSelected(index);
+          }
           setSearchTerm('');
         }}
         className="w-[99%]"
@@ -393,7 +395,7 @@ function User({
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-            selected === receiver ? 'bg-gray6' : ' '
+            isSelected ? 'bg-gray6' : ' '
           }`}
         >
           <div className="flex-1 flex items-center p-3">
@@ -481,16 +483,15 @@ function Users({
       }
       // if not then save this new contact
       if (contactExists == false) {
-        createContact(address.toLowerCase(), sender);
+        await createContact(address.toLowerCase(), sender);
+        getContacts(sender, setContacts);
       }
-      dispatch(hideNewUser());
-      setReceiver(address.toLowerCase());
-      setSelected(address.toLowerCase());
     } else {
       alert('Please paste an address');
     }
     setSearchTerm('');
     getContacts(sender, setContacts);
+    setSelected(0);
   }
 
   return (
@@ -581,7 +582,7 @@ function Users({
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    selected={selected}
+                    isSelected={selected === index}
                     index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
@@ -638,7 +639,6 @@ function Users({
 
 function TopSection({ receiver }) {
   const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (copied) setCopied(false);
