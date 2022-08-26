@@ -851,6 +851,12 @@ const TradeTab = ({
               </div>
               <input
                 placeholder="Token ID"
+                // only numbers
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 value={tokenId}
                 className="w-[30%] text-[12px] rounded-md outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
                 onChange={(e) => setTokenId(e.target.value)}
@@ -905,6 +911,12 @@ const TradeTab = ({
               </div>
               <input
                 list="tokens"
+                // allow only numbers and .
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="Amount"
                 ref={inputRef}
                 className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"

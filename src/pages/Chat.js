@@ -309,21 +309,20 @@ function User({
   dispatch,
   index,
   setSelected,
-  selected,
+  isSelected,
   setReceiver,
   setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (selected === receiver) {
+    if (isSelected) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
     }
-
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [selected]);
+  }, [isSelected]);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -364,14 +363,17 @@ function User({
     getEnsName();
     fetchLastMsgTime();
   });
-
+  let timeout;
   const [hover, setHover] = useState(false);
   const onHover = () => {
-    setHover(true);
+    timeout = setTimeout(() => {
+      setHover(true);
+    }, 1000);
   };
 
   const onLeave = () => {
     setHover(false);
+    clearTimeout(timeout);
   };
 
   return (
@@ -379,15 +381,16 @@ function User({
       <button
         type={'button'}
         onClick={() => {
-          setSelected(receiver);
+          if (!isSelected) {
+            dispatch(resetMessages());
+            setSelected(index);
+          }
           setSearchTerm('');
         }}
-        className="w-[99%] relative"
-        onMouseEnter={onHover}
-        onMouseLeave={onLeave}
+        className="w-[99%]"
       >
         {hover && (
-          <p className="absolute text-[10px] w-[100%] px-2 rounded-[2px] text-gray1 bg-gray4/[0.7]">
+          <p className="absolute right-0 text-[8px] w-[70%] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2">
             {receiver}
           </p>
         )}
@@ -395,20 +398,21 @@ function User({
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-            selected === receiver ? 'bg-gray6' : ' '
+            isSelected ? 'bg-gray6' : ' '
           }`}
         >
           <div className="flex-1 flex items-center p-3">
             <div className="w-[30%]">
               <img src={profile} className="w-[48px]"></img>
             </div>
-            <div className="flex flex-col items-start w-[50%] ">
-              {ensName ? (
-                <p className="text-[16px]">{ensName}</p>
-              ) : (
-                <p className="text-[16px]">{truncate(receiver, 14)}</p>
-              )}
-
+            <div className="flex flex-col items-start w-[50%] mt-2">
+              <div onMouseEnter={onHover} onMouseLeave={onLeave}>
+                {ensName ? (
+                  <p className="text-[16px]">{ensName}</p>
+                ) : (
+                  <p className="text-[16px]">{truncate(receiver, 14)}</p>
+                )}
+              </div>
               {isVerified && (
                 <p className="text-[14px] text-parsley">Verified</p>
               )}
@@ -482,22 +486,21 @@ function Users({
       }
       // if not then save this new contact
       if (contactExists == false) {
-        createContact(address.toLowerCase(), sender);
+        await createContact(address.toLowerCase(), sender);
+        getContacts(sender, setContacts);
       }
-      dispatch(hideNewUser());
-      setReceiver(address.toLowerCase());
-      setSelected(address.toLowerCase());
     } else {
       alert('Please paste an address');
     }
     setSearchTerm('');
     getContacts(sender, setContacts);
+    setSelected(0);
   }
 
   return (
     <ul
       role="list"
-      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1"
+      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1 relative"
     >
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg
@@ -582,7 +585,7 @@ function Users({
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    selected={selected}
+                    isSelected={selected === index}
                     index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
@@ -639,7 +642,6 @@ function Users({
 
 function TopSection({ receiver }) {
   const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (copied) setCopied(false);
