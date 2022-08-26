@@ -1002,18 +1002,15 @@ function Messages({
               </div>
             );
           })}
-        {messages !== null &&
-          chats.length === 0 &&
-          contacts.length !== 0 &&
-          receiver !== '' && (
-            <div className="flex flex-col justify-center items-center mt-[20%]">
-              <p className="text-[12px] text-gray2 text-center w-[80%]">
-                No messages here yet. Send your first message below.
-              </p>
-            </div>
-          )}
+        {chats.length === 0 && contacts.length !== 0 && receiver !== '' && (
+          <div className="flex flex-col justify-center items-center mt-[20%]">
+            <p className="text-[12px] text-gray2 text-center w-[80%]">
+              No messages here yet. Send your first message below.
+            </p>
+          </div>
+        )}
       </div>
-      {messages === null && contacts.length === 0 && (
+      {contacts.length === 0 && (
         <div className="flex flex-col text-[12px] text-left text-gray2 p-4 mb-4 justify-evenly absolute bottom-[10%] w-full border-dotted border-2">
           <p className="w-[90%]">
             <span className="font-bold">Some useful tips: </span>
