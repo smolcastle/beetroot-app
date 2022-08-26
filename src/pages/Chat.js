@@ -322,7 +322,7 @@ function User({
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, []);
+  }, [isSelected]);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -363,14 +363,17 @@ function User({
     getEnsName();
     fetchLastMsgTime();
   });
-
+  let timeout;
   const [hover, setHover] = useState(false);
   const onHover = () => {
-    setHover(true);
+    timeout = setTimeout(() => {
+      setHover(true);
+    }, 1000);
   };
 
   const onLeave = () => {
     setHover(false);
+    clearTimeout(timeout);
   };
 
   return (
