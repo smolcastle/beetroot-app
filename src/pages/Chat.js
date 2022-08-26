@@ -382,12 +382,10 @@ function User({
           setSelected(receiver);
           setSearchTerm('');
         }}
-        className="w-[99%] relative"
-        onMouseEnter={onHover}
-        onMouseLeave={onLeave}
+        className="w-[99%]"
       >
         {hover && (
-          <p className="absolute text-[10px] w-[100%] px-2 rounded-[2px] text-gray1 bg-gray4/[0.7]">
+          <p className="absolute right-0 text-[8px] w-[70%] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2">
             {receiver}
           </p>
         )}
@@ -402,13 +400,14 @@ function User({
             <div className="w-[30%]">
               <img src={profile} className="w-[48px]"></img>
             </div>
-            <div className="flex flex-col items-start w-[50%] ">
-              {ensName ? (
-                <p className="text-[16px]">{ensName}</p>
-              ) : (
-                <p className="text-[16px]">{truncate(receiver, 14)}</p>
-              )}
-
+            <div className="flex flex-col items-start w-[50%] mt-2">
+              <div onMouseEnter={onHover} onMouseLeave={onLeave}>
+                {ensName ? (
+                  <p className="text-[16px]">{ensName}</p>
+                ) : (
+                  <p className="text-[16px]">{truncate(receiver, 14)}</p>
+                )}
+              </div>
               {isVerified && (
                 <p className="text-[14px] text-parsley">Verified</p>
               )}
@@ -497,7 +496,7 @@ function Users({
   return (
     <ul
       role="list"
-      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1"
+      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1 relative"
     >
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg
