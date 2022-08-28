@@ -474,7 +474,7 @@ function Users({
   }
   let contactExists = false;
 
-  async function addNewUserFunc(searchTerm) {
+  async function addNewUserFunc() {
     let address = await toEthAddress(searchTerm);
     if (address && address !== '' && address.toLowerCase() !== sender) {
       let i;
@@ -531,10 +531,13 @@ function Users({
           onChange={(e) => {
             setSearchTerm(e.target.value);
           }}
+          onKeyPress={(event) => {
+            event.key === 'Enter' && addNewUserFunc();
+          }}
         ></input>
         <button
           onClick={() => {
-            addNewUserFunc(searchTerm);
+            addNewUserFunc();
           }}
         >
           <svg
@@ -605,7 +608,7 @@ function Users({
               </p>
               <button
                 onClick={() => {
-                  dispatch(showNewUser());
+                  addNewUserFunc();
                 }}
               >
                 <svg
