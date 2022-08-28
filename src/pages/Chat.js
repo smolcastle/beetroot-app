@@ -452,7 +452,6 @@ function Users({
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddContactBtn, setShowAddContactBtn] = useState(false);
 
   function AddContactBtn() {
     return (
@@ -465,7 +464,6 @@ function Users({
           onClick={() => {
             createContact(searchTerm.toLowerCase(), sender);
             setSearchTerm('');
-            setShowAddContactBtn(false);
           }}
         >
           Add to address book
@@ -497,6 +495,15 @@ function Users({
     getContacts(sender, setContacts);
     setSelected(0);
   }
+
+  const filteredContacts = contacts?.filter((contact) => {
+    const receiver = contact.to;
+    if (searchTerm === '') {
+      return receiver;
+    } else if (receiver.toLowerCase().startsWith(searchTerm.toLowerCase())) {
+      return receiver;
+    }
+  });
 
   return (
     <ul
@@ -567,19 +574,8 @@ function Users({
         </button>
       </div>
       <div className="overflow-y-scroll">
-        {contacts
-          ?.filter((contact) => {
-            const receiver = contact.to;
-            if (searchTerm === '') {
-              return receiver;
-            } else if (
-              receiver.toLowerCase().startsWith(searchTerm.toLowerCase())
-            ) {
-              return receiver;
-            }
-          })
-          // .reverse()
-          ?.map((contact, index) => {
+        {filteredContacts.length > 0 ? (
+          filteredContacts.map((contact, index) => {
             if (contact.from === sender) {
               const receiver = contact.to;
               return (
@@ -598,8 +594,10 @@ function Users({
                 </div>
               );
             }
-          })}
-        {showAddContactBtn && <AddContactBtn />}
+          })
+        ) : (
+          <AddContactBtn />
+        )}
         {contacts.length == 0 && (
           <>
             <div className="flex flex-col justify-center items-center">
