@@ -45,7 +45,7 @@ const Order = ({ sender, truncate, receiver }) => {
         order: order,
         status: 'pending',
         expiryDate: expiryDate,
-        // check if user has given any expiry date if not set status to ''
+        // check if user has given any expiry date if not set status to 0
         expired: expiryDate > 0 ? (expiryDate > today ? false : true) : 0,
         timestamp: serverTimestamp()
       });
@@ -321,7 +321,8 @@ const Order = ({ sender, truncate, receiver }) => {
                           {!order.expired && (
                             <>
                               {order.name !== sender &&
-                                order.status !== 'cancelled' && (
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
                                   <button
                                     className="bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3"
                                     onClick={() => fulfillFunc(order.id)}
@@ -329,14 +330,16 @@ const Order = ({ sender, truncate, receiver }) => {
                                     Fulfill
                                   </button>
                                 )}
-                              {order.status !== 'cancelled' && (
-                                <button
-                                  className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
-                                  onClick={() => cancelOrder(order)}
-                                >
-                                  Reject
-                                </button>
-                              )}
+                              {order.name === sender &&
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
+                                  <button
+                                    className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
+                                    onClick={() => cancelOrder(order)}
+                                  >
+                                    Reject
+                                  </button>
+                                )}
                             </>
                           )}
                         </div>

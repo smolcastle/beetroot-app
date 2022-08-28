@@ -517,7 +517,7 @@ const TradeTab = ({
   const [inputExpiryYear, setInputExpiryYear] = useState('');
   const [expiryHours, setExpiryHours] = useState('');
   const [expiryMinutes, setExpiryMinutes] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
+  const [expiryDate, setExpiryDate] = useState(0);
   const [added, setAdded] = useState(false);
   function addExpiryDate() {
     // create a date object only if the input fields are not empty
