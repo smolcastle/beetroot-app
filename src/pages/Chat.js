@@ -46,6 +46,7 @@ import storage from '../utils/firebase';
 import Onboarding from './Onboarding';
 import mascot from '../img/mascot-hands.png';
 
+const { v4: uuidv4 } = require('uuid'); // to generate unique ids
 const db = getFirestore();
 
 async function saveMessage(messageText, sender, receiver, dispatch) {
@@ -582,7 +583,7 @@ function Users({
             if (contact.from === sender) {
               const receiver = contact.to;
               return (
-                <>
+                <div key={uuidv4()}>
                   <User
                     key={contact}
                     sender={sender}
@@ -594,7 +595,7 @@ function Users({
                     setReceiver={setReceiver}
                     setSearchTerm={setSearchTerm}
                   />
-                </>
+                </div>
               );
             }
           })}

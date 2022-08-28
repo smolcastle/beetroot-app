@@ -271,7 +271,10 @@ const Order = ({ sender, truncate, receiver }) => {
                     order.to === '')
                 ) {
                   return (
-                    <div className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]">
+                    <div
+                      className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]"
+                      key={index}
+                    >
                       <div className="flex justify-between">
                         <div className="w-[60%]">
                           <h1 className="my-2 text-gray2 text-[10px]">
@@ -455,7 +458,7 @@ const Order = ({ sender, truncate, receiver }) => {
                           <div className="w-[40%] h-[auto]">
                             {order.cartOffers.map((offer) => {
                               return (
-                                <>
+                                <div key={offer.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -489,14 +492,14 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>
                           <div className="w-[40%] h-[auto]">
                             {order.cartConsiderations.map((consideration) => {
                               return (
-                                <>
+                                <div key={consideration.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -530,7 +533,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>

@@ -367,7 +367,7 @@ const TradeTab = ({
           <div className="cart p-2">
             {offers?.map((offer) => {
               return (
-                <>
+                <div key={offer.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {offer.name === 'Ethereum' && <p>Ethereum</p>}
@@ -426,7 +426,7 @@ const TradeTab = ({
                       <p className="mt-4">{offer.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
@@ -434,7 +434,7 @@ const TradeTab = ({
           <div className="cart p-2">
             {considerations?.map((consideration) => {
               return (
-                <>
+                <div key={consideration.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {consideration.name === 'Ethereum' && <p>Ethereum</p>}
@@ -497,7 +497,7 @@ const TradeTab = ({
                       <p className="mt-4">{consideration.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
             {considerations.length === 0 && (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import profile from '../img/profile.png';
 import { toEns } from '../utils/ens';
+import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
 const Profile = ({ truncate, sender, displayName }) => {
   const [ensName, setEnsName] = useState('');
@@ -8,9 +9,24 @@ const Profile = ({ truncate, sender, displayName }) => {
     let ens = await toEns(sender);
     setEnsName(ens);
   }
+
+  const [isVerified, setIsVerified] = useState();
+
+  async function getVerifedData() {
+    const verifyRef = doc(getFirestore(), `users/${sender}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setIsVerified(verifyData.verified);
+    } else {
+      setIsVerified(false);
+    }
+  }
   useEffect(() => {
     getEnsName();
+    getVerifedData();
   });
+
   return (
     <>
       <div className="flex flex-col w-[50%] bg-gumtint/[0.2] rounded-l-[16px] h-full items-center justify-evenly">
@@ -21,7 +37,12 @@ const Profile = ({ truncate, sender, displayName }) => {
           ) : (
             <p>{truncate(sender, 14)}</p>
           )}
-          <p className="text-gray3 mt-[4px] text-[12px]">Unverified</p>
+          {isVerified && (
+            <p className="text-parsley mt-[4px] text-[12px]">Verified</p>
+          )}
+          {!isVerified && (
+            <p className="text-gray3 mt-[4px] text-[12px]">Unverified</p>
+          )}
         </div>
         <div className="flex w-[50%] mt-[-16px] items-center justify-evenly">
           <svg
