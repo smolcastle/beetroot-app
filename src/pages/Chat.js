@@ -310,20 +310,20 @@ function User({
   dispatch,
   index,
   setSelected,
-  isSelected,
+  selected,
   setReceiver,
   setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (isSelected) {
+    if (selected === receiver) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
     }
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [isSelected]);
+  }, [selected]);
 
   const [isVerified, setIsVerified] = useState();
 
@@ -382,9 +382,9 @@ function User({
       <button
         type={'button'}
         onClick={() => {
-          if (!isSelected) {
+          if (selected !== receiver) {
             dispatch(resetMessages());
-            setSelected(index);
+            setSelected(receiver);
           }
           setSearchTerm('');
         }}
@@ -399,7 +399,7 @@ function User({
         <li
           index={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-            isSelected ? 'bg-gray6' : ' '
+            selected === receiver ? 'bg-gray6' : ' '
           }`}
         >
           <div className="flex-1 flex items-center p-3">
@@ -444,14 +444,13 @@ function Users({
   dispatch,
   setReceiver,
   users,
-  selected,
   queue_ids,
-  setSelected,
   contacts,
   setContacts,
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selected, setSelected] = useState(contacts ? contacts[0].to : '');
 
   function AddContactBtn() {
     return (
@@ -585,7 +584,7 @@ function Users({
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    isSelected={selected === index}
+                    selected={selected}
                     index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
@@ -1049,7 +1048,6 @@ function Messages({
 export default function Chat() {
   const [message, setMsgString] = useState('');
   const [receiver, setReceiver] = useState('');
-  const [selected, setSelected] = useState(0);
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
@@ -1161,8 +1159,6 @@ export default function Chat() {
                   setReceiver={setReceiver}
                   setModalState={setModalState}
                   modal={modal}
-                  selected={selected}
-                  setSelected={setSelected}
                   setSignModalState={setSignModalState}
                   signModal={signModal}
                   contacts={contacts}
