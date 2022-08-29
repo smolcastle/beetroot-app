@@ -35,7 +35,7 @@ const Order = ({ sender, truncate, receiver }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
 
-  async function saveOrder(order, offerFor) {
+  async function saveOrder(order, offerFor, expiryDate) {
     try {
       await addDoc(collection(getFirestore(), 'orders'), {
         name: sender,
@@ -44,13 +44,16 @@ const Order = ({ sender, truncate, receiver }) => {
         cartConsiderations: considerations,
         order: order,
         status: 'pending',
+        expiryDate: expiryDate,
+        // check if user has given any expiry date if not set status to 0
+        expired: expiryDate > 0 ? (expiryDate > today ? false : true) : 0,
         timestamp: serverTimestamp()
       });
     } catch (error) {
       console.error('Error writing new order to Firebase Database', error);
     }
   }
-  async function createOrder(offerFor) {
+  async function createOrder(offerFor, expiryDate) {
     try {
       if (offers.length == 0 || considerations.length == 0) {
         alert('Order cannot be empty');
@@ -64,7 +67,7 @@ const Order = ({ sender, truncate, receiver }) => {
         });
         const order = await orderActions.executeAllActions();
         console.log(order);
-        saveOrder(order, offerFor);
+        saveOrder(order, offerFor, expiryDate);
         setOrderCreated(true);
         setIsLoading(false);
       }
@@ -78,10 +81,27 @@ const Order = ({ sender, truncate, receiver }) => {
   }
 
   // cancel an order using seaport function
-  async function cancelOrder(order) {
+  async function cancelOrder(orderid) {
     try {
-      seaport.seaport.cancelOrders(order);
-      cancelFunc(order.id);
+      const docRef = doc(getFirestore(), 'orders', orderid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        console.log("order doesn't exist");
+      }
+
+      const order = await docSnap.get('order');
+      console.log(order);
+      await seaport.seaport
+        .cancelOrders([order.parameters], order.offerer)
+        .transact();
+
+      // update the status of order in db after cancelling
+      await updateDoc(orderRef, {
+        status: 'cancelled'
+      });
+
+      // update order list as soon as it is cancelled
+      GetPendingOrders();
     } catch (e) {
       console.log('error cancelling the order', e);
     }
@@ -129,19 +149,6 @@ const Order = ({ sender, truncate, receiver }) => {
     GetPendingOrders();
   }
 
-  // update the status of order in db after cancelling
-  async function cancelFunc(orderid) {
-    const orderRef = doc(getFirestore(), 'orders', orderid);
-    const orderSnap = await getDoc(orderRef);
-    if (orderSnap.exists()) {
-      await updateDoc(orderRef, {
-        status: 'cancelled'
-      });
-    }
-    // update order list as soon as it is cancelled
-    GetPendingOrders();
-  }
-
   const showPendingOrderFunc = (id, index) => {
     orders.map((order) => {
       if (order.id === id) {
@@ -157,13 +164,57 @@ const Order = ({ sender, truncate, receiver }) => {
     });
   };
 
+  const dateObj = new Date();
+  const currDate = dateObj.getDate();
+  const currMonth = dateObj.getMonth();
+  const currYear = dateObj.getFullYear();
+  const currHour = dateObj.getHours();
+  const currMinute = dateObj.getMinutes();
+
+  const d2 = new Date(currYear, currMonth, currDate, currHour, currMinute);
+  const today = d2.getTime();
+
+  function OrderExpiry({ orderId, orderExpiryDate, expireStatus }) {
+    // check if present date is past the expiry date if yes update the status in db
+    if (orderExpiryDate !== 0 && orderExpiryDate < today) {
+      const docRef = doc(getFirestore(), 'orders', orderId);
+      updateDoc(docRef, {
+        expired: true
+      });
+    }
+    if (orderExpiryDate > today) {
+      // calculate the no. of days between the expiry date and present date
+      const date = Math.floor(
+        (orderExpiryDate - today) / (1000 * 60 * 60 * 24)
+      );
+      const hours = Math.ceil((orderExpiryDate - today) / (1000 * 60 * 60));
+      return (
+        <>
+          {date === 0 ? (
+            // if the date is 0 day it means value is less than 24 hours. so show expiry date in hours format
+            <h1>Order expires in about {hours} hours.</h1>
+          ) : (
+            <h1>Order expires in about {date} day/s.</h1>
+          )}
+        </>
+      );
+    }
+    if (expireStatus === true) {
+      return (
+        <>
+          <h1>Order expired.</h1>
+        </>
+      );
+    }
+  }
+
   return (
     <>
-      <div className="trade flex-[4] mx-10 my-5">
-        <div className="trade-links flex w-2/5 text-[12px] justify-between cursor:pointer text-parsley mb-5">
+      <div className="trade flex-[4] my-5">
+        <div className="trade-links flex w-2/5 text-[12px] justify-between cursor:pointer text-parsley">
           <button
             onClick={() => setShowOption(1)}
-            className={`bg-parsleytint px-[12px] py-[6px] rounded-md ${
+            className={`bg-parsleytint px-[12px] py-[6px] rounded-md w-[30%] ${
               showOption == 1 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -171,7 +222,7 @@ const Order = ({ sender, truncate, receiver }) => {
           </button>
           <button
             onClick={() => setShowOption(2)}
-            className={`bg-parsleytint px-3 rounded-md ${
+            className={`bg-parsleytint px-3 rounded-md w-[30%] ${
               showOption == 2 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -179,7 +230,7 @@ const Order = ({ sender, truncate, receiver }) => {
           </button>
           <button
             onClick={() => setShowOption(3)}
-            className={`bg-parsleytint px-3 rounded-md ${
+            className={`bg-parsleytint px-3 rounded-md w-[30%] ${
               showOption == 3 ? 'border border-parsley border-solid' : ''
             }`}
           >
@@ -211,7 +262,7 @@ const Order = ({ sender, truncate, receiver }) => {
         )}
         {showOption === 3 && (
           <>
-            <div className="w-[70%] max-h-[600px] overflow-y-scroll px-2">
+            <div className="w-[70%] max-h-[600px] overflow-y-scroll px-2 mt-4">
               {orders.map((order, index) => {
                 if (
                   (order.name == sender || order.name == receiver) &&
@@ -220,54 +271,79 @@ const Order = ({ sender, truncate, receiver }) => {
                     order.to === '')
                 ) {
                   return (
-                    <div className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]">
+                    <div
+                      className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]"
+                      key={index}
+                    >
                       <div className="flex justify-between">
                         <div className="w-[60%]">
                           <h1 className="my-2 text-gray2 text-[10px]">
                             Created:{' '}
                             {getDateTime(order.timestamp?.seconds).date}
                           </h1>
-                          {order.status === 'pending' &&
-                            order.name === sender && (
-                              <h1 className="text-gray2 text-[10px]">
-                                Order has not been fulfilled by recipient.
-                                Waiting...
-                              </h1>
-                            )}
-                          {order.status === 'pending' &&
-                            order.to === sender && (
-                              <h1 className="text-gray2 text-[10px]">
-                                Click on the fulfill button to accept the order.
-                              </h1>
-                            )}
-                          {order.status === 'cancelled' && (
-                            <h1 className="text-gum text-[10px]">
-                              Order Cancelled
-                            </h1>
+                          {!order.expired && (
+                            <>
+                              {order.status === 'pending' &&
+                                order.name === sender && (
+                                  <h1 className="text-gray2 text-[10px]">
+                                    Order has not been fulfilled by recipient.
+                                    Waiting...
+                                  </h1>
+                                )}
+                              {order.status === 'pending' &&
+                                order.to === sender && (
+                                  <h1 className="text-gray2 text-[10px]">
+                                    Click on the fulfill button to accept the
+                                    order.
+                                  </h1>
+                                )}
+                              {order.status === 'cancelled' && (
+                                <h1 className="text-gum text-[10px]">
+                                  Order Cancelled
+                                </h1>
+                              )}
+                              {order.status === 'fulfilled' && (
+                                <h1 className="text-parsley text-[10px]">
+                                  Order Complete
+                                </h1>
+                              )}
+                            </>
                           )}
-                          {order.status === 'fulfilled' && (
-                            <h1 className="text-parsley text-[10px]">
-                              Order Complete
-                            </h1>
+                          {(order.status !== 'cancelled' ||
+                            order.status === 'fulfilled') && (
+                            <div className="text-gum text-[10px] mt-1">
+                              <OrderExpiry
+                                orderId={order.id}
+                                orderExpiryDate={order.expiryDate}
+                                expireStatus={order.expired}
+                              />
+                            </div>
                           )}
                         </div>
                         <div className="w-[35%] mt-[4px]">
-                          {order.name !== sender &&
-                            order.status !== 'cancelled' && (
-                              <button
-                                className="bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3"
-                                onClick={() => fulfillFunc(order.id)}
-                              >
-                                Fulfill
-                              </button>
-                            )}
-                          {order.status !== 'cancelled' && (
-                            <button
-                              className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
-                              onClick={() => cancelOrder(order)}
-                            >
-                              Reject
-                            </button>
+                          {!order.expired && (
+                            <>
+                              {order.name !== sender &&
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
+                                  <button
+                                    className="bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3"
+                                    onClick={() => fulfillFunc(order.id)}
+                                  >
+                                    Fulfill
+                                  </button>
+                                )}
+                              {order.name === sender &&
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
+                                  <button
+                                    className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
+                                    onClick={() => cancelOrder(order)}
+                                  >
+                                    Reject
+                                  </button>
+                                )}
+                            </>
                           )}
                         </div>
                         <div className="w-[5%]">
@@ -382,7 +458,7 @@ const Order = ({ sender, truncate, receiver }) => {
                           <div className="w-[40%] h-[auto]">
                             {order.cartOffers.map((offer) => {
                               return (
-                                <>
+                                <div key={offer.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -406,7 +482,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                           <p>{offer.name}</p>
                                         )}
                                         <p className="text-[8px] text-gum">
-                                          {offer.token}
+                                          {receiver(offer.token, 14)}
                                         </p>
                                       </div>
                                     </div>
@@ -416,14 +492,14 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>
                           <div className="w-[40%] h-[auto]">
                             {order.cartConsiderations.map((consideration) => {
                               return (
-                                <>
+                                <div key={consideration.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -457,7 +533,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>

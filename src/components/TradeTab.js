@@ -5,7 +5,8 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
-import weth from '../abis/weth.json';
+import { getDateTime } from '../helpers/Collections';
+import { getMinutes, getTime } from 'date-fns';
 
 const TradeTab = ({
   createOrder,
@@ -380,7 +381,7 @@ const TradeTab = ({
           <div className="cart p-2">
             {offers?.map((offer) => {
               return (
-                <>
+                <div key={offer.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {offer.name === 'Ethereum' && <p>Ethereum</p>}
@@ -443,7 +444,7 @@ const TradeTab = ({
                       <p className="mt-4">{offer.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
@@ -451,7 +452,7 @@ const TradeTab = ({
           <div className="cart p-2">
             {considerations?.map((consideration) => {
               return (
-                <>
+                <div key={consideration.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {consideration.name === 'Ethereum' && <p>Ethereum</p>}
@@ -520,7 +521,7 @@ const TradeTab = ({
                       <p className="mt-4">{consideration.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
             {considerations.length === 0 && (
@@ -534,7 +535,56 @@ const TradeTab = ({
       </>
     );
   }
+  // get the expiry date from the input field
+  const [inputExpiryDate, setInputExpiryDate] = useState('');
+  const [inputExpiryMonth, setInputExpiryMonth] = useState('');
+  const [inputExpiryYear, setInputExpiryYear] = useState('');
+  const [expiryHours, setExpiryHours] = useState('');
+  const [expiryMinutes, setExpiryMinutes] = useState('');
+  const [expiryDate, setExpiryDate] = useState(0);
+  const [added, setAdded] = useState(false);
+  function addExpiryDate() {
+    // create a date object only if the input fields are not empty
+    if (
+      (parseInt(inputExpiryDate) > 0 &&
+        parseInt(inputExpiryDate) <= 31 &&
+        parseInt(inputExpiryMonth) > 0 &&
+        parseInt(inputExpiryMonth) <= 12 &&
+        inputExpiryYear !== '') ||
+      (parseInt(inputExpiryDate) > 0 &&
+        parseInt(inputExpiryDate) <= 31 &&
+        parseInt(inputExpiryMonth) > 0 &&
+        parseInt(inputExpiryMonth) <= 12 &&
+        inputExpiryYear !== '' &&
+        parseInt(expiryHours) <= 23 &&
+        parseInt(expiryMinutes) <= 59)
+    ) {
+      const d1 = new Date(
+        inputExpiryYear,
+        inputExpiryMonth - 1,
+        inputExpiryDate,
+        expiryHours,
+        expiryMinutes
+      ); // create a new date object with a specified date i.e. expiry date
 
+      setExpiryDate(d1.getTime()); // convert the above obj in milliseconds
+
+      setInputExpiryDate('');
+      setInputExpiryMonth('');
+      setInputExpiryYear('');
+      setExpiryHours('');
+      setExpiryMinutes('');
+    } else {
+      alert('Please add complete and valid expiry date');
+    }
+  }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (added) setAdded(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [added]);
   return (
     <>
       <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
@@ -573,7 +623,7 @@ const TradeTab = ({
                 </div>
               </div>
               <div className="flex text-[12px] bg-white0 justify-between p-3">
-                <p>{truncate(sender, 14)}</p>
+                <p className="w-[80%]">{truncate(sender, 14)}</p>
                 <button>
                   <svg
                     id="cart1"
@@ -639,7 +689,7 @@ const TradeTab = ({
               <div className="flex text-[12px] bg-white0 justify-between p-3">
                 <input
                   onChange={(e) => setOfferFor(e.target.value)}
-                  className="outline-none text-parsley placeholder-parsley"
+                  className="outline-none text-parsley placeholder-parsley w-[80%]"
                 ></input>
                 {/* <p>{truncate(receiver, 14)}</p> */}
                 <button
@@ -683,15 +733,98 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[60%]">
-              <input
-                placeholder="yyyy/mm/dd"
-                className=" w-[90px] outline-none placeholder:text-center bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
-              ></input>
-              <input
-                placeholder="00.00 HRS"
-                className="w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
-              ></input>
+            <div className="flex justify-between items-center text-[12px] w-full">
+              <div className="flex justify-evenly w-[40%] bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  value={inputExpiryYear}
+                  onChange={(e) => {
+                    setInputExpiryYear(e.target.value);
+                  }}
+                  // allow only numbers
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  minLength="4"
+                  maxLength="4"
+                  placeholder="yyyy"
+                  className=" w-[40%] pl-1 text-[12px] text-center border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">-</span>
+                <input
+                  value={inputExpiryMonth}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setInputExpiryMonth(e.target.value);
+                  }}
+                  placeholder="mm"
+                  className=" w-[30%] pl-1 text-[12px] border-none text-center outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley pl-1">-</span>
+                <input
+                  value={inputExpiryDate}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setInputExpiryDate(e.target.value);
+                  }}
+                  placeholder="dd"
+                  className=" w-[30%] pl-1 text-[12px] border-none text-center outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+              </div>
+              <div className="flex items-center w-[25%] bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  value={expiryHours}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setExpiryHours(e.target.value);
+                  }}
+                  placeholder="00"
+                  className="w-[25%] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">.</span>
+                <input
+                  value={expiryMinutes}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setExpiryMinutes(e.target.value);
+                  }}
+                  maxLength="2"
+                  placeholder="00"
+                  className="w-[25%] text-[12px] outline-none bg-parsleytint rounded-[4px] placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">HRS</span>
+              </div>
+              <button
+                className={`border-[1px] border-parsley border-solid w-[20%] rounded-[2px] bg-parsleytint text-parsley p-2 ${
+                  added ? 'text-[14px]' : ''
+                }`}
+                onClick={() => {
+                  addExpiryDate();
+                  setAdded(true);
+                }}
+              >
+                {added ? 'Added!' : 'Add'}
+              </button>
             </div>
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
@@ -742,6 +875,12 @@ const TradeTab = ({
               </div>
               <input
                 placeholder="Token ID"
+                // only numbers
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 value={tokenId}
                 className="w-[30%] text-[12px] rounded-md outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
                 onChange={(e) => setTokenId(e.target.value)}
@@ -802,16 +941,22 @@ const TradeTab = ({
               </div>
               {askTrade && (
                 <input
-                  list="tokens"
-                  placeholder="Amount"
-                  ref={inputRef}
-                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
-                  onChange={(e) => {
-                    selectOption === 'ETH'
-                      ? setEtherBox(e.target.value)
-                      : setWEtherBox(e.target.value);
-                  }}
-                />
+                list="tokens"
+                // allow only numbers and .
+                onKeyPress={(e) => {
+                  if (!/[0-9.]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                placeholder="Amount"
+                ref={inputRef}
+                className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                onChange={(e) => {
+                  selectOption === 'ETH'
+                    ? setEtherBox(e.target.value)
+                    : setWEtherBox(e.target.value);
+                }}
+              />
               )}
               {offerTrade && (
                 <input
@@ -931,6 +1076,7 @@ const TradeTab = ({
           setOffers={setOffers}
           setConsiderations={setConsiderations}
           setOrderCreated={setOrderCreated}
+          expiryDate={expiryDate}
         />
       )}
     </>

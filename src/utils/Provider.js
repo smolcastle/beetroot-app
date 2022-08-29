@@ -1,10 +1,4 @@
-import { ethers } from 'ethers';
-import {
-  hideLoader,
-  resetSignatureData,
-  showLoader,
-  updateAcceptTradeData
-} from '../actions/actions';
+import { resetSignatureData } from '../actions/actions';
 
 class ProviderClass {
   constructor() {
