@@ -482,7 +482,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                           <p>{offer.name}</p>
                                         )}
                                         <p className="text-[8px] text-gum">
-                                          {offer.token}
+                                          {receiver(offer.token, 14)}
                                         </p>
                                       </div>
                                     </div>

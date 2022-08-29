@@ -89,7 +89,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               <h1 className=" text-[16px]">
                 {'Choose how your name will be displayed'}
               </h1>
-              <div className="flex justify-start items-center w-[45%]">
+              <div className="flex justify-start items-center w-[45%] mt-4">
                 <div className="flex mr-[16px]">
                   <input
                     type="radio"
@@ -127,7 +127,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               <h1 className="text-[16px]">
                 {'Where would you like to receive your notifications?'}
               </h1>
-              <div className="flex mt-[8px]">
+              <div className="flex mt-4">
                 <input
                   type="radio"
                   className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
@@ -138,7 +138,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                   {'Email:'}
                 </label>
               </div>
-              <div className="flex items-center w-[300px]">
+              <div className="flex items-center w-[300px] mt-2">
                 <input
                   className="outline-none rounded-[4px] w-full mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
                   placeholder="Your Email Address"
@@ -148,7 +148,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 />
               </div>
 
-              <div className="flex mt-[4px]">
+              <div className="flex mt-4">
                 <input
                   type="radio"
                   onClick={() => {
