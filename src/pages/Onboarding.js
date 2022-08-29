@@ -58,7 +58,11 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               Preview Your Profile:
             </p>
             <div className="mt-[8px] flex w-[70%] h-[270px] rounded-[16px] shadow-lg">
-              <Profile truncate={truncate} sender={sender} />
+              <Profile
+                truncate={truncate}
+                sender={sender}
+                displayName={displayName}
+              />
             </div>
             <div className="text-gray1 mt-[64px] pb-[48px]">
               <button
@@ -85,13 +89,14 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               <h1 className=" text-[16px]">
                 {'Choose how your name will be displayed'}
               </h1>
-              <div className="flex justify-start items-center w-[45%]">
+              <div className="flex justify-start items-center w-[45%] mt-4">
                 <div className="flex mr-[16px]">
                   <input
                     type="radio"
+                    checked
                     className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                     id="wallet address"
-                    value="Wallet address"
+                    value="wallet address"
                     name="display"
                     onChange={(e) => {
                       setDisplayName(e.target.value);
@@ -101,29 +106,18 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     Wallet address
                   </label>
                 </div>
-                <div className="flex">
+                <div className="flex mr-[16px]">
                   <input
                     type="radio"
                     className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
-                    id="email"
-                    name="contact"
-                  />
-                  <label htmlFor="email" className="text-[14px]">
-                    {'Email:'}
-                  </label>
-                </div>
-                <div className="flex items-center w-[300px]">
-                  <input
-                    className="outline-none rounded-[4px] w-full mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
-                    placeholder="Your Email Address"
-                    id="ENS Name"
-                    value="ENS Name"
+                    id="ens name"
+                    value="ens name"
                     name="display"
                     onChange={(e) => {
                       setDisplayName(e.target.value);
                     }}
                   />
-                  <label className="text-[14px]" htmlFor="ENS Name">
+                  <label className="text-[14px]" htmlFor="ens name">
                     ENS Name
                   </label>
                 </div>
@@ -133,7 +127,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               <h1 className="text-[16px]">
                 {'Where would you like to receive your notifications?'}
               </h1>
-              <div className="flex mt-[8px]">
+              <div className="flex mt-4">
                 <input
                   type="radio"
                   className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
@@ -144,7 +138,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                   {'Email:'}
                 </label>
               </div>
-              <div className="flex items-center w-[300px]">
+              <div className="flex items-center w-[300px] mt-2">
                 <input
                   className="outline-none rounded-[4px] w-full mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
                   placeholder="Your Email Address"
@@ -154,7 +148,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 />
               </div>
 
-              <div className="flex mt-[4px]">
+              <div className="flex mt-4">
                 <input
                   type="radio"
                   onClick={() => {

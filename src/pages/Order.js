@@ -45,7 +45,7 @@ const Order = ({ sender, truncate, receiver }) => {
         order: order,
         status: 'pending',
         expiryDate: expiryDate,
-        // check if user has given any expiry date if not set status to ''
+        // check if user has given any expiry date if not set status to 0
         expired: expiryDate > 0 ? (expiryDate > today ? false : true) : 0,
         timestamp: serverTimestamp()
       });
@@ -271,7 +271,10 @@ const Order = ({ sender, truncate, receiver }) => {
                     order.to === '')
                 ) {
                   return (
-                    <div className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]">
+                    <div
+                      className="flex flex-col bg-gray6 rounded-lg p-3 mb-4 w-[100%]"
+                      key={index}
+                    >
                       <div className="flex justify-between">
                         <div className="w-[60%]">
                           <h1 className="my-2 text-gray2 text-[10px]">
@@ -321,7 +324,8 @@ const Order = ({ sender, truncate, receiver }) => {
                           {!order.expired && (
                             <>
                               {order.name !== sender &&
-                                order.status !== 'cancelled' && (
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
                                   <button
                                     className="bg-parsleytint text-[12px] py-1 px-4 text-parsley rounded-[4px] mr-3"
                                     onClick={() => fulfillFunc(order.id)}
@@ -329,14 +333,16 @@ const Order = ({ sender, truncate, receiver }) => {
                                     Fulfill
                                   </button>
                                 )}
-                              {order.status !== 'cancelled' && (
-                                <button
-                                  className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
-                                  onClick={() => cancelOrder(order)}
-                                >
-                                  Reject
-                                </button>
-                              )}
+                              {order.name === sender &&
+                                order.status !== 'cancelled' &&
+                                order.status !== 'fulfilled' && (
+                                  <button
+                                    className="bg-gumtint py-1 px-4 text-[12px] text-gum rounded-[4px]"
+                                    onClick={() => cancelOrder(order)}
+                                  >
+                                    Reject
+                                  </button>
+                                )}
                             </>
                           )}
                         </div>
@@ -452,7 +458,7 @@ const Order = ({ sender, truncate, receiver }) => {
                           <div className="w-[40%] h-[auto]">
                             {order.cartOffers.map((offer) => {
                               return (
-                                <>
+                                <div key={offer.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -476,7 +482,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                           <p>{offer.name}</p>
                                         )}
                                         <p className="text-[8px] text-gum">
-                                          {offer.token}
+                                          {receiver(offer.token, 14)}
                                         </p>
                                       </div>
                                     </div>
@@ -486,14 +492,14 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>
                           <div className="w-[40%] h-[auto]">
                             {order.cartConsiderations.map((consideration) => {
                               return (
-                                <>
+                                <div key={consideration.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                                     <div className="flex items-center justify-center">
                                       <div className="flex flex-col">
@@ -527,7 +533,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                       </p>
                                     </div>
                                   </div>
-                                </>
+                                </div>
                               );
                             })}
                           </div>
