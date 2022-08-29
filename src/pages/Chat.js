@@ -452,24 +452,6 @@ function Users({
   const [searchTerm, setSearchTerm] = useState('');
   const [selected, setSelected] = useState(contacts ? contacts[0].to : '');
 
-  function AddContactBtn() {
-    return (
-      <div className="p-[4px]">
-        <p className="text-[12px] text-gray2 mb-[8px]">
-          This address cannot be found in your address book.
-        </p>
-        <button
-          className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
-          onClick={() => {
-            createContact(searchTerm.toLowerCase(), sender);
-            setSearchTerm('');
-          }}
-        >
-          Add to address book
-        </button>
-      </div>
-    );
-  }
   let contactExists = false;
 
   async function addNewUserFunc() {
@@ -484,15 +466,33 @@ function Users({
       }
       // if not then save this new contact
       if (contactExists == false) {
-        await createContact(address.toLowerCase(), sender);
-        getContacts(sender, setContacts);
+        createContact(address.toLowerCase(), sender);
+        setSelected(address.toLowerCase());
       }
     } else {
       alert('Please paste an address');
     }
     setSearchTerm('');
     getContacts(sender, setContacts);
-    setSelected(0);
+  }
+
+  function AddContactBtn() {
+    return (
+      <div className="p-[4px]">
+        <p className="text-[12px] text-gray2 mb-[8px]">
+          This address cannot be found in your address book.
+        </p>
+        <button
+          className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
+          onClick={() => {
+            addNewUserFunc();
+            setSearchTerm('');
+          }}
+        >
+          Add to address book
+        </button>
+      </div>
+    );
   }
 
   const filteredContacts = contacts?.filter((contact) => {
