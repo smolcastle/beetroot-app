@@ -450,7 +450,9 @@ function Users({
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selected, setSelected] = useState(contacts ? contacts[0].to : '');
+  const [selected, setSelected] = useState(
+    contacts.length > 0 ? contacts[0].to : ''
+  );
 
   let contactExists = false;
 
@@ -478,20 +480,24 @@ function Users({
 
   function AddContactBtn() {
     return (
-      <div className="p-[4px]">
-        <p className="text-[12px] text-gray2 mb-[8px]">
-          This address cannot be found in your address book.
-        </p>
-        <button
-          className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
-          onClick={() => {
-            addNewUserFunc();
-            setSearchTerm('');
-          }}
-        >
-          Add to address book
-        </button>
-      </div>
+      <>
+        {contacts.length !== 0 && (
+          <div className="p-[4px]">
+            <p className="text-[12px] text-gray2 mb-[8px]">
+              This address cannot be found in your address book.
+            </p>
+            <button
+              className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
+              onClick={() => {
+                addNewUserFunc();
+                setSearchTerm('');
+              }}
+            >
+              Add to address book
+            </button>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -745,74 +751,6 @@ function TopSection({ receiver }) {
         </div>
       )}
     </>
-  );
-}
-
-function AddUser({ dispatch, sender, contacts }) {
-  const [newUser, setNewUser] = useState('');
-  let contactExists = false;
-  async function addNewUserFunc() {
-    let address = await toEthAddress(newUser);
-    if (address && address !== '' && address.toLowerCase() !== sender) {
-      let i;
-      for (i = 0; i < contacts.length; i++) {
-        if (contacts[i].to.toLowerCase() === address.toLowerCase()) {
-          contactExists = true;
-          break;
-        }
-      }
-      // if not then save this new contact
-      if (contactExists == false) {
-        createContact(address.toLowerCase(), sender);
-      }
-      setNewUser('');
-      dispatch(hideNewUser());
-    } else {
-      alert('Please paste an address');
-    }
-  }
-
-  return (
-    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
-      <div className="w-[15%]">
-        <img src={profile0} className="w-[48px]"></img>
-      </div>
-      <div className="flex flex-col items-start w-[20%] ">
-        <div className="flex">
-          <input
-            className="bg-gray6 outline-none w-[150px]"
-            placeholder="Address / ENS"
-            value={newUser}
-            onChange={(e) => setNewUser(e.target.value)}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && addNewUserFunc();
-            }}
-          />
-          <button
-            className="text-gum ml-1"
-            onClick={() => {
-              dispatch(hideNewUser());
-            }}
-          >
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M21.04 19.1467C21.2911 19.3978 21.4321 19.7383 21.4321 20.0934C21.4321 20.4484 21.2911 20.789 21.04 21.04C20.7889 21.2911 20.4484 21.4322 20.0933 21.4322C19.7383 21.4322 19.3977 21.2911 19.1467 21.04L15.3867 17.2667L11.6133 21.04C11.3623 21.2911 11.0217 21.4322 10.6667 21.4322C10.3116 21.4322 9.97107 21.2911 9.72 21.04C9.46893 20.789 9.32788 20.4484 9.32788 20.0934C9.32788 19.9176 9.36251 19.7435 9.42979 19.581C9.49707 19.4186 9.59569 19.271 9.72 19.1467L13.4933 15.3867L9.73334 11.6C9.48227 11.349 9.34121 11.0084 9.34121 10.6534C9.34121 10.2983 9.48227 9.95777 9.73334 9.7067C9.98441 9.45563 10.3249 9.31458 10.68 9.31458C11.0351 9.31458 11.3756 9.45563 11.6267 9.7067L15.4 13.48L19.16 9.7067C19.2843 9.58238 19.4319 9.48376 19.5943 9.41648C19.7568 9.3492 19.9309 9.31458 20.1067 9.31458C20.2825 9.31458 20.4566 9.3492 20.619 9.41648C20.7814 9.48376 20.929 9.58238 21.0533 9.7067C21.1777 9.83102 21.2763 9.9786 21.3435 10.141C21.4108 10.3035 21.4455 10.4776 21.4455 10.6534C21.4455 10.8292 21.4108 11.0033 21.3435 11.1657C21.2763 11.3281 21.1777 11.4757 21.0533 11.6L17.28 15.3734L21.0533 19.1334L21.04 19.1467Z"
-                fill="#AB224E"
-              />
-            </svg>
-          </button>
-        </div>
-        <p className="text-[14px] text-gray3">Unverified</p>
-      </div>
-    </div>
   );
 }
 
