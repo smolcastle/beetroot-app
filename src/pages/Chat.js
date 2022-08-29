@@ -454,6 +454,13 @@ function Users({
     contacts.length > 0 ? contacts[0].to : ''
   );
 
+  useEffect(() => {
+    async function updateState() {
+      setSelected((await contacts.length) > 0 ? contacts[0].to : '');
+    }
+    updateState();
+  }, [sender, contacts]);
+
   let contactExists = false;
 
   async function addNewUserFunc() {
@@ -1054,6 +1061,7 @@ export default function Chat() {
   useEffect(() => {
     getContacts(sender, setContacts);
     listenMessages(sender, receiver, dispatch);
+    setReceiver('');
   }, [sender]);
   useEffect(() => {
     funcNewUser();
