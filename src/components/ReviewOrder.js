@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ReviewOrder = ({
   offers,
@@ -13,7 +13,8 @@ const ReviewOrder = ({
   setOffers,
   setConsiderations,
   setOrderCreated,
-  expiryDate
+  expiryDate,
+  truncate
 }) => {
   function Cart() {
     return (
@@ -54,6 +55,15 @@ const ReviewOrder = ({
       </svg>
     );
   }
+
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
 
   return (
     <>
@@ -107,13 +117,19 @@ const ReviewOrder = ({
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {offers?.map((offer) => {
                 return (
-                  <>
+                  <div key={offer.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
                           {offer.name === 'Ethereum' && <p>Ethereum</p>}
                           {offer.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
+                          )}
+                          {offer.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {offer.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
                           )}
                         </div>
                         <div className="flex items-center justify-between">
@@ -124,9 +140,24 @@ const ReviewOrder = ({
                             />
                           )}
                         </div>
-                        <div>
-                          {offer.identifier && <p>{offer.name}</p>}
-                          <p className="text-[8px] text-gum">{offer.token}</p>
+                        <div className="relative">
+                          {offer.identifier && (
+                            <>
+                              <p>{offer.name}</p>
+                              <p
+                                className="text-[8px] mt-2 text-gum "
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(offer.token, 14)}
+                              </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {offer.token}
+                                </p>
+                              )}
+                            </>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -179,20 +210,26 @@ const ReviewOrder = ({
                         <p className="mt-4">{offer.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {considerations?.map((consideration) => {
                 return (
-                  <>
+                  <div key={consideration.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
                           {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                           {consideration.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
+                          )}
+                          {consideration.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {consideration.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
                           )}
                         </div>
                         <div className="flex items-center justify-between">
@@ -205,11 +242,22 @@ const ReviewOrder = ({
                         </div>
                         <div>
                           {consideration.identifier && (
-                            <p>{consideration.name}</p>
+                            <>
+                              <p>{consideration.name}</p>
+                              <p
+                                className="text-[8px] mt-2 text-gum"
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(consideration.token, 14)}
+                              </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {consideration.token}
+                                </p>
+                              )}
+                            </>
                           )}
-                          <p className="text-[8px] text-gum">
-                            {consideration.token}
-                          </p>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -262,7 +310,7 @@ const ReviewOrder = ({
                         <p className="mt-4">{consideration.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
