@@ -11,6 +11,10 @@
   src: url('./fonts/RubrikLight.otf');
 }
 @font-face {
+  font-family: 'New Rubrik Extra Bold';
+  src: url('./fonts/RubrikExtraBold.otf');
+}
+@font-face {
   font-family: 'Questa Slab';
   src: url('./fonts/QuestaMedium.otf');
 }

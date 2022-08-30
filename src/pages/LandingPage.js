@@ -211,11 +211,26 @@ function LandingPage() {
             </div>
           </div>
           <div className="flex mt-40 items-center justify-between w-[70%]">
-            <div className="w-[550px] h-[300px] bg-gumlight/[0.5]  rounded-[8px]">
-              <img
-                src={asset2}
-                className="h-[350px] place-self-end -mt-[50px]"
-              />
+            <div className="w-[550px] h-[300px] bg-gumlight/[0.5] flex justify-center items-center rounded-[16px]">
+              <div className="bg-gumtint w-[50%] text-center p-4 rounded-[4px]">
+                <h1 className="text-gum font-rubrikExtraB text-[32px] font-extrabold">
+                  COUNTER
+                </h1>
+              </div>
+
+              <svg
+                className="-ml-[48px] mt-[72px]"
+                width="32"
+                height="36"
+                viewBox="0 0 32 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M31.3669 17.6607L0.408119 0.166107L8.48704 35.1594L14.8782 23.604L23.3378 34.9789L27.0678 32.1263L18.5926 20.7304L31.3669 17.6607Z"
+                  fill="#AB224E"
+                />
+              </svg>
             </div>
             <div className="w-[400px] ">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
