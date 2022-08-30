@@ -107,7 +107,7 @@ const ReviewOrder = ({
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {offers?.map((offer) => {
                 return (
-                  <>
+                  <div key={offer.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
@@ -131,8 +131,14 @@ const ReviewOrder = ({
                           )}
                         </div>
                         <div>
-                          {offer.identifier && <p>{offer.name}</p>}
-                          <p className="text-[8px] text-gum">{offer.token}</p>
+                          {offer.identifier && (
+                            <>
+                              <p>{offer.name}</p>
+                              <p className="text-[8px] mt-2 text-gum">
+                                {offer.token}
+                              </p>
+                            </>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -185,14 +191,14 @@ const ReviewOrder = ({
                         <p className="mt-4">{offer.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {considerations?.map((consideration) => {
                 return (
-                  <>
+                  <div key={consideration.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
@@ -217,11 +223,13 @@ const ReviewOrder = ({
                         </div>
                         <div>
                           {consideration.identifier && (
-                            <p>{consideration.name}</p>
+                            <>
+                              <p>{consideration.name}</p>
+                              <p className="text-[8px] mt-2 text-gum">
+                                {consideration.token}
+                              </p>
+                            </>
                           )}
-                          <p className="text-[8px] text-gum">
-                            {consideration.token}
-                          </p>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -274,7 +282,7 @@ const ReviewOrder = ({
                         <p className="mt-4">{consideration.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
