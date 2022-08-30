@@ -1078,6 +1078,7 @@ const TradeTab = ({
           setConsiderations={setConsiderations}
           setOrderCreated={setOrderCreated}
           expiryDate={expiryDate}
+          truncate={truncate}
         />
       )}
     </>

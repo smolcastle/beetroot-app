@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ReviewOrder = ({
   offers,
@@ -13,7 +13,8 @@ const ReviewOrder = ({
   setOffers,
   setConsiderations,
   setOrderCreated,
-  expiryDate
+  expiryDate,
+  truncate
 }) => {
   function Cart() {
     return (
@@ -54,6 +55,15 @@ const ReviewOrder = ({
       </svg>
     );
   }
+
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
 
   return (
     <>
@@ -130,13 +140,22 @@ const ReviewOrder = ({
                             />
                           )}
                         </div>
-                        <div>
+                        <div className="relative">
                           {offer.identifier && (
                             <>
                               <p>{offer.name}</p>
-                              <p className="text-[8px] mt-2 text-gum">
-                                {offer.token}
+                              <p
+                                className="text-[8px] mt-2 text-gum "
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(offer.token, 14)}
                               </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {offer.token}
+                                </p>
+                              )}
                             </>
                           )}
                         </div>
@@ -225,9 +244,18 @@ const ReviewOrder = ({
                           {consideration.identifier && (
                             <>
                               <p>{consideration.name}</p>
-                              <p className="text-[8px] mt-2 text-gum">
-                                {consideration.token}
+                              <p
+                                className="text-[8px] mt-2 text-gum"
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(consideration.token, 14)}
                               </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {consideration.token}
+                                </p>
+                              )}
                             </>
                           )}
                         </div>

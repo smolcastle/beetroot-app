@@ -208,6 +208,15 @@ const Order = ({ sender, truncate, receiver }) => {
     }
   }
 
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
+
   return (
     <>
       <div className="trade flex-[4] my-5">
@@ -403,16 +412,9 @@ const Order = ({ sender, truncate, receiver }) => {
                       </div>
                       <div className="flex justify-between mt-3">
                         <div className="w-[50%]">
-                          {order.to == sender && (
-                            <h1 className="text-gray2 text-[12px]">
-                              {truncate(order.to, 14)}
-                            </h1>
-                          )}
-                          {order.to != sender && (
-                            <h1 className="text-gray2 text-[12px]">
-                              {truncate(order.name, 14)}
-                            </h1>
-                          )}
+                          <h1 className="text-gray2 text-[12px]">
+                            {truncate(order.name, 14)}
+                          </h1>
                         </div>
                         <div className="flex items-center w-[45%]">
                           <svg
@@ -436,16 +438,9 @@ const Order = ({ sender, truncate, receiver }) => {
                               strokeLinejoin="round"
                             />
                           </svg>
-                          {order.to == sender && (
-                            <h1 className="text-gray2 text-[12px]">
-                              {truncate(order.name, 14)}
-                            </h1>
-                          )}
-                          {order.to != sender && (
-                            <h1 className="text-gray2 text-[12px]">
-                              {truncate(order.to, 14)}
-                            </h1>
-                          )}
+                          <h1 className="text-gray2 text-[12px]">
+                            {truncate(order.to, 14)}
+                          </h1>
                         </div>
                       </div>
                       <div className="">
@@ -472,7 +467,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                               <p>Wrapped Ethereum</p>
                                             )}
                                           </div>
-                                          <div className="flex justify-between mt-2">
+                                          <div className="flex justify-between mt-1">
                                             {offer.symbol === 'ETH' && (
                                               <p>ETH</p>
                                             )}
@@ -498,9 +493,20 @@ const Order = ({ sender, truncate, receiver }) => {
                                               <p>{offer.name}</p>
                                             )}
                                             {offer.token && (
-                                              <p className="text-[10px] text-gum">
-                                                {truncate(offer.token, 14)}
-                                              </p>
+                                              <div className="relative">
+                                                <p
+                                                  className="text-[10px] text-gum"
+                                                  onMouseEnter={onHover}
+                                                  onMouseLeave={onLeave}
+                                                >
+                                                  {truncate(offer.token, 14)}
+                                                </p>
+                                                {hover && (
+                                                  <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                                    {offer.token}
+                                                  </p>
+                                                )}
+                                              </div>
                                             )}
                                           </div>
                                         </div>
@@ -526,7 +532,7 @@ const Order = ({ sender, truncate, receiver }) => {
                                             <p>Wrapped Ethereum</p>
                                           )}
                                         </div>
-                                        <div className="flex justify-between mt-2">
+                                        <div className="flex justify-between mt-1">
                                           {consideration.symbol === 'ETH' && (
                                             <p>ETH</p>
                                           )}
@@ -551,9 +557,23 @@ const Order = ({ sender, truncate, receiver }) => {
                                           <p>{consideration.name}</p>
                                         )}
                                         {consideration.token && (
-                                          <p className="text-[10px] text-gum">
-                                            {truncate(consideration.token, 14)}
-                                          </p>
+                                          <div className="relative">
+                                            <p
+                                              className="text-[10px] text-gum"
+                                              onMouseEnter={onHover}
+                                              onMouseLeave={onLeave}
+                                            >
+                                              {truncate(
+                                                consideration.token,
+                                                14
+                                              )}
+                                            </p>
+                                            {hover && (
+                                              <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                                {consideration.token}
+                                              </p>
+                                            )}
+                                          </div>
                                         )}
                                       </div>
                                     </div>
