@@ -115,6 +115,12 @@ const ReviewOrder = ({
                           {offer.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
                           )}
+                          {offer.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {offer.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
+                          )}
                         </div>
                         <div className="flex items-center justify-between">
                           {offer.identifier && (
@@ -193,6 +199,12 @@ const ReviewOrder = ({
                           {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                           {consideration.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
+                          )}
+                          {consideration.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {consideration.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
                           )}
                         </div>
                         <div className="flex items-center justify-between">

@@ -5,8 +5,7 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
-import { getDateTime } from '../helpers/Collections';
-import { getMinutes, getTime } from 'date-fns';
+import weth from '../abis/weth.json';
 
 const TradeTab = ({
   createOrder,
@@ -120,6 +119,7 @@ const TradeTab = ({
         {
           id: uuidv4(),
           itemType: 2,
+          name: assetInfo.name,
           token: nftBox,
           identifier: tokenId,
           image_url: assetInfo.image_url ? assetInfo.image_url : ''
@@ -196,6 +196,7 @@ const TradeTab = ({
           {
             id: uuidv4(),
             itemType: 2,
+            name: assetInfo.name,
             token: nftBox,
             identifier: tokenId,
             recipient: sender,
@@ -941,22 +942,22 @@ const TradeTab = ({
               </div>
               {askTrade && (
                 <input
-                list="tokens"
-                // allow only numbers and .
-                onKeyPress={(e) => {
-                  if (!/[0-9.]/.test(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-                placeholder="Amount"
-                ref={inputRef}
-                className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
-                onChange={(e) => {
-                  selectOption === 'ETH'
-                    ? setEtherBox(e.target.value)
-                    : setWEtherBox(e.target.value);
-                }}
-              />
+                  list="tokens"
+                  // allow only numbers and .
+                  onKeyPress={(e) => {
+                    if (!/[0-9.]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="Amount"
+                  ref={inputRef}
+                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                  onChange={(e) => {
+                    selectOption === 'ETH'
+                      ? setEtherBox(e.target.value)
+                      : setWEtherBox(e.target.value);
+                  }}
+                />
               )}
               {offerTrade && (
                 <input
@@ -1000,7 +1001,7 @@ const TradeTab = ({
             </div>
             <div className="h-[90%] max-h-[500px] overflow-y-scroll">
               <CartItems />
-              <div className="bg-gray6 rounded-[4px]">
+              {/* <div className="bg-gray6 rounded-[4px]">
                 {nftBox !== '' &&
                   //instead of using includes() which check whether a string 'includes' a sub string at any position, use startsWith()
                   userAssets
@@ -1057,7 +1058,7 @@ const TradeTab = ({
                         </div>
                       </div>
                     ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

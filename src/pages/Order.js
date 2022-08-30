@@ -455,41 +455,56 @@ const Order = ({ sender, truncate, receiver }) => {
                             showPendingOrder === index ? 'block' : 'hidden'
                           }`}
                         >
-                          <div className="w-[40%] h-[auto]">
+                          <div className="w-[50%] h-[auto]">
                             {order.cartOffers.map((offer) => {
                               return (
                                 <div key={offer.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
-                                    <div className="flex items-center justify-center">
-                                      <div className="flex flex-col">
-                                        {offer.name === 'Ethereum' && (
-                                          <p>Ethereum</p>
-                                        )}
-                                        {offer.symbol === 'ETH' && (
-                                          <p className="mt-2">ETH</p>
-                                        )}
-                                      </div>
-                                      <div className="flex items-center justify-between">
-                                        {offer.identifier && (
-                                          <img
-                                            className="w-[40px] h-[40px] rounded-[8px] mr-4"
-                                            src={offer.image_url}
-                                          />
-                                        )}
-                                      </div>
-                                      <div>
-                                        {offer.identifier && (
-                                          <p>{offer.name}</p>
-                                        )}
-                                        <p className="text-[8px] text-gum">
-                                          {receiver(offer.token, 14)}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div className="flex flex-col justify-center">
-                                      <p className="mt-4">
-                                        {offer.enteredAmount}
-                                      </p>
+                                    <div className="flex items-center justify-center w-full">
+                                      {offer.symbol && (
+                                        <div className="flex flex-col w-full">
+                                          <div>
+                                            {offer.name === 'Ethereum' && (
+                                              <p>Ethereum</p>
+                                            )}
+                                            {offer.name ===
+                                              'Wrapped Ethereum' && (
+                                              <p>Wrapped Ethereum</p>
+                                            )}
+                                          </div>
+                                          <div className="flex justify-between mt-2">
+                                            {offer.symbol === 'ETH' && (
+                                              <p>ETH</p>
+                                            )}
+                                            {offer.symbol === 'WETH' && (
+                                              <p>WETH</p>
+                                            )}
+                                            <p>{offer.enteredAmount}</p>
+                                          </div>
+                                        </div>
+                                      )}
+                                      {offer.identifier && (
+                                        <div className="w-full flex">
+                                          <div>
+                                            {offer.identifier && (
+                                              <img
+                                                className="w-[40px] h-[40px] rounded-[8px] mr-4"
+                                                src={offer.image_url}
+                                              />
+                                            )}
+                                          </div>
+                                          <div className="flex flex-col">
+                                            {offer.identifier && (
+                                              <p>{offer.name}</p>
+                                            )}
+                                            {offer.token && (
+                                              <p className="text-[10px] text-gum">
+                                                {truncate(offer.token, 14)}
+                                              </p>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -501,16 +516,29 @@ const Order = ({ sender, truncate, receiver }) => {
                               return (
                                 <div key={consideration.id}>
                                   <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
-                                    <div className="flex items-center justify-center">
-                                      <div className="flex flex-col">
-                                        {consideration.name === 'Ethereum' && (
-                                          <p>Ethereum</p>
-                                        )}
-                                        {consideration.symbol === 'ETH' && (
-                                          <p className="mt-2">ETH</p>
-                                        )}
+                                    <div className="flex items-center justify-center w-full">
+                                      <div className="flex flex-col w-full">
+                                        <div>
+                                          {consideration.name ===
+                                            'Ethereum' && <p>Ethereum</p>}
+                                          {consideration.name ===
+                                            'Wrapped Ethereum' && (
+                                            <p>Wrapped Ethereum</p>
+                                          )}
+                                        </div>
+                                        <div className="flex justify-between mt-2">
+                                          {consideration.symbol === 'ETH' && (
+                                            <p>ETH</p>
+                                          )}
+
+                                          {consideration.symbol === 'WETH' && (
+                                            <p className="mt-2">WETH</p>
+                                          )}
+                                          <p>{consideration.enteredAmount}</p>
+                                        </div>
                                       </div>
-                                      <div className="flex items-center justify-between">
+
+                                      <div className="flex items-center justify-evenly">
                                         {consideration.identifier && (
                                           <img
                                             className="w-[40px] h-[40px] rounded-[8px] mr-4"
@@ -518,19 +546,16 @@ const Order = ({ sender, truncate, receiver }) => {
                                           />
                                         )}
                                       </div>
-                                      <div>
+                                      <div className="flex flex-col">
                                         {consideration.identifier && (
                                           <p>{consideration.name}</p>
                                         )}
-                                        <p className="text-[8px] text-gum">
-                                          {consideration.token}
-                                        </p>
+                                        {consideration.token && (
+                                          <p className="text-[10px] text-gum">
+                                            {truncate(consideration.token, 14)}
+                                          </p>
+                                        )}
                                       </div>
-                                    </div>
-                                    <div className="flex flex-col justify-center">
-                                      <p className="mt-4">
-                                        {consideration.enteredAmount}
-                                      </p>
                                     </div>
                                   </div>
                                 </div>
