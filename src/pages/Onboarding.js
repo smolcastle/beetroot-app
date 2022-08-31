@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Profile from '../components/Profile';
 import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
+import { fetchUserAssets } from '../utils/opensea';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
-  const [displayName, setDisplayName] = useState('');
+  const { v4: uuidv4 } = require('uuid'); // to generate unique ids
+
+  const [displayName, setDisplayName] = useState('wallet address');
   const [email, setEmail] = useState(null);
   const [later, setLater] = useState(null);
+  const [searchImage, setSearchImage] = useState('');
+  const [selectImage, setSelectImage] = useState('');
 
   async function updateUserOnboarded() {
-    if (later != null || email != null) {
+    if (later != null || email != null || selectImage !== '') {
       try {
         const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
           has_onboarded: true,
           email: email,
-          verified: true
+          verified: true,
+          profilePic: selectImage
         });
         setOnboarded(true);
       } catch (e) {
@@ -35,6 +41,27 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
       console.log(e);
     }
   }
+
+  const [userAssets, setUserAssets] = useState([]);
+
+  async function getAssets() {
+    if (sender !== '') {
+      const getUserAssets = await fetchUserAssets(sender);
+      setUserAssets(getUserAssets.assets);
+    }
+  }
+
+  const filteredImages = userAssets?.filter((asset) => {
+    if (searchImage === '') {
+      return asset;
+    } else if (asset.name.toLowerCase().includes(searchImage.toLowerCase())) {
+      return asset;
+    }
+  });
+
+  useEffect(() => {
+    getAssets();
+  }, [sender]);
 
   return (
     <>
@@ -62,6 +89,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 truncate={truncate}
                 sender={sender}
                 displayName={displayName}
+                selectImage={selectImage}
               />
             </div>
             <div className="text-gray1 mt-[64px] pb-[48px]">
@@ -93,12 +121,12 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <div className="flex mr-[16px]">
                   <input
                     type="radio"
-                    checked
+                    defaultChecked
                     className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                     id="wallet address"
                     value="wallet address"
                     name="display"
-                    onChange={(e) => {
+                    onClick={(e) => {
                       setDisplayName(e.target.value);
                     }}
                   />
@@ -113,7 +141,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     id="ens name"
                     value="ens name"
                     name="display"
-                    onChange={(e) => {
+                    onClick={(e) => {
                       setDisplayName(e.target.value);
                     }}
                   />
@@ -190,7 +218,33 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <input
                   className="outline-none ml-[8px] rounded-[8px] w-full text-[14px] bg-gray6"
                   placeholder="Type Doodles"
+                  onChange={(e) => {
+                    setSearchImage(e.target.value);
+                  }}
                 />
+              </div>
+              <div className="flex mt-4 justify-start max-w-[300px] max-h-[200px] overflow-y-scroll flex-wrap">
+                {filteredImages.length > 0 ? (
+                  filteredImages?.map((asset) => {
+                    return (
+                      <div key={uuidv4()} className="w-[75px] h-[75px]">
+                        <img
+                          className={`w-[50px] h-[50px] rounded-[4px] ${
+                            selectImage === asset.image_url
+                              ? 'border-[4px] border-solid border-gum  '
+                              : ''
+                          }`}
+                          src={asset.image_url}
+                          onClick={() => {
+                            setSelectImage(asset.image_url);
+                          }}
+                        />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-gray1 text-[12px]">No images found</p>
+                )}
               </div>
             </div>
           </div>

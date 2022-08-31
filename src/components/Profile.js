@@ -3,7 +3,7 @@ import profile from '../img/profile.png';
 import { toEns } from '../utils/ens';
 import { doc, getFirestore, getDoc } from 'firebase/firestore';
 
-const Profile = ({ truncate, sender, displayName }) => {
+const Profile = ({ truncate, sender, displayName, selectImage }) => {
   const [ensName, setEnsName] = useState('');
   async function getEnsName() {
     let ens = await toEns(sender);
@@ -30,12 +30,15 @@ const Profile = ({ truncate, sender, displayName }) => {
   return (
     <>
       <div className="flex flex-col w-[50%] bg-gumtint/[0.2] rounded-l-[16px] h-full items-center justify-evenly">
-        <img src={profile} className="w-[48px]"></img>
+        <img src={selectImage} className="w-[50px] rounded-[50%]"></img>
         <div className="flex flex-col items-center">
-          {displayName === 'ens name' && ensName ? (
-            <p>{ensName}</p>
-          ) : (
-            <p>{truncate(sender, 14)}</p>
+          {displayName === 'ens name' && ensName && <p>{ensName}</p>}
+          {displayName === 'wallet address' && <p>{truncate(sender, 14)}</p>}
+          {displayName === 'ens name' && !ensName && (
+            <>
+              <p>{truncate(sender, 14)}</p>
+              <p className="text-gray1 text-[10px]">No ENS Name</p>
+            </>
           )}
           {isVerified && (
             <p className="text-parsley mt-[4px] text-[12px]">Verified</p>
