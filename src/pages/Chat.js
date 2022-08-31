@@ -304,6 +304,15 @@ async function getLastMsgTime(dispatch) {
   }
 }
 
+async function getProfilePic(receiver, setProfilePic) {
+  const verifyRef = doc(getFirestore(), `users/${receiver}`);
+  const verify = await getDoc(verifyRef);
+  if (verify.exists()) {
+    const verifyData = verify.data();
+    setProfilePic(verifyData.profilePic);
+  }
+}
+
 function User({
   sender,
   receiver,
@@ -312,7 +321,8 @@ function User({
   setSelected,
   selected,
   setReceiver,
-  setSearchTerm
+  setSearchTerm,
+  contacts
 }) {
   useEffect(() => {
     let unsubscribe;
@@ -326,17 +336,21 @@ function User({
   }, [selected]);
 
   const [isVerified, setIsVerified] = useState();
+  const [profilePic, setProfilePic] = useState('');
 
-  async function getVerifedData() {
-    const verifyRef = doc(getFirestore(), `users/${receiver}`);
-    const verify = await getDoc(verifyRef);
-    if (verify.exists()) {
-      const verifyData = verify.data();
-      setIsVerified(verifyData.verified);
-    } else {
-      setIsVerified(false);
+  useEffect(() => {
+    async function getVerifedData() {
+      const verifyRef = doc(getFirestore(), `users/${receiver}`);
+      const verify = await getDoc(verifyRef);
+      if (verify.exists()) {
+        const verifyData = verify.data();
+        setIsVerified(verifyData.verified);
+      } else {
+        setIsVerified(false);
+      }
     }
-  }
+    getVerifedData();
+  }, []);
 
   const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
@@ -360,16 +374,20 @@ function User({
   }
 
   useEffect(() => {
-    getVerifedData();
     getEnsName();
     fetchLastMsgTime();
   });
+
+  useEffect(() => {
+    getProfilePic(receiver, setProfilePic);
+  }, [contacts]);
+
   let timeout;
   const [hover, setHover] = useState(false);
   const onHover = () => {
     timeout = setTimeout(() => {
       setHover(true);
-    }, 1000);
+    }, 300);
   };
 
   const onLeave = () => {
@@ -404,7 +422,11 @@ function User({
         >
           <div className="flex-1 flex items-center p-3">
             <div className="w-[30%]">
-              <img src={profile} className="w-[48px]"></img>
+              {profilePic ? (
+                <img src={profilePic} className="w-[48px] rounded-[50%]" />
+              ) : (
+                <img src={profile0} className="w-[48px]"></img>
+              )}
             </div>
             <div className="flex flex-col items-start w-[50%] mt-2">
               <div onMouseEnter={onHover} onMouseLeave={onLeave}>
@@ -414,6 +436,7 @@ function User({
                   <p className="text-[16px]">{truncate(receiver, 14)}</p>
                 )}
               </div>
+
               {isVerified && (
                 <p className="text-[14px] text-parsley">Verified</p>
               )}
@@ -602,6 +625,7 @@ function Users({
                     setSelected={setSelected}
                     setReceiver={setReceiver}
                     setSearchTerm={setSearchTerm}
+                    contacts={contacts}
                   />
                 </div>
               );
@@ -723,6 +747,11 @@ function TopSection({ receiver }) {
     getVerifedData();
   }, [receiver]);
 
+  const [profilePic, setProfilePic] = useState('');
+  useEffect(() => {
+    getProfilePic(receiver, setProfilePic);
+  }, [receiver]);
+
   return (
     <>
       {receiver === '' && (
@@ -735,7 +764,11 @@ function TopSection({ receiver }) {
       {receiver !== '' && (
         <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
           <div className="w-[15%]">
-            <img src={profile} className="w-[48px]"></img>
+            {profilePic ? (
+              <img src={profilePic} className="w-[48px] rounded-[50%]" />
+            ) : (
+              <img src={profile0} className="w-[48px]"></img>
+            )}
           </div>
           <div className="flex flex-col items-start w-[20%] ">
             <div className="flex">
