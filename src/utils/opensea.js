@@ -40,4 +40,25 @@ const getAssetsInCollection = async function getAssetsInCollection(
   }
 };
 
-export { getAsset, getAssetsInCollection };
+const fetchUserAssets = async function fetchUserAssets(owner) {
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-API-KEY': process.env.OPENSEA_KEY
+    }
+  };
+
+  const limit = 10; // max assets in the response
+
+  const api_url = `${URL}/assets?owner=${owner}&limit=${limit}&include_orders=false`;
+
+  const response = await fetch(api_url, options)
+    .then((response) => response.json())
+    .then((response) => response)
+    .catch((err) => console.error(err));
+
+  return response;
+};
+
+export { getAsset, getAssetsInCollection, fetchUserAssets };
