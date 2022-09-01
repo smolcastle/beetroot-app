@@ -9,7 +9,6 @@ import twitter_f from '../img/twitter_footer.png';
 import discord_f from '../img/discord_footer.png';
 import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
-import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';
@@ -161,7 +160,7 @@ function LandingPage() {
           determine.
         </p>
         <div className="flex flex-col items-center justify-center">
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[550px] ">
               <div className="encryption font-mono grid grid-cols-5 gap-5 p-16 rounded-[8px] bg-gumlight">
                 <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
@@ -191,7 +190,7 @@ function LandingPage() {
               </p>
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[400px]">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
                 Buy With Your NFTs
@@ -210,7 +209,7 @@ function LandingPage() {
               <img src={artboard} />
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[550px] h-[300px] bg-gumlight/[0.5] flex justify-center items-center rounded-[16px]">
               <div className="bg-gumtint w-[50%] text-center p-4 rounded-[4px]">
                 <h1 className="text-gum font-rubrikExtraB text-[32px] font-extrabold">

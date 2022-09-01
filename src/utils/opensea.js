@@ -45,7 +45,7 @@ const fetchUserAssets = async function fetchUserAssets(owner) {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'X-API-KEY': 'f3de26d04119427194c40ad857cc1c4b'
+      'X-API-KEY': process.env.OPENSEA_KEY
     }
   };
 
