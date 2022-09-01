@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { hidePopUp } from '../actions/actions';
+import '../animation.css';
 
 export function PopUpBox() {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ export function PopUpBox() {
 
   return (
     <div
-      className={`w-[300px] h-[100px] justify-evenly items-center font-rubrik flex flex-col rounded-[8px] shadow-lg absolute right-12 bottom-12 z-50 ${
+      className={`w-[300px] h-[100px] overflow-x-hidden bounce-in-top justify-evenly items-center font-rubrik flex flex-col rounded-[8px] shadow-lg absolute right-12 bottom-12 z-50 ${
         category === 'alert' ? 'bg-gumtint' : 'bg-parsleytint'
       } `}
     >
