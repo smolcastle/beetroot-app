@@ -6,6 +6,7 @@ import Navigation from '../components/Navigation';
 import LandingPage from './LandingPage';
 import Chat from './Chat';
 import LoaderOverlay from '../components/LoaderOverlay';
+import { PopUpBox } from '../components/PopUp';
 import logo4 from '../img/logo4.png';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Onboarding from './Onboarding';
@@ -91,6 +92,7 @@ const Home = () => {
         <Route path="/success" element={<OnboardSuccess />} />
       </Routes>
       <LoaderOverlay />
+      <PopUpBox />
     </main>
   );
 };
