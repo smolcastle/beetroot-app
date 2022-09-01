@@ -28,7 +28,8 @@ import {
   hideNewUser,
   updateUsers,
   updateReceiverContacts,
-  updateMsgTime
+  updateMsgTime,
+  showPopUp
 } from '../actions/actions';
 import { getDateTime, isFunction, truncate } from '../helpers/Collections';
 import Provider from '../utils/Provider';
@@ -147,7 +148,7 @@ async function getSignatureData(sender, dispatch) {
       getAllQueues(sender, dispatch);
     } else {
       dispatch(hideLoader());
-      alert('Signature did not match');
+      dispatch(showPopUp('alert', 'Signature did not match'));
     }
   } else {
     dispatch(hideLoader());
@@ -184,7 +185,7 @@ async function signMessage(sender, dispatch, chainId, signer) {
       getSignatureData(sender, dispatch);
     } else {
       dispatch(hideLoader());
-      alert("Signature didn't match");
+      dispatch(showPopUp('alert', 'Signature did not match'));
     }
   } catch (error) {
     dispatch(hideLoader());
@@ -369,7 +370,7 @@ function User({
 
   const [ensName, setEnsName] = useState('');
   async function getEnsName() {
-    let ens = await toEns(receiver);
+    let ens = await toEns(receiver, dispatch);
     setEnsName(ens);
   }
 
@@ -487,7 +488,7 @@ function Users({
   let contactExists = false;
 
   async function addNewUserFunc() {
-    let address = await toEthAddress(searchTerm);
+    let address = await toEthAddress(searchTerm, dispatch);
     if (address && address !== '' && address.toLowerCase() !== sender) {
       let i;
       for (i = 0; i < contacts.length; i++) {
@@ -501,8 +502,6 @@ function Users({
         createContact(address.toLowerCase(), sender);
         setSelected(address.toLowerCase());
       }
-    } else {
-      alert('Please paste an address');
     }
     setSearchTerm('');
     getContacts(sender, setContacts);

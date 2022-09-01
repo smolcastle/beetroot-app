@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Profile from '../components/Profile';
 import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
 import { fetchUserAssets } from '../utils/opensea';
+import { showPopUp } from '../actions/actions';
+import { useDispatch } from 'react-redux';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const { v4: uuidv4 } = require('uuid'); // to generate unique ids
@@ -11,6 +13,8 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const [later, setLater] = useState(null);
   const [searchImage, setSearchImage] = useState('');
   const [selectImage, setSelectImage] = useState('');
+
+  const dispatch = useDispatch();
 
   async function updateUserOnboarded() {
     if (later != null || email != null || selectImage !== '') {
@@ -27,7 +31,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
         console.log(e);
       }
     } else {
-      alert('Please select the following details');
+      dispatch(showPopUp('alert', 'Please select the following details'));
     }
   }
   async function updateUserSkipped() {

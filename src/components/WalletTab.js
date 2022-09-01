@@ -51,9 +51,11 @@ const WalletTab = ({ receiver, truncate }) => {
                 >
                   <div>
                     <h1 className="text-[14px] text-gum">{asset.name}</h1>
-                    <p className="text-gray1 text-[14px]">
-                      Qty: {asset.last_sale.quantity}
-                    </p>
+                    {asset.last_sale?.quantity && (
+                      <p className="text-gray1 text-[14px]">
+                        Qty: {asset.last_sale.quantity}
+                      </p>
+                    )}
                   </div>
                   <img
                     className="w-[50px] h-[50px] rounded-[4px]"
