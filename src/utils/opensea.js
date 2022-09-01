@@ -61,4 +61,22 @@ const fetchUserAssets = async function fetchUserAssets(owner) {
   return response;
 };
 
-export { getAsset, getAssetsInCollection, fetchUserAssets };
+const fetchUserCollections = async function fetchUserCollections(owner) {
+  const options = { method: 'GET', headers: { Accept: 'application/json' } };
+
+  const api_url = `${URL}/collections?asset_owner=${owner}&limit=300`;
+
+  const response = await fetch(api_url, options)
+    .then((response) => response.json())
+    .then((response) => response)
+    .catch((err) => console.error(err));
+
+  return response;
+};
+
+export {
+  getAsset,
+  getAssetsInCollection,
+  fetchUserAssets,
+  fetchUserCollections
+};

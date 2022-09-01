@@ -11,13 +11,12 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const [displayName, setDisplayName] = useState('wallet address');
   const [email, setEmail] = useState(null);
   const [later, setLater] = useState(null);
-  const [searchImage, setSearchImage] = useState('');
   const [selectImage, setSelectImage] = useState('');
 
   const dispatch = useDispatch();
 
   async function updateUserOnboarded() {
-    if (later != null || email != null || selectImage !== '') {
+    if (later != null || email != null) {
       try {
         const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
@@ -34,17 +33,6 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
       dispatch(showPopUp('alert', 'Please select the following details'));
     }
   }
-  async function updateUserSkipped() {
-    try {
-      const userRef = doc(getFirestore(), 'users', sender);
-      await updateDoc(userRef, {
-        has_skipped: true,
-        verified: true
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   const [userAssets, setUserAssets] = useState([]);
 
@@ -54,14 +42,6 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
       setUserAssets(getUserAssets.assets);
     }
   }
-
-  const filteredImages = userAssets?.filter((asset) => {
-    if (searchImage === '') {
-      return asset;
-    } else if (asset.name.toLowerCase().includes(searchImage.toLowerCase())) {
-      return asset;
-    }
-  });
 
   useEffect(() => {
     getAssets();
@@ -98,16 +78,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
             </div>
             <div className="text-gray1 mt-[64px] pb-[48px]">
               <button
-                className="border-b border-gray1 border-solid"
-                onClick={() => {
-                  updateUserSkipped();
-                  setOnboarded(true);
-                }}
-              >
-                Skip
-              </button>
-              <button
-                className="border-b border-gray1 border-solid ml-[16px]"
+                className="border-b border-gray1 border-solid "
                 onClick={() => {
                   updateUserOnboarded();
                 }}
@@ -197,39 +168,10 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
             </div>
             <div className="text-gray1 mt-[24px]">
               <h1 className="text-[16px]">{'Set a profile picture'}</h1>
-              <div className="flex mt-[8px] rounded-md justify-between items-center w-[300px] bg-gray6 p-3">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7.57139 14.2854C11.2796 14.2854 14.2856 11.2794 14.2856 7.57119C14.2856 3.863 11.2796 0.856934 7.57139 0.856934C3.86321 0.856934 0.857143 3.863 0.857143 7.57119C0.857143 11.2794 3.86321 14.2854 7.57139 14.2854Z"
-                    fill="#EED3DC"
-                    stroke="#AB224E"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M15.1429 15.1432L12.3238 12.3242"
-                    stroke="#AB224E"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <input
-                  className="outline-none ml-[8px] rounded-[8px] w-full text-[14px] bg-gray6"
-                  placeholder="Type Doodles"
-                  onChange={(e) => {
-                    setSearchImage(e.target.value);
-                  }}
-                />
-              </div>
+
               <div className="flex mt-4 justify-start max-w-[300px] max-h-[200px] overflow-y-scroll flex-wrap">
-                {filteredImages.length > 0 ? (
-                  filteredImages?.map((asset) => {
+                {userAssets.length > 0 ? (
+                  userAssets?.map((asset) => {
                     return (
                       <div key={uuidv4()} className="w-[75px] h-[75px]">
                         <img

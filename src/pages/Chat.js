@@ -198,7 +198,6 @@ async function saveUser(sender) {
     await setDoc(doc(db, `users/${sender}`), {
       name: `${sender}`,
       has_onboarded: false,
-      has_skipped: false,
       verified: false,
       telegram: '',
       email: '',
@@ -1063,7 +1062,7 @@ export default function Chat() {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       const userData = user.data();
-      if (userData.has_onboarded == false && userData.has_skipped == false) {
+      if (userData.has_onboarded == false) {
         setOnboarded(false);
       } else {
         setOnboarded(true);
