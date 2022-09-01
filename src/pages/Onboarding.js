@@ -169,7 +169,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
             <div className="text-gray1 mt-[24px]">
               <h1 className="text-[16px]">{'Set a profile picture'}</h1>
 
-              <div className="flex mt-4 justify-start max-w-[300px] max-h-[200px] overflow-y-scroll flex-wrap">
+              <div className="flex mt-4 justify-start max-w-[400px] max-h-[200px] overflow-y-scroll flex-wrap">
                 {userAssets.length > 0 ? (
                   userAssets?.map((asset) => {
                     return (
