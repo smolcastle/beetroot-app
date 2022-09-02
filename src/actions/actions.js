@@ -102,19 +102,6 @@ export function hideLoader() {
     type: 'HIDE_LOADER'
   };
 }
-export function showPopUp(category, msgTitle) {
-  return {
-    type: 'SHOW_POPUP',
-    category,
-    msgTitle
-  };
-}
-
-export function hidePopUp() {
-  return {
-    type: 'HIDE_POPUP'
-  };
-}
 export function showNewUser() {
   return {
     type: 'SHOW_NEW_USER'

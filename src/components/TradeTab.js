@@ -6,8 +6,6 @@ import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
 import weth from '../abis/weth.json';
-import { showPopUp } from '../actions/actions';
-import { useDispatch } from 'react-redux';
 
 const TradeTab = ({
   createOrder,
@@ -38,8 +36,6 @@ const TradeTab = ({
   const [userAssets, setUserAssets] = useState([]);
   const [showHelp, setShowHelp] = useState('');
   const [reviewOrder, setReviewOrder] = useState(false);
-
-  const dispatch = useDispatch();
 
   const reset = () => {
     inputRef.current.value = '';
@@ -109,8 +105,7 @@ const TradeTab = ({
       // will throw if tokenId doesn't exist.
       const owner = await erc721Contract.ownerOf(tokenId);
       if (owner != (await seaport.signer.getAddress())) {
-        dispatch(showPopUp('alert', 'You are not the owner'));
-
+        alert('You are not the owner');
         return;
       }
 
@@ -158,7 +153,7 @@ const TradeTab = ({
 
     if (wEtherBox !== '') {
       if (parseEther(wEtherBox) > wethBalance) {
-        dispatch(showPopUp('alert', 'Insufficient Balance'));
+        alert('Insufficient Balance');
         return;
       }
       setOffers([
@@ -210,7 +205,7 @@ const TradeTab = ({
         ]);
       } catch (error) {
         console.log(error);
-        dispatch(showPopUp('alert', 'NFT details not correct'));
+        alert('NFT details not correct');
       }
     }
 
@@ -581,7 +576,7 @@ const TradeTab = ({
       setExpiryHours('');
       setExpiryMinutes('');
     } else {
-      dispatch(showPopUp('alert', 'Please add complete and valid expiry date'));
+      alert('Please add complete and valid expiry date');
     }
   }
   useEffect(() => {
@@ -836,7 +831,7 @@ const TradeTab = ({
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
               onClick={() => {
                 if (offers.length == 0 || considerations.length == 0) {
-                  dispatch(showPopUp('alert', 'Order cannot be empty'));
+                  alert('Order cannot be empty');
                 } else {
                   setReviewOrder(true);
                 }

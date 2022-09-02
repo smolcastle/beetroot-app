@@ -9,7 +9,6 @@ import loader from './reducers/loader';
 import newUser from './reducers/newUser';
 import users from './reducers/users';
 import contacts from './reducers/contacts';
-import popUp from './reducers/popup.js';
 
 export default combineReducers({
   wallet,
@@ -21,6 +20,5 @@ export default combineReducers({
   loader,
   newUser,
   users,
-  contacts,
-  popUp
+  contacts
 });
