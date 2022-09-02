@@ -250,7 +250,7 @@ async function getContacts(sender, setContacts) {
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, 'address book', receiver, 'contacts');
+      const contactsRef = collection(db, `address book/ ${receiver}/contacts`);
       const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
         let receiverContacts = [];
@@ -305,11 +305,13 @@ async function getLastMsgTime(dispatch) {
 }
 
 async function getProfilePic(receiver, setProfilePic) {
-  const verifyRef = doc(getFirestore(), `users/${receiver}`);
-  const verify = await getDoc(verifyRef);
-  if (verify.exists()) {
-    const verifyData = verify.data();
-    setProfilePic(verifyData.profilePic);
+  if (receiver) {
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setProfilePic(verifyData.profilePic);
+    }
   }
 }
 
@@ -797,7 +799,8 @@ function SendMessageSection({
   setMsgString,
   sender,
   receiver,
-  dispatch
+  dispatch,
+  contacts
 }) {
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
