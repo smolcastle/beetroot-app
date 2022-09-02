@@ -16,8 +16,6 @@ import {
 } from 'firebase/firestore';
 import TradeTab from '../components/TradeTab';
 import WalletTab from '../components/WalletTab';
-import { showPopUp } from '../actions/actions';
-import { useDispatch } from 'react-redux';
 
 const Order = ({ sender, truncate, receiver }) => {
   const [openTrade, setOpenTrade] = useState(false);
@@ -36,8 +34,6 @@ const Order = ({ sender, truncate, receiver }) => {
   const [showPendingOrder, setShowPendingOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
-
-  const dispatch = useDispatch();
 
   async function saveOrder(order, offerFor, expiryDate) {
     try {
@@ -60,7 +56,7 @@ const Order = ({ sender, truncate, receiver }) => {
   async function createOrder(offerFor, expiryDate) {
     try {
       if (offers.length == 0 || considerations.length == 0) {
-        dispatch(showPopUp('alert', 'Order cannot be empty'));
+        alert('Order cannot be empty');
       } else {
         setIsLoading(true);
         const orderActions = await seaport.seaport.createOrder({
@@ -78,7 +74,7 @@ const Order = ({ sender, truncate, receiver }) => {
     } catch (e) {
       // hide loader when cancel is clicked on metamask notification
       console.log('Error creating an order', e);
-      dispatch(showPopUp('alert', 'Error creating the order'));
+      alert('Error creating the order');
       setIsLoading(false);
     }
     setIsLoading(false);

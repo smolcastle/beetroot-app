@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Profile from '../components/Profile';
 import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
-import { fetchUserAssets } from '../utils/opensea';
-import { showPopUp } from '../actions/actions';
-import { useDispatch } from 'react-redux';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
-  const { v4: uuidv4 } = require('uuid'); // to generate unique ids
-
-  const [displayName, setDisplayName] = useState('wallet address');
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState(null);
   const [later, setLater] = useState(null);
-  const [selectImage, setSelectImage] = useState('');
-
-  const dispatch = useDispatch();
 
   async function updateUserOnboarded() {
     if (later != null || email != null) {
@@ -22,30 +14,27 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
         await updateDoc(userRef, {
           has_onboarded: true,
           email: email,
-          verified: true,
-          profilePic: selectImage
+          verified: true
         });
         setOnboarded(true);
       } catch (e) {
         console.log(e);
       }
     } else {
-      dispatch(showPopUp('alert', 'Please select the following details'));
+      alert('Please select the following details');
     }
   }
-
-  const [userAssets, setUserAssets] = useState([]);
-
-  async function getAssets() {
-    if (sender !== '') {
-      const getUserAssets = await fetchUserAssets(sender);
-      setUserAssets(getUserAssets.assets);
+  async function updateUserSkipped() {
+    try {
+      const userRef = doc(getFirestore(), 'users', sender);
+      await updateDoc(userRef, {
+        has_skipped: true,
+        verified: true
+      });
+    } catch (e) {
+      console.log(e);
     }
   }
-
-  useEffect(() => {
-    getAssets();
-  }, [sender]);
 
   return (
     <>
@@ -73,12 +62,20 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 truncate={truncate}
                 sender={sender}
                 displayName={displayName}
-                selectImage={selectImage}
               />
             </div>
             <div className="text-gray1 mt-[64px] pb-[48px]">
               <button
-                className="border-b border-gray1 border-solid "
+                className="border-b border-gray1 border-solid"
+                onClick={() => {
+                  updateUserSkipped();
+                  setOnboarded(true);
+                }}
+              >
+                Skip
+              </button>
+              <button
+                className="border-b border-gray1 border-solid ml-[16px]"
                 onClick={() => {
                   updateUserOnboarded();
                 }}
@@ -96,12 +93,12 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <div className="flex mr-[16px]">
                   <input
                     type="radio"
-                    defaultChecked
+                    checked
                     className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                     id="wallet address"
                     value="wallet address"
                     name="display"
-                    onClick={(e) => {
+                    onChange={(e) => {
                       setDisplayName(e.target.value);
                     }}
                   />
@@ -116,7 +113,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                     id="ens name"
                     value="ens name"
                     name="display"
-                    onClick={(e) => {
+                    onChange={(e) => {
                       setDisplayName(e.target.value);
                     }}
                   />
@@ -168,29 +165,32 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
             </div>
             <div className="text-gray1 mt-[24px]">
               <h1 className="text-[16px]">{'Set a profile picture'}</h1>
-
-              <div className="flex mt-4 justify-start max-w-[400px] max-h-[200px] overflow-y-scroll flex-wrap">
-                {userAssets.length > 0 ? (
-                  userAssets?.map((asset) => {
-                    return (
-                      <div key={uuidv4()} className="w-[75px] h-[75px]">
-                        <img
-                          className={`w-[50px] h-[50px] rounded-[4px] ${
-                            selectImage === asset.image_url
-                              ? 'border-[4px] border-solid border-gum  '
-                              : ''
-                          }`}
-                          src={asset.image_url}
-                          onClick={() => {
-                            setSelectImage(asset.image_url);
-                          }}
-                        />
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-gray1 text-[12px]">No images found</p>
-                )}
+              <div className="flex mt-[8px] rounded-md justify-between items-center w-[300px] bg-gray6 p-3">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.57139 14.2854C11.2796 14.2854 14.2856 11.2794 14.2856 7.57119C14.2856 3.863 11.2796 0.856934 7.57139 0.856934C3.86321 0.856934 0.857143 3.863 0.857143 7.57119C0.857143 11.2794 3.86321 14.2854 7.57139 14.2854Z"
+                    fill="#EED3DC"
+                    stroke="#AB224E"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M15.1429 15.1432L12.3238 12.3242"
+                    stroke="#AB224E"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <input
+                  className="outline-none ml-[8px] rounded-[8px] w-full text-[14px] bg-gray6"
+                  placeholder="Type Doodles"
+                />
               </div>
             </div>
           </div>
