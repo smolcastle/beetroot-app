@@ -1,14 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import profile from '../img/profile.png';
+import { toEns } from '../utils/ens';
+import { doc, getFirestore, getDoc } from 'firebase/firestore';
+import { showPopUp } from '../actions/actions';
+import { useDispatch } from 'react-redux';
 
-const Profile = ({ truncate, sender }) => {
+const Profile = ({ truncate, sender, displayName, selectImage }) => {
+  const dispatch = useDispatch();
+
+  const [ensName, setEnsName] = useState('');
+  async function getEnsName() {
+    let ens = await toEns(sender);
+    setEnsName(ens);
+  }
+
+  const [isVerified, setIsVerified] = useState();
+
+  async function getVerifedData() {
+    const verifyRef = doc(getFirestore(), `users/${sender}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setIsVerified(verifyData.verified);
+    } else {
+      setIsVerified(false);
+    }
+  }
+
+  if (displayName === 'ens name' && !ensName) {
+    dispatch(showPopUp('alert', 'No ENS Found'));
+  }
+
+  useEffect(() => {
+    getEnsName();
+    getVerifedData();
+  });
+
   return (
     <>
       <div className="flex flex-col w-[50%] bg-gumtint/[0.2] rounded-l-[16px] h-full items-center justify-evenly">
-        <img src={profile} className="w-[48px]"></img>
+        <img src={selectImage} className="w-[50px] rounded-[50%]"></img>
         <div className="flex flex-col items-center">
-          <p>{truncate(sender, 14)}</p>
-          <p className="text-gray3 mt-[4px] text-[12px]">Unverified</p>
+          {displayName === 'ens name' && ensName && <p>{ensName}</p>}
+          {displayName === 'wallet address' && <p>{truncate(sender, 14)}</p>}
+          {displayName === 'ens name' && !ensName && (
+            <p>{truncate(sender, 14)}</p>
+          )}
+          {isVerified && (
+            <p className="text-parsley mt-[4px] text-[12px]">Verified</p>
+          )}
+          {!isVerified && (
+            <p className="text-gray3 mt-[4px] text-[12px]">Unverified</p>
+          )}
         </div>
         <div className="flex w-[50%] mt-[-16px] items-center justify-evenly">
           <svg

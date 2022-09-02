@@ -87,21 +87,21 @@ function FAQList({ id, title, answer }) {
 function LandingPage() {
   return (
     <div className="h-full w-screen bg-white0 font-rubrik flex flex-col relative md:py-0 md:px-0 overflow-x-hidden">
-      <section className="flex h-full justify-between lg:px-24 mb-32">
-        <div className="flex flex-col w-[60%] lg:pt-24">
+      <section className="flex h-full justify-between ">
+        <div className="flex absolute flex-col w-[55%] lg:pl-24 mb-32 lg:pt-24">
           <img src={logo4} className="w-[48px]" />
           <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
             NFT marketplace for negotiators
           </h1>
-          <div className="mt-16">
+          <div className="mt-16 z-20">
             <Link to="/chat" target="_blank" rel="noopener noreferrer">
-              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px]">
+              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px] ">
                 {'< LAUNCH APP />'}
               </button>
             </Link>
           </div>
           <div className="flex justify-between mt-4">
-            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor">
+            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor z-20">
               Read Launch Announcement
             </button>
             <div className="w-[370px] flex flex-col">
@@ -112,13 +112,13 @@ function LandingPage() {
             </div>
           </div>
           <div className="flex justify-between">
-            <div>
+            <div className="z-20">
               <a
                 href="https://twitter.com/beetrootai"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img className="w-[30px] cursor-pointer" src={twitter} />
+                <img className="w-[30px] cursor-pointer " src={twitter} />
               </a>
               <img
                 className="w-[30px] cursor-pointer eye_cursor mt-4"
@@ -135,23 +135,24 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="w-[30%] -mb-32">
-          <div className="scroll-card overflow-y-scroll h-full relative">
+        <div className="w-[100%] flex justify-end scroll-card overflow-y-scroll lg:pr-24 mb-32 z-10 -mb-32">
+          <div className=" h-full relative">
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
               <p className="reenie-beanie text-[32px] text-gum font-medium">
                 Chat to negotiate deals...
               </p>
               <img src={chatImg} className="mt-6" />
-              <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
+              <p className="reenie-beanie text-[32px] w-[450px] text-gum font-medium mt-24">
                 Create orders by adding NFTS and coins into individual carts...
               </p>
               <img src={tradeImg} />
+              <div className="h-[300px]"></div>
             </div>
           </div>
         </div>
       </section>
-      <section className="home-section bg-gray7 px-24 pb-24 mb-20">
+      <section className="home-section bg-gray7 px-24 pb-24 z-20 mb-20">
         <h1 className="text-[92px] font-medium font-questa text-gum mt-32">
           Discuss every deal that you do.
         </h1>
@@ -210,11 +211,26 @@ function LandingPage() {
             </div>
           </div>
           <div className="flex mt-40 items-center justify-between w-[70%]">
-            <div className="w-[550px] h-[300px] bg-gumlight/[0.5]  rounded-[8px]">
-              <img
-                src={asset2}
-                className="h-[350px] place-self-end -mt-[50px]"
-              />
+            <div className="w-[550px] h-[300px] bg-gumlight/[0.5] flex justify-center items-center rounded-[16px]">
+              <div className="bg-gumtint w-[50%] text-center p-4 rounded-[4px]">
+                <h1 className="text-gum font-rubrikExtraB text-[32px] font-extrabold">
+                  COUNTER
+                </h1>
+              </div>
+
+              <svg
+                className="-ml-[48px] mt-[72px]"
+                width="32"
+                height="36"
+                viewBox="0 0 32 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M31.3669 17.6607L0.408119 0.166107L8.48704 35.1594L14.8782 23.604L23.3378 34.9789L27.0678 32.1263L18.5926 20.7304L31.3669 17.6607Z"
+                  fill="#AB224E"
+                />
+              </svg>
             </div>
             <div className="w-[400px] ">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">

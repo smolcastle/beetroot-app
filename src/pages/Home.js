@@ -6,11 +6,12 @@ import Navigation from '../components/Navigation';
 import LandingPage from './LandingPage';
 import Chat from './Chat';
 import LoaderOverlay from '../components/LoaderOverlay';
-import { truncate } from '../helpers/Collections';
-import logo from '../img/logo.png';
+import { PopUpBox } from '../components/PopUp';
+import logo4 from '../img/logo4.png';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Onboarding from './Onboarding';
 import OnboardSuccess from './OnboardSuccess';
+import { Link } from 'react-router-dom';
 
 const WalletButton = () => {
   return <ConnectButton showBalance={false} />;
@@ -19,17 +20,19 @@ const WalletButton = () => {
 const Header = () => {
   return (
     <div className="flex items-center h-20 bg-white0 font-rubrik shadow-sm px-6 flex-shrink-0">
-      <img
-        className="w-10 h-10 xs:w-12 xs:h-12 lg:w-14 lg:h-14 object-contain"
-        src={logo}
-        alt=""
-      />
+      <Link to="/" target="_blank" rel="noopener noreferrer">
+        <img
+          className="w-10 h-10 xs:w-12 xs:h-12 lg:w-14 lg:h-14 object-contain"
+          src={logo4}
+          alt="Beetroot logo"
+        />
+      </Link>
       <div className="w-16" />
 
       <div className="flex flex-[6_6_0%]" />
       <div className="w-[25rem] flex justify-between items-center">
         <Navigation />
-        <svg
+        {/* <svg
           width="20"
           height="20"
           viewBox="0 0 20 20"
@@ -49,7 +52,7 @@ const Header = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-        </svg>
+        </svg> */}
         <div className="flex flex-row items-center mr-4">
           {/* <ThemeBtn /> */}
           <div className="w-4" />
@@ -89,6 +92,7 @@ const Home = () => {
         <Route path="/success" element={<OnboardSuccess />} />
       </Routes>
       <LoaderOverlay />
+      <PopUpBox />
     </main>
   );
 };
