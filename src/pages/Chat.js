@@ -250,7 +250,7 @@ async function getContacts(sender, setContacts) {
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, 'address book', receiver, 'contacts');
+      const contactsRef = collection(db, `address book/ ${receiver}/contacts`);
       const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
         let receiverContacts = [];
@@ -305,11 +305,13 @@ async function getLastMsgTime(dispatch) {
 }
 
 async function getProfilePic(receiver, setProfilePic) {
-  const verifyRef = doc(getFirestore(), `users/${receiver}`);
-  const verify = await getDoc(verifyRef);
-  if (verify.exists()) {
-    const verifyData = verify.data();
-    setProfilePic(verifyData.profilePic);
+  if (receiver) {
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setProfilePic(verifyData.profilePic);
+    }
   }
 }
 
@@ -321,8 +323,7 @@ function User({
   setSelected,
   selected,
   setReceiver,
-  setSearchTerm,
-  contacts
+  setSearchTerm
 }) {
   useEffect(() => {
     let unsubscribe;
@@ -376,11 +377,9 @@ function User({
   useEffect(() => {
     getEnsName();
     fetchLastMsgTime();
-  });
-
-  useEffect(() => {
     getProfilePic(receiver, setProfilePic);
-  }, [contacts]);
+    getVerifedData();
+  }, []);
 
   let timeout;
   const [hover, setHover] = useState(false);
@@ -792,13 +791,9 @@ function TopSection({ receiver }) {
   );
 }
 
-function SendMessageSection({
-  message,
-  setMsgString,
-  sender,
-  receiver,
-  dispatch
-}) {
+function SendMessageSection({ sender, receiver, dispatch }) {
+  const [message, setMsgString] = useState('');
+
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
   );
@@ -890,8 +885,6 @@ function SendMessageSection({
 }
 
 function Messages({
-  message,
-  setMsgString,
   sender,
   receiver,
   dispatch,
@@ -1008,12 +1001,9 @@ function Messages({
         </div>
       )}
       <SendMessageSection
-        message={message}
-        setMsgString={setMsgString}
         sender={sender}
         receiver={receiver}
         dispatch={dispatch}
-        contacts={contacts}
         receiverContacts={receiverContacts}
         setReceiverContacts={setReceiverContacts}
       />
@@ -1022,7 +1012,6 @@ function Messages({
 }
 
 export default function Chat() {
-  const [message, setMsgString] = useState('');
   const [receiver, setReceiver] = useState('');
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
@@ -1082,11 +1071,8 @@ export default function Chat() {
   }, [sender]);
 
   useEffect(() => {
-    getUsers(dispatch);
-  }, []);
-
-  useEffect(() => {
     getLastMsgTime(dispatch);
+    getUsers(dispatch);
   }, []);
 
   useEffect(() => {
@@ -1142,8 +1128,6 @@ export default function Chat() {
                   setContacts={setContacts}
                 />
                 <Messages
-                  message={message}
-                  setMsgString={setMsgString}
                   sender={sender}
                   receiver={receiver}
                   dispatch={dispatch}
