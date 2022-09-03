@@ -90,19 +90,19 @@ function LandingPage() {
       <section className="flex h-full justify-between ">
         <div className="flex absolute flex-col w-[55%] lg:pl-24 mb-32 lg:pt-24">
           <img src={logo4} className="w-[48px]" />
-          <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
-            NFT marketplace for negotiators
+          <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[100%]">
+            Messaging for NFT Traders.
           </h1>
           <div className="mt-16 z-20">
             <Link to="/chat" target="_blank" rel="noopener noreferrer">
               <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px] ">
-                {'< LAUNCH APP />'}
+                {'< Launch App />'}
               </button>
             </Link>
           </div>
           <div className="flex justify-between mt-4">
             <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor z-20">
-              Read Launch Announcement
+              Read Announcement
             </button>
             <div className="w-[370px] flex flex-col">
               <p className="text-gray1 text-right text-[36px] font-light">
@@ -153,15 +153,15 @@ function LandingPage() {
         </div>
       </section>
       <section className="home-section bg-gray7 px-24 pb-24 z-20 mb-20">
-        <h1 className="text-[92px] font-medium font-questa text-gum mt-32">
+        <h1 className="text-[92px] font-medium font-questa text-gum mt-32 text-center">
           Discuss every deal that you do.
         </h1>
-        <p className="text-[20px] text-gum font-light">
+        <p className="text-[20px] text-gum font-light text-center">
           Due to non-fungible nature of NFTs, their fair prices are hard to
           determine.
         </p>
         <div className="flex flex-col items-center justify-center">
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[550px] ">
               <div className="encryption font-mono grid grid-cols-5 gap-5 p-16 rounded-[8px] bg-gumlight">
                 <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
@@ -191,7 +191,7 @@ function LandingPage() {
               </p>
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[400px]">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
                 Buy With Your NFTs
@@ -210,7 +210,7 @@ function LandingPage() {
               <img src={artboard} />
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[550px] h-[300px] bg-gumlight/[0.5] flex justify-center items-center rounded-[16px]">
               <div className="bg-gumtint w-[50%] text-center p-4 rounded-[4px]">
                 <h1 className="text-gum font-rubrikExtraB text-[32px] font-extrabold">
@@ -259,19 +259,23 @@ function LandingPage() {
               <FAQList
                 id={1}
                 title={'How are messages encrypted?'}
-                answer={''}
+                answer={'Coming soon.'}
               />
               <FAQList
                 id={2}
                 title={'How does NFT trading work on Beetroot?'}
-                answer={''}
+                answer={'Coming soon.'}
               />
-              <FAQList id={3} title={'What are NFTS?'} answer={''} />
+              <FAQList
+                id={3}
+                title={'What are NFTS?'}
+                answer={'Coming soon.'}
+              />
               <FAQList
                 id={4}
                 title={'Can I receive notifications when I’m offline?'}
                 answer={
-                  'Yes. You can receive notifications on your telegram, discord or email even when you are offline.'
+                  'Yes. You can choose to receive notifications on youur email.'
                 }
               />
             </div>

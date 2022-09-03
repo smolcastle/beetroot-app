@@ -1,4 +1,4 @@
-# Beetroot - NFT Marketplace for Negotiators
+# Beetroot - wallet-to-wallet messaging platform
 
 ### To start development
 
