@@ -339,16 +339,19 @@ function User({
   const [isVerified, setIsVerified] = useState();
   const [profilePic, setProfilePic] = useState('');
 
-  async function getVerifedData() {
-    const verifyRef = doc(getFirestore(), `users/${receiver}`);
-    const verify = await getDoc(verifyRef);
-    if (verify.exists()) {
-      const verifyData = verify.data();
-      setIsVerified(verifyData.verified);
-    } else {
-      setIsVerified(false);
+  useEffect(() => {
+    async function getVerifedData() {
+      const verifyRef = doc(getFirestore(), `users/${receiver}`);
+      const verify = await getDoc(verifyRef);
+      if (verify.exists()) {
+        const verifyData = verify.data();
+        setIsVerified(verifyData.verified);
+      } else {
+        setIsVerified(false);
+      }
     }
-  }
+    getVerifedData();
+  }, []);
 
   const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
