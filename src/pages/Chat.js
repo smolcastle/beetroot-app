@@ -198,7 +198,6 @@ async function saveUser(sender) {
     await setDoc(doc(db, `users/${sender}`), {
       name: `${sender}`,
       has_onboarded: false,
-      has_skipped: false,
       verified: false,
       telegram: '',
       email: '',
@@ -251,7 +250,7 @@ async function getContacts(sender, setContacts) {
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, 'address book', receiver, 'contacts');
+      const contactsRef = collection(db, `address book/ ${sender}/contacts`);
       const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
         let receiverContacts = [];
@@ -817,13 +816,8 @@ function TopSection({ receiver }) {
   );
 }
 
-function SendMessageSection({
-  message,
-  setMsgString,
-  sender,
-  receiver,
-  dispatch
-}) {
+function SendMessageSection({ sender, receiver, dispatch }) {
+  const [message, setMsgString] = useState('');
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
   );
@@ -915,8 +909,6 @@ function SendMessageSection({
 }
 
 function Messages({
-  message,
-  setMsgString,
   sender,
   receiver,
   dispatch,
@@ -1033,8 +1025,6 @@ function Messages({
         </div>
       )}
       <SendMessageSection
-        message={message}
-        setMsgString={setMsgString}
         sender={sender}
         receiver={receiver}
         dispatch={dispatch}
@@ -1047,7 +1037,6 @@ function Messages({
 }
 
 export default function Chat() {
-  const [message, setMsgString] = useState('');
   const [receiver, setReceiver] = useState('');
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
@@ -1087,7 +1076,7 @@ export default function Chat() {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       const userData = user.data();
-      if (userData.has_onboarded == false && userData.has_skipped == false) {
+      if (userData.has_onboarded == false) {
         setOnboarded(false);
       } else {
         setOnboarded(true);
@@ -1167,8 +1156,6 @@ export default function Chat() {
                   setContacts={setContacts}
                 />
                 <Messages
-                  message={message}
-                  setMsgString={setMsgString}
                   sender={sender}
                   receiver={receiver}
                   dispatch={dispatch}

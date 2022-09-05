@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import profile from '../img/profile.png';
 import { toEns } from '../utils/ens';
 import { doc, getFirestore, getDoc } from 'firebase/firestore';
+import { showPopUp } from '../actions/actions';
+import { useDispatch } from 'react-redux';
 
 const Profile = ({ truncate, sender, displayName, selectImage }) => {
+  const dispatch = useDispatch();
+
   const [ensName, setEnsName] = useState('');
   async function getEnsName() {
     let ens = await toEns(sender);
@@ -22,6 +26,11 @@ const Profile = ({ truncate, sender, displayName, selectImage }) => {
       setIsVerified(false);
     }
   }
+
+  if (displayName === 'ens name' && !ensName) {
+    dispatch(showPopUp('alert', 'No ENS Found'));
+  }
+
   useEffect(() => {
     getEnsName();
     getVerifedData();
@@ -35,10 +44,7 @@ const Profile = ({ truncate, sender, displayName, selectImage }) => {
           {displayName === 'ens name' && ensName && <p>{ensName}</p>}
           {displayName === 'wallet address' && <p>{truncate(sender, 14)}</p>}
           {displayName === 'ens name' && !ensName && (
-            <>
-              <p>{truncate(sender, 14)}</p>
-              <p className="text-gray1 text-[10px]">No ENS Name</p>
-            </>
+            <p>{truncate(sender, 14)}</p>
           )}
           {isVerified && (
             <p className="text-parsley mt-[4px] text-[12px]">Verified</p>
