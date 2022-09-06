@@ -449,7 +449,7 @@ const Order = ({ sender, truncate, receiver }) => {
                       </div>
                       <div className="">
                         <div
-                          index={index}
+                          key={index}
                           className={`flex justify-between mt-8 ${
                             showPendingOrder === index ? 'block' : 'hidden'
                           }`}

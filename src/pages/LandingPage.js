@@ -9,7 +9,6 @@ import twitter_f from '../img/twitter_footer.png';
 import discord_f from '../img/discord_footer.png';
 import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
-import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';

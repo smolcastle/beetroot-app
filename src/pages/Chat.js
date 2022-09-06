@@ -250,7 +250,7 @@ async function getContacts(sender, setContacts) {
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, `address book/ ${receiver}/contacts`);
+      const contactsRef = collection(db, `address book/ ${sender}/contacts`);
       const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
         let receiverContacts = [];
@@ -273,13 +273,17 @@ async function createLastMsgTime(sender, receiver) {
     const msgTimeSnap = await getDoc(msgTimeRef);
     if (msgTimeSnap.exists()) {
       await updateDoc(msgTimeRef, {
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
+        from: sender,
+        read: false
       });
       return;
     } else {
       await setDoc(doc(db, `lastMsg`, id), {
         sender: sender,
         receiver: receiver,
+        from: sender,
+        read: false,
         timestamp: serverTimestamp()
       });
     }
@@ -304,6 +308,24 @@ async function getLastMsgTime(dispatch) {
   }
 }
 
+async function updateUnreadMsg(sender, receiver, dispatch) {
+  const id =
+    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`;
+  try {
+    const unreadRef = doc(db, `lastMsg`, id);
+    const unreadSnap = await getDoc(unreadRef);
+    if (unreadSnap.exists()) {
+      await updateDoc(unreadRef, {
+        read: true
+      });
+      getLastMsgTime(dispatch);
+      return;
+    }
+  } catch (e) {
+    console.log('Error', e);
+  }
+}
+
 async function getProfilePic(receiver, setProfilePic) {
   if (receiver) {
     const verifyRef = doc(getFirestore(), `users/${receiver}`);
@@ -323,13 +345,15 @@ function User({
   setSelected,
   selected,
   setReceiver,
-  setSearchTerm
+  setSearchTerm,
+  contacts
 }) {
   useEffect(() => {
     let unsubscribe;
     if (selected === receiver) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
+      updateUnreadMsg(sender, receiver, dispatch);
     }
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
@@ -339,22 +363,20 @@ function User({
   const [isVerified, setIsVerified] = useState();
   const [profilePic, setProfilePic] = useState('');
 
-  useEffect(() => {
-    async function getVerifedData() {
-      const verifyRef = doc(getFirestore(), `users/${receiver}`);
-      const verify = await getDoc(verifyRef);
-      if (verify.exists()) {
-        const verifyData = verify.data();
-        setIsVerified(verifyData.verified);
-      } else {
-        setIsVerified(false);
-      }
+  async function getVerifedData() {
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setIsVerified(verifyData.verified);
+    } else {
+      setIsVerified(false);
     }
-    getVerifedData();
-  }, []);
+  }
 
   const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
+  const [readMsg, setReadMsg] = useState();
 
   async function fetchLastMsgTime() {
     msgTime.map((lastMsg) => {
@@ -363,7 +385,9 @@ function User({
         (lastMsg.receiver === sender && lastMsg.sender === receiver)
       ) {
         setLastMsgTime(lastMsg.timestamp);
-        return;
+        if (lastMsg.from !== sender) {
+          setReadMsg(lastMsg.read);
+        }
       }
     });
   }
@@ -376,10 +400,13 @@ function User({
 
   useEffect(() => {
     getEnsName();
-    fetchLastMsgTime();
-    getProfilePic(receiver, setProfilePic);
     getVerifedData();
-  }, []);
+    getProfilePic(receiver, setProfilePic);
+  });
+
+  useEffect(() => {
+    fetchLastMsgTime();
+  });
 
   let timeout;
   const [hover, setHover] = useState(false);
@@ -414,7 +441,7 @@ function User({
         )}
 
         <li
-          index={index}
+          key={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
             selected === receiver ? 'bg-gray6' : ' '
           }`}
@@ -443,10 +470,10 @@ function User({
                 <p className="text-[14px] text-gray3">Unverified</p>
               )}
             </div>
-            <div className="flex flex-col items-end w-[20%]">
-              <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]">
-                <p></p>
-              </div>
+            <div className="flex flex-col justify-between items-end w-[20%] mt-2">
+              {readMsg === false && (
+                <div className="bg-gum/[0.5] my-[8px] w-[12px] h-[12px] rounded-[50%]"></div>
+              )}
               {lastMsgTime && (
                 <p className={`text-[14px] text-gray3`}>
                   {getDateTime(lastMsgTime?.seconds).time}
@@ -793,7 +820,6 @@ function TopSection({ receiver }) {
 
 function SendMessageSection({ sender, receiver, dispatch }) {
   const [message, setMsgString] = useState('');
-
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
   );
