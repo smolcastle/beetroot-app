@@ -16,7 +16,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const dispatch = useDispatch();
 
   async function updateUserOnboarded() {
-    if (later != null || email != null) {
+    if (later != null || email != null || selectImage !== '') {
       try {
         const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
@@ -52,8 +52,8 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
       <div
         className={`flex justify-center items-center bg-white0 w-screen pl-[4%] overflow-x-hidden`}
       >
-        <div className="w-[75%] flex">
-          <div className="font-rubrik w-[50%] justify-evenly h-full">
+        <div className=" flex justify-evenly">
+          <div className="font-rubrik justify-evenly h-full">
             <span className="font-questa text-gray2 text-[48px] mr-[8px]">
               {'gm'}
             </span>
@@ -87,12 +87,12 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
               </button>
             </div>
           </div>
-          <div className="flex w-[50%] flex-col">
+          <div className="flex flex-col">
             <div className="flex flex-col mt-[48px] text-gray1">
               <h1 className=" text-[16px]">
                 {'Choose how your name will be displayed'}
               </h1>
-              <div className="flex justify-start items-center w-[45%] mt-4">
+              <div className="flex justify-start items-center mt-4">
                 <div className="flex mr-[16px]">
                   <input
                     type="radio"

@@ -9,7 +9,6 @@ import twitter_f from '../img/twitter_footer.png';
 import discord_f from '../img/discord_footer.png';
 import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
-import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';
@@ -176,16 +175,16 @@ function LandingPage() {
                 <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
               </div>
             </div>
-            <div className="w-[400px]">
-              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+            <div className="w-auto">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 max-w-[300px]">
                 Wallet To Wallet Deals
               </h1>
-              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+              <p className="max-w-[350px] text-[16px] text-gray2 font-normal mt-4">
                 Negotiating deals is hard and time consuming. You can never be
                 certain that the other user is not scamming you and owns the
                 particular NFT. We make it easy to verify the ownership of NFTs.
               </p>
-              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+              <p className="max-w-[350px] text-[16px] text-gray2 font-normal mt-4">
                 You can use Beetroot to send encrypted deals to other wallets
                 which only they can see.
               </p>
@@ -249,9 +248,9 @@ function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="mb-36 px-24">
-        <div className="flex px-24 justify-between">
-          <div className="w-[50%]">
+      <section className="mb-36 px-24 w-[100%]">
+        <div className="flex justify-evenly ">
+          <div className="">
             <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
               FAQs
             </h1>
@@ -280,7 +279,7 @@ function LandingPage() {
               />
             </div>
           </div>
-          <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
+          <div className="w-[400px] mt-16 text-[18px] text-gray1 font-normal ml-16">
             <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
             <p className="w-[200px] mt-4">Write to us at </p>
             <a href="mailto:hello@beetroot.ai">
@@ -303,8 +302,8 @@ function LandingPage() {
         </div>
       </section>
       <footer className="mb-20 px-24">
-        <div className="flex flex-col px-24">
-          <div className="flex justify-between">
+        <div className="flex justify-evenly w-[100%]">
+          <div className="flex flex-col">
             <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
               <h1 className="text-[24px] font-bold">Join the community!</h1>
               <p className="text-[14px] font-normal w-[250px] mt-4">
@@ -323,18 +322,23 @@ function LandingPage() {
                 <img className="cursor-pointer eye_cursor" src={medium_f} />
               </div>
             </div>
-            <Link to="/chat" target="_blank" rel="noopener noreferrer">
-              <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12 cursor-pointer">
-                <h1 className="font-bold text-[24px] text-gray6">
-                  An NFT Marketplace for negotiators
-                </h1>
-                <h1 className="text-gray6 text-[14px] font-medium">
-                  {'< Launch App />'}
-                </h1>
-              </div>
-            </Link>
+            <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
           </div>
-          <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
+          <Link
+            className="w-[50%] ml-16"
+            to="/chat"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="footer-section  h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12 cursor-pointer">
+              <h1 className="font-bold text-[24px] text-gray6">
+                An NFT Marketplace for negotiators
+              </h1>
+              <h1 className="text-gray6 text-[14px] font-medium">
+                {'< Launch App />'}
+              </h1>
+            </div>
+          </Link>
         </div>
       </footer>
     </div>
