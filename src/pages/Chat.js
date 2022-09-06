@@ -327,11 +327,13 @@ async function updateUnreadMsg(sender, receiver, dispatch) {
 }
 
 async function getProfilePic(receiver, setProfilePic) {
-  const verifyRef = doc(getFirestore(), `users/${receiver}`);
-  const verify = await getDoc(verifyRef);
-  if (verify.exists()) {
-    const verifyData = verify.data();
-    setProfilePic(verifyData.profilePic);
+  if (receiver) {
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setProfilePic(verifyData.profilePic);
+    }
   }
 }
 
@@ -1028,7 +1030,6 @@ function Messages({
         sender={sender}
         receiver={receiver}
         dispatch={dispatch}
-        contacts={contacts}
         receiverContacts={receiverContacts}
         setReceiverContacts={setReceiverContacts}
       />
@@ -1096,11 +1097,8 @@ export default function Chat() {
   }, [sender]);
 
   useEffect(() => {
-    getUsers(dispatch);
-  }, []);
-
-  useEffect(() => {
     getLastMsgTime(dispatch);
+    getUsers(dispatch);
   }, []);
 
   useEffect(() => {
