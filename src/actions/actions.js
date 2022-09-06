@@ -59,10 +59,11 @@ export function updateMessage(message) {
     message
   };
 }
-export function updateMsgTime(msgTime) {
+export function updateMsgTime(msgTime, unread) {
   return {
     type: 'UPDATE_MSG_TIME',
-    msgTime
+    msgTime,
+    unread
   };
 }
 

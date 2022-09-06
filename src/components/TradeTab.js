@@ -697,7 +697,6 @@ const TradeTab = ({
                   onChange={(e) => setOfferFor(e.target.value)}
                   className="outline-none text-parsley placeholder-parsley w-[80%]"
                 ></input>
-                {/* <p>{truncate(receiver, 14)}</p> */}
                 <button
                   onClick={() => {
                     showHelp !== 'cart2'
