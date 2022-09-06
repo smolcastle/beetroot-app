@@ -16,7 +16,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const dispatch = useDispatch();
 
   async function updateUserOnboarded() {
-    if (later != null || email != null) {
+    if (later != null || email != null || selectImage !== '') {
       try {
         const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
