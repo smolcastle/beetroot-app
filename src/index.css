@@ -67,3 +67,40 @@
 .scroll-card {
   scrollbar-width: none;
 }
+/* .loader {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 4px solid black;
+  animation: rotation 1s linear infinite;
+} */
+/* .loader::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 4px;
+  border: 2px solid red;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+} */
+.loader {
+  width: 80px;
+  height: 80px;
+  display: inline-block;
+  position: relative;
+  color: #ab224e;
+  border: 1px solid #eed3dc;
+  animation: fill 1s linear infinite alternate;
+}
+
+@keyframes fill {
+  0% {
+    box-shadow: 0 0 inset;
+  }
+  100% {
+    box-shadow: 0 -80px inset;
+  }
+}
