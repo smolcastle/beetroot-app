@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN touch .env
-RUN echo "OPENSEA_KEY=${OPENSEA_KEY}" >> .env
+RUN echo "REACT_APP_OPENSEA_KEY=${OPENSEA_KEY}" >> .env
 
 RUN npm run build
 
