@@ -4,33 +4,40 @@ import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
 import { fetchUserAssets } from '../utils/opensea';
 import { showPopUp } from '../actions/actions';
 import { useDispatch } from 'react-redux';
+import { createIcon } from '@download/blockies';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const { v4: uuidv4 } = require('uuid'); // to generate unique ids
 
   const [displayName, setDisplayName] = useState('wallet address');
+  const [isEmailSelected, setIsEmailSelected] = useState(false);
   const [email, setEmail] = useState(null);
-  const [later, setLater] = useState(null);
+  const [later, setLater] = useState(false);
   const [selectImage, setSelectImage] = useState('');
 
   const dispatch = useDispatch();
 
+  var profileIcon = createIcon({
+    size: 15,
+    scale: 3
+  }).toDataURL();
+
   async function updateUserOnboarded() {
-    if (later != null || email != null || selectImage !== '') {
+    if (later !== false || email != null) {
       try {
         const userRef = doc(getFirestore(), 'users', sender);
         await updateDoc(userRef, {
           has_onboarded: true,
           email: email,
           verified: true,
-          profilePic: selectImage
+          profilePic: selectImage !== '' ? selectImage : profileIcon
         });
         setOnboarded(true);
       } catch (e) {
         console.log(e);
       }
     } else {
-      dispatch(showPopUp('alert', 'Please select the following details'));
+      dispatch(showPopUp('alert', 'Please enter all the details'));
     }
   }
 
@@ -136,6 +143,10 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                   className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                   id="email"
                   name="contact"
+                  onClick={() => {
+                    setIsEmailSelected(true);
+                    setLater(false);
+                  }}
                 />
                 <label htmlFor="email" className="text-[14px]">
                   {'Email:'}
@@ -145,6 +156,12 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                 <input
                   className="outline-none rounded-[4px] w-full mr-[8px] text-[14px] bg-gumtint/[0.2] text-gum placeholder:text-gum/[0.5] p-2"
                   placeholder="Your Email Address"
+                  onKeyPress={(e) => {
+                    if (/[ ]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  disabled={!isEmailSelected}
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
@@ -156,6 +173,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
                   type="radio"
                   onClick={() => {
                     setLater(true);
+                    setIsEmailSelected(false);
                   }}
                   className="mr-[4px] border-[1px] border-gum border-solid bg-gumtint checked:text-gum"
                   id="later"

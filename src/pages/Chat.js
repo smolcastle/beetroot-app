@@ -24,8 +24,6 @@ import {
   updateMessages,
   updateQueueIds,
   updateSignatureData,
-  showNewUser,
-  hideNewUser,
   updateUsers,
   updateReceiverContacts,
   updateMsgTime,
@@ -39,7 +37,6 @@ import { toEthAddress, toEns } from '../utils/ens';
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';
-import profile from '../img/profile.png';
 import profile0 from '../img/profile0.png';
 import { useNetwork } from 'wagmi';
 import firebase from '../utils/firebase';
@@ -341,7 +338,6 @@ function User({
   sender,
   receiver,
   dispatch,
-  index,
   setSelected,
   selected,
   setReceiver,
@@ -441,7 +437,6 @@ function User({
         )}
 
         <li
-          key={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
             selected === receiver ? 'bg-gray6' : ' '
           }`}
@@ -506,6 +501,7 @@ function Users({
   useEffect(() => {
     async function updateState() {
       setSelected((await contacts.length) > 0 ? contacts[0].to : '');
+      setReceiver(selected);
     }
     updateState();
   }, [sender, contacts]);
@@ -638,14 +634,14 @@ function Users({
             if (contact.from === sender) {
               const receiver = contact.to;
               return (
-                <div key={uuidv4()}>
+                // <div key={uuid.v4()}> assigns new key for each <div> every time. this causes component to re-render
+                <div key={index}>
                   <User
                     key={contact}
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
                     selected={selected}
-                    index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
                     setSearchTerm={setSearchTerm}
@@ -844,10 +840,12 @@ function SendMessageSection({ sender, receiver, dispatch }) {
       className="mt-2"
       onSubmit={(e) => {
         e.preventDefault();
-        setMsgString('');
-        saveMessage(message, sender, receiver, dispatch);
-        userExists();
-        createLastMsgTime(sender, receiver);
+        if (message !== '') {
+          setMsgString('');
+          saveMessage(message, sender, receiver, dispatch);
+          userExists();
+          createLastMsgTime(sender, receiver);
+        }
       }}
     >
       {receiver === '' && (
@@ -868,8 +866,12 @@ function SendMessageSection({ sender, receiver, dispatch }) {
             className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
             placeholder={'Write a message...'}
             onChange={(e) => setMsgString(e.target.value)}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && saveMessage();
+            onKeyPress={(e) => {
+              if (/[ ]/.test(e.key)) {
+                e.preventDefault();
+              } else {
+                e.key === 'Enter' && saveMessage();
+              }
             }}
           />
           <button
@@ -919,7 +921,6 @@ function Messages({
   receiverContacts
 }) {
   const messages = useSelector((state) => state.messages?.messages);
-  const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null);
 
   useEffect(() => {
