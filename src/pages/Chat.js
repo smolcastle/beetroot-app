@@ -24,8 +24,6 @@ import {
   updateMessages,
   updateQueueIds,
   updateSignatureData,
-  showNewUser,
-  hideNewUser,
   updateUsers,
   updateReceiverContacts,
   updateMsgTime,
@@ -39,7 +37,6 @@ import { toEthAddress, toEns } from '../utils/ens';
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';
-import profile from '../img/profile.png';
 import profile0 from '../img/profile0.png';
 import { useNetwork } from 'wagmi';
 import firebase from '../utils/firebase';
@@ -924,7 +921,6 @@ function Messages({
   receiverContacts
 }) {
   const messages = useSelector((state) => state.messages?.messages);
-  const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null);
 
   useEffect(() => {
