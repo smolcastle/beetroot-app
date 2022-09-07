@@ -1,18 +1,22 @@
 const initialState = {
-  showNewUser: null
+  showPopUp: null,
+  category: '',
+  msgTitle: ''
 };
 
 export default function Reducer(state = initialState, action) {
   switch (action.type) {
-    case 'SHOW_NEW_USER':
+    case 'SHOW_POPUP':
       return {
         ...state,
-        showNewUser: true
+        showPopUp: true,
+        category: action.category,
+        msgTitle: action.msgTitle
       };
-    case 'HIDE_NEW_USER':
+    case 'HIDE_POPUP':
       return {
         ...state,
-        showNewUser: false
+        showPopUp: false
       };
     default:
       return state;

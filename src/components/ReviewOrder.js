@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ReviewOrder = ({
   offers,
@@ -12,7 +12,9 @@ const ReviewOrder = ({
   orderCreated,
   setOffers,
   setConsiderations,
-  setOrderCreated
+  setOrderCreated,
+  expiryDate,
+  truncate
 }) => {
   function Cart() {
     return (
@@ -54,10 +56,19 @@ const ReviewOrder = ({
     );
   }
 
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    setHover(true);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+  };
+
   return (
     <>
       <div className="w-screen h-screen justify-center items-center flex overflow-x-hidden bg-white overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] shadow-xl">
+        <div className="flex flex-col bg-white0 py-4 px-8 w-[50%] h-[80%] rounded-[8px] border-2 border-slate-50">
           <button
             className="place-self-end cursor-pointer"
             onClick={() => {
@@ -106,13 +117,19 @@ const ReviewOrder = ({
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {offers?.map((offer) => {
                 return (
-                  <>
+                  <div key={offer.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
                           {offer.name === 'Ethereum' && <p>Ethereum</p>}
                           {offer.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
+                          )}
+                          {offer.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {offer.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
                           )}
                         </div>
                         <div className="flex items-center justify-between">
@@ -123,9 +140,24 @@ const ReviewOrder = ({
                             />
                           )}
                         </div>
-                        <div>
-                          {offer.identifier && <p>{offer.name}</p>}
-                          <p className="text-[8px] text-gum">{offer.token}</p>
+                        <div className="relative">
+                          {offer.identifier && (
+                            <>
+                              <p>{offer.name}</p>
+                              <p
+                                className="text-[8px] mt-2 text-gum "
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(offer.token, 14)}
+                              </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {offer.token}
+                                </p>
+                              )}
+                            </>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -178,20 +210,26 @@ const ReviewOrder = ({
                         <p className="mt-4">{offer.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
             <div className="w-[40%] max-h-[450px] h-[450px] overflow-y-scroll">
               {considerations?.map((consideration) => {
                 return (
-                  <>
+                  <div key={consideration.id}>
                     <div className="flex text-[12px] text-gum justify-between items-center mb-4 px-2">
                       <div className="flex items-center justify-center">
                         <div className="flex flex-col">
                           {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                           {consideration.symbol === 'ETH' && (
                             <p className="mt-2">ETH</p>
+                          )}
+                          {consideration.name === 'Wrapped Ethereum' && (
+                            <p>Wrapped Ethereum</p>
+                          )}
+                          {consideration.symbol === 'WETH' && (
+                            <p className="mt-2">WETH</p>
                           )}
                         </div>
                         <div className="flex items-center justify-between">
@@ -204,11 +242,22 @@ const ReviewOrder = ({
                         </div>
                         <div>
                           {consideration.identifier && (
-                            <p>{consideration.name}</p>
+                            <>
+                              <p>{consideration.name}</p>
+                              <p
+                                className="text-[8px] mt-2 text-gum"
+                                onMouseEnter={onHover}
+                                onMouseLeave={onLeave}
+                              >
+                                {truncate(consideration.token, 14)}
+                              </p>
+                              {hover && (
+                                <p className="text-[8px] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2 absolute">
+                                  {consideration.token}
+                                </p>
+                              )}
+                            </>
                           )}
-                          <p className="text-[8px] text-gum">
-                            {consideration.token}
-                          </p>
                         </div>
                       </div>
                       <div className="flex flex-col justify-center">
@@ -261,7 +310,7 @@ const ReviewOrder = ({
                         <p className="mt-4">{consideration.enteredAmount}</p>
                       </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
             </div>
@@ -270,7 +319,7 @@ const ReviewOrder = ({
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 mt-5 cursor-pointer"
               onClick={async () => {
-                await createOrder(offerFor);
+                await createOrder(offerFor, expiryDate);
               }}
             >
               {'LOOKS GOOD'}

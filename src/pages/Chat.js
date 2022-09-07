@@ -24,20 +24,19 @@ import {
   updateMessages,
   updateQueueIds,
   updateSignatureData,
-  showNewUser,
-  hideNewUser,
   updateUsers,
   updateReceiverContacts,
-  updateMsgTime
+  updateMsgTime,
+  showPopUp
 } from '../actions/actions';
 import { getDateTime, isFunction, truncate } from '../helpers/Collections';
 import Provider from '../utils/Provider';
 import SigningModal from '../components/SigningModal';
 import { ethers } from 'ethers';
+import { toEthAddress, toEns } from '../utils/ens';
 import { generateNonce, SiweMessage } from 'siwe';
 import Order from './Order';
 import { useAccount } from 'wagmi';
-import profile from '../img/profile.png';
 import profile0 from '../img/profile0.png';
 import { useNetwork } from 'wagmi';
 import firebase from '../utils/firebase';
@@ -45,6 +44,7 @@ import storage from '../utils/firebase';
 import Onboarding from './Onboarding';
 import mascot from '../img/mascot-hands.png';
 
+const { v4: uuidv4 } = require('uuid'); // to generate unique ids
 const db = getFirestore();
 
 async function saveMessage(messageText, sender, receiver, dispatch) {
@@ -145,7 +145,7 @@ async function getSignatureData(sender, dispatch) {
       getAllQueues(sender, dispatch);
     } else {
       dispatch(hideLoader());
-      alert('Signature did not match');
+      dispatch(showPopUp('alert', 'Signature did not match'));
     }
   } else {
     dispatch(hideLoader());
@@ -182,7 +182,7 @@ async function signMessage(sender, dispatch, chainId, signer) {
       getSignatureData(sender, dispatch);
     } else {
       dispatch(hideLoader());
-      alert("Signature didn't match");
+      dispatch(showPopUp('alert', 'Signature did not match'));
     }
   } catch (error) {
     dispatch(hideLoader());
@@ -195,7 +195,6 @@ async function saveUser(sender) {
     await setDoc(doc(db, `users/${sender}`), {
       name: `${sender}`,
       has_onboarded: false,
-      has_skipped: false,
       verified: false,
       telegram: '',
       email: '',
@@ -219,7 +218,7 @@ async function getUsers(dispatch) {
 
 async function createContact(newUser, sender) {
   try {
-    await addDoc(collection(db, 'address book', sender, 'contacts'), {
+    await addDoc(collection(db, `address book/ ${sender}/contacts`), {
       from: sender,
       to: newUser,
       timestamp: serverTimestamp()
@@ -231,8 +230,8 @@ async function createContact(newUser, sender) {
 
 async function getContacts(sender, setContacts) {
   try {
-    const contactsRef = collection(db, 'address book', sender, 'contacts');
-    const q = query(contactsRef, orderBy('timestamp', 'asc'));
+    const contactsRef = collection(db, `address book/ ${sender}/contacts`);
+    const q = query(contactsRef, orderBy('timestamp', 'desc'));
     onSnapshot(q, (querySnapshot) => {
       let contacts = [];
       querySnapshot.forEach((doc) => {
@@ -248,7 +247,7 @@ async function getContacts(sender, setContacts) {
 async function getReceiverContacts(receiver, dispatch) {
   if (receiver) {
     try {
-      const contactsRef = collection(db, 'address book', receiver, 'contacts');
+      const contactsRef = collection(db, `address book/ ${sender}/contacts`);
       const q = query(contactsRef, orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
         let receiverContacts = [];
@@ -271,13 +270,17 @@ async function createLastMsgTime(sender, receiver) {
     const msgTimeSnap = await getDoc(msgTimeRef);
     if (msgTimeSnap.exists()) {
       await updateDoc(msgTimeRef, {
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
+        from: sender,
+        read: false
       });
       return;
     } else {
       await setDoc(doc(db, `lastMsg`, id), {
         sender: sender,
         receiver: receiver,
+        from: sender,
+        read: false,
         timestamp: serverTimestamp()
       });
     }
@@ -302,28 +305,59 @@ async function getLastMsgTime(dispatch) {
   }
 }
 
+async function updateUnreadMsg(sender, receiver, dispatch) {
+  const id =
+    sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`;
+  try {
+    const unreadRef = doc(db, `lastMsg`, id);
+    const unreadSnap = await getDoc(unreadRef);
+    if (unreadSnap.exists()) {
+      await updateDoc(unreadRef, {
+        read: true
+      });
+      getLastMsgTime(dispatch);
+      return;
+    }
+  } catch (e) {
+    console.log('Error', e);
+  }
+}
+
+async function getProfilePic(receiver, setProfilePic) {
+  if (receiver) {
+    const verifyRef = doc(getFirestore(), `users/${receiver}`);
+    const verify = await getDoc(verifyRef);
+    if (verify.exists()) {
+      const verifyData = verify.data();
+      setProfilePic(verifyData.profilePic);
+    }
+  }
+}
+
 function User({
   sender,
   receiver,
   dispatch,
-  index,
   setSelected,
-  isSelected,
-  setReceiver
+  selected,
+  setReceiver,
+  setSearchTerm,
+  contacts
 }) {
   useEffect(() => {
     let unsubscribe;
-    if (isSelected) {
+    if (selected === receiver) {
       setReceiver(receiver);
       unsubscribe = listenMessages(sender, receiver, dispatch);
+      updateUnreadMsg(sender, receiver, dispatch);
     }
-
     return () => {
       if (isFunction(unsubscribe)) unsubscribe();
     };
-  }, [isSelected]);
+  }, [selected]);
 
   const [isVerified, setIsVerified] = useState();
+  const [profilePic, setProfilePic] = useState('');
 
   async function getVerifedData() {
     const verifyRef = doc(getFirestore(), `users/${receiver}`);
@@ -336,67 +370,116 @@ function User({
     }
   }
 
-  const [lastMsgTime, setLastMsgTime] = useState(null);
+  const [lastMsgTime, setLastMsgTime] = useState();
   const msgTime = useSelector((state) => state.messages.msgTime);
-  useEffect(() => {
+  const [readMsg, setReadMsg] = useState();
+
+  async function fetchLastMsgTime() {
     msgTime.map((lastMsg) => {
       if (
         (lastMsg.receiver === receiver && lastMsg.sender === sender) ||
         (lastMsg.receiver === sender && lastMsg.sender === receiver)
       ) {
         setLastMsgTime(lastMsg.timestamp);
-        return;
+        if (lastMsg.from !== sender) {
+          setReadMsg(lastMsg.read);
+        }
       }
     });
-  });
+  }
+
+  const [ensName, setEnsName] = useState('');
+  async function getEnsName() {
+    let ens = await toEns(receiver, dispatch);
+    setEnsName(ens);
+  }
+
   useEffect(() => {
+    getEnsName();
     getVerifedData();
-  }, [receiver]);
+    getProfilePic(receiver, setProfilePic);
+  });
+
+  useEffect(() => {
+    fetchLastMsgTime();
+  });
+
+  let timeout;
+  const [hover, setHover] = useState(false);
+  const onHover = () => {
+    timeout = setTimeout(() => {
+      setHover(true);
+    }, 300);
+  };
+
+  const onLeave = () => {
+    setHover(false);
+    clearTimeout(timeout);
+  };
 
   return (
-    <button
-      type={'button'}
-      onClick={() => {
-        if (!isSelected) {
-          dispatch(resetMessages());
-          setSelected(index);
-        }
-      }}
-      className="w-[99%]"
-    >
-      <li
-        index={index}
-        className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
-          isSelected ? 'bg-gray6' : ' '
-        }`}
+    <>
+      <button
+        type={'button'}
+        onClick={() => {
+          if (selected !== receiver) {
+            dispatch(resetMessages());
+            setSelected(receiver);
+          }
+          setSearchTerm('');
+        }}
+        className="w-[99%]"
       >
-        <div className="flex-1 flex items-center p-3">
-          <div className="w-[30%]">
-            <img src={profile} className="w-[48px]"></img>
-          </div>
-          <div className="flex flex-col items-start w-[50%] ">
-            <p className="text-[16px]">{truncate(receiver, 14)}</p>
-            {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
-            {!isVerified && (
-              <p className="text-[14px] text-gray3">Unverified</p>
-            )}
-          </div>
-          <div className="flex flex-col items-end w-[20%]">
-            <div className="bg-gumtint my-[3px] text-[12px] min-w-[40%] min-h-[40%] w-auto h-auto text-gum rounded-[50%]">
-              <p>4</p>
+        {hover && (
+          <p className="absolute right-0 text-[8px] w-[70%] px-2 py-[5px] rounded-[4px] text-white0 bg-gray2">
+            {receiver}
+          </p>
+        )}
+
+        <li
+          className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
+            selected === receiver ? 'bg-gray6' : ' '
+          }`}
+        >
+          <div className="flex-1 flex items-center p-3">
+            <div className="w-[30%]">
+              {profilePic ? (
+                <img src={profilePic} className="w-[48px] rounded-[50%]" />
+              ) : (
+                <img src={profile0} className="w-[48px]"></img>
+              )}
             </div>
-            {lastMsgTime && (
-              <p className={`text-[14px] text-gray3`}>
-                {getDateTime(lastMsgTime?.seconds).time}
-              </p>
-            )}
-            {lastMsgTime === null && (
-              <p className="text-[14px] text-gray3">-</p>
-            )}
+            <div className="flex flex-col items-start w-[50%] mt-2">
+              <div onMouseEnter={onHover} onMouseLeave={onLeave}>
+                {ensName ? (
+                  <p className="text-[16px]">{ensName}</p>
+                ) : (
+                  <p className="text-[16px]">{truncate(receiver, 14)}</p>
+                )}
+              </div>
+
+              {isVerified && (
+                <p className="text-[14px] text-parsley">Verified</p>
+              )}
+              {!isVerified && (
+                <p className="text-[14px] text-gray3">Unverified</p>
+              )}
+            </div>
+            <div className="flex flex-col justify-between items-end w-[20%] mt-2">
+              {readMsg === false && (
+                <div className="bg-gum/[0.5] my-[8px] w-[12px] h-[12px] rounded-[50%]"></div>
+              )}
+              {lastMsgTime && (
+                <p className={`text-[14px] text-gray3`}>
+                  {getDateTime(lastMsgTime?.seconds).time}
+                </p>
+              )}
+              {!lastMsgTime && <p className="text-[14px] text-gray3">-</p>}
+            </div>
           </div>
-        </div>
-      </li>
-    </button>
+        </li>
+      </button>
+    </>
   );
 }
 
@@ -405,39 +488,82 @@ function Users({
   dispatch,
   setReceiver,
   users,
-  selected,
   queue_ids,
-  setSelected,
   contacts,
+  setContacts,
   setNewModalState
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selected, setSelected] = useState(
+    contacts.length > 0 ? contacts[0].to : ''
+  );
+
+  useEffect(() => {
+    async function updateState() {
+      setSelected((await contacts.length) > 0 ? contacts[0].to : '');
+      setReceiver(selected);
+    }
+    updateState();
+  }, [sender, contacts]);
+
+  let contactExists = false;
+
+  async function addNewUserFunc() {
+    let address = await toEthAddress(searchTerm, dispatch);
+    if (address && address !== '' && address.toLowerCase() !== sender) {
+      let i;
+      for (i = 0; i < contacts.length; i++) {
+        if (contacts[i].to.toLowerCase() === address.toLowerCase()) {
+          contactExists = true;
+          break;
+        }
+      }
+      // if not then save this new contact
+      if (contactExists == false) {
+        createContact(address.toLowerCase(), sender);
+        setSelected(address.toLowerCase());
+      }
+    }
+    setSearchTerm('');
+    getContacts(sender, setContacts);
+  }
 
   function AddContactBtn() {
     return (
-      <div className="p-[4px]">
-        <p className="text-[12px] text-gray2 mb-[8px]">
-          This address cannot be found in your address book.
-        </p>
-        <button
-          className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
-          onClick={() => {
-            createContact(searchTerm.toLowerCase(), sender);
-            setSearchTerm('');
-          }}
-        >
-          Add to address book
-        </button>
-      </div>
+      <>
+        {contacts.length !== 0 && (
+          <div className="p-[4px]">
+            <p className="text-[12px] text-gray2 mb-[8px]">
+              This address cannot be found in your address book.
+            </p>
+            <button
+              className="text-gum bg-gumtint text-[12px] p-[10px] rounded-[4px]"
+              onClick={() => {
+                addNewUserFunc();
+                setSearchTerm('');
+              }}
+            >
+              Add to address book
+            </button>
+          </div>
+        )}
+      </>
     );
   }
 
-  const contactBtn = useSelector((state) => state.contacts.addContactBtn);
+  const filteredContacts = contacts?.filter((contact) => {
+    const receiver = contact.to;
+    if (searchTerm === '') {
+      return receiver;
+    } else if (receiver.toLowerCase().startsWith(searchTerm.toLowerCase())) {
+      return receiver;
+    }
+  });
 
   return (
     <ul
       role="list"
-      className="flex flex-[2] mx-10 flex-col px-4 py-5 h-[95%] bg-white10"
+      className="flex flex-[2] flex-col px-4 py-5 h-[95%] bg-white10 mr-1 relative"
     >
       <div className="bg-gray6 flex rounded-lg py-3 px-4 justify-between items-center mb-5">
         <svg
@@ -463,14 +589,18 @@ function Users({
         </svg>
         <input
           className="bg-gray6 mx-4 outline-none"
-          placeholder="Search or add contacts"
+          placeholder="Search / Add"
+          value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
+          }}
+          onKeyPress={(event) => {
+            event.key === 'Enter' && addNewUserFunc();
           }}
         ></input>
         <button
           onClick={() => {
-            dispatch(showNewUser());
+            addNewUserFunc();
           }}
         >
           <svg
@@ -499,37 +629,31 @@ function Users({
         </button>
       </div>
       <div className="overflow-y-scroll">
-        {contacts
-          ?.filter((contact) => {
-            const receiver = contact.to;
-            if (searchTerm == '') {
-              return receiver;
-            } else if (
-              receiver.toLowerCase().includes(searchTerm.toLowerCase())
-            ) {
-              return receiver;
-            }
-          })
-          // .reverse()
-          ?.map((contact, index) => {
+        {filteredContacts.length > 0 ? (
+          filteredContacts.map((contact, index) => {
             if (contact.from === sender) {
               const receiver = contact.to;
               return (
-                <>
+                // <div key={uuid.v4()}> assigns new key for each <div> every time. this causes component to re-render
+                <div key={index}>
                   <User
                     key={contact}
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
-                    isSelected={selected === index}
-                    index={index}
+                    selected={selected}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
+                    setSearchTerm={setSearchTerm}
+                    contacts={contacts}
                   />
-                </>
+                </div>
               );
             }
-          })}
+          })
+        ) : (
+          <AddContactBtn />
+        )}
         {contacts.length == 0 && (
           <>
             <div className="flex flex-col justify-center items-center">
@@ -539,7 +663,7 @@ function Users({
               </p>
               <button
                 onClick={() => {
-                  dispatch(showNewUser());
+                  addNewUserFunc();
                 }}
               >
                 <svg
@@ -576,7 +700,6 @@ function Users({
 
 function TopSection({ receiver }) {
   const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (copied) setCopied(false);
@@ -644,104 +767,55 @@ function TopSection({ receiver }) {
     getVerifedData();
   }, [receiver]);
 
+  const [profilePic, setProfilePic] = useState('');
+  useEffect(() => {
+    getProfilePic(receiver, setProfilePic);
+  }, [receiver]);
+
   return (
-    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
-      <div className="w-[15%]">
-        <img src={profile} className="w-[48px]"></img>
-      </div>
-      <div className="flex flex-col items-start w-[20%] ">
-        <div className="flex">
-          <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
-          <button
-            type={'button'}
-            onClick={() => {
-              navigator.clipboard.writeText(receiver);
-              setCopied(true);
-            }}
-          >
-            {!copied ? <Clipboard /> : <Check />}
-          </button>
+    <>
+      {receiver === '' && (
+        <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+          <div className="w-[15%]">
+            <img src={profile0} className="w-[48px]"></img>
+          </div>
         </div>
-        {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
-        {!isVerified && <p className="text-[14px] text-gray3">Unverified</p>}
-      </div>
-    </div>
+      )}
+      {receiver !== '' && (
+        <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
+          <div className="w-[15%]">
+            {profilePic ? (
+              <img src={profilePic} className="w-[48px] rounded-[50%]" />
+            ) : (
+              <img src={profile0} className="w-[48px]"></img>
+            )}
+          </div>
+          <div className="flex flex-col items-start w-[20%] ">
+            <div className="flex">
+              <p className="text-[16px] mr-2">{truncate(receiver, 14)}</p>
+              <button
+                type={'button'}
+                onClick={() => {
+                  navigator.clipboard.writeText(receiver);
+                  setCopied(true);
+                }}
+              >
+                {!copied ? <Clipboard /> : <Check />}
+              </button>
+            </div>
+            {isVerified && <p className="text-[14px] text-parsley">Verified</p>}
+            {!isVerified && (
+              <p className="text-[14px] text-gray3">Unverified</p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
-function AddUser({ dispatch, sender, contacts }) {
-  const [newUser, setNewUser] = useState('');
-  let contactExists = false;
-  async function addNewUserFunc() {
-    if (newUser !== '' && newUser.toLowerCase() !== sender) {
-      let i;
-      for (i = 0; i < contacts.length; i++) {
-        if (contacts[i].to.toLowerCase() === newUser.toLowerCase()) {
-          contactExists = true;
-          break;
-        }
-      }
-      // if not then save this new contact
-      if (contactExists == false) {
-        createContact(newUser.toLowerCase(), sender);
-      }
-      setNewUser('');
-      dispatch(hideNewUser());
-    } else {
-      alert('Please paste an address');
-    }
-  }
-  return (
-    <div className="flex-4 rounded-lg flex items-center p-3 h-[80px] bg-gray6">
-      <div className="w-[15%]">
-        <img src={profile0} className="w-[48px]"></img>
-      </div>
-      <div className="flex flex-col items-start w-[20%] ">
-        <div className="flex">
-          <input
-            className="bg-gray6 outline-none w-[150px]"
-            placeholder="Paste Address Here"
-            value={newUser}
-            onChange={(e) => setNewUser(e.target.value)}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && addNewUserFunc();
-            }}
-          />
-          <button
-            className="text-gum ml-1"
-            onClick={() => {
-              dispatch(hideNewUser());
-            }}
-          >
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M21.04 19.1467C21.2911 19.3978 21.4321 19.7383 21.4321 20.0934C21.4321 20.4484 21.2911 20.789 21.04 21.04C20.7889 21.2911 20.4484 21.4322 20.0933 21.4322C19.7383 21.4322 19.3977 21.2911 19.1467 21.04L15.3867 17.2667L11.6133 21.04C11.3623 21.2911 11.0217 21.4322 10.6667 21.4322C10.3116 21.4322 9.97107 21.2911 9.72 21.04C9.46893 20.789 9.32788 20.4484 9.32788 20.0934C9.32788 19.9176 9.36251 19.7435 9.42979 19.581C9.49707 19.4186 9.59569 19.271 9.72 19.1467L13.4933 15.3867L9.73334 11.6C9.48227 11.349 9.34121 11.0084 9.34121 10.6534C9.34121 10.2983 9.48227 9.95777 9.73334 9.7067C9.98441 9.45563 10.3249 9.31458 10.68 9.31458C11.0351 9.31458 11.3756 9.45563 11.6267 9.7067L15.4 13.48L19.16 9.7067C19.2843 9.58238 19.4319 9.48376 19.5943 9.41648C19.7568 9.3492 19.9309 9.31458 20.1067 9.31458C20.2825 9.31458 20.4566 9.3492 20.619 9.41648C20.7814 9.48376 20.929 9.58238 21.0533 9.7067C21.1777 9.83102 21.2763 9.9786 21.3435 10.141C21.4108 10.3035 21.4455 10.4776 21.4455 10.6534C21.4455 10.8292 21.4108 11.0033 21.3435 11.1657C21.2763 11.3281 21.1777 11.4757 21.0533 11.6L17.28 15.3734L21.0533 19.1334L21.04 19.1467Z"
-                fill="#AB224E"
-              />
-            </svg>
-          </button>
-        </div>
-        <p className="text-[14px] text-gray3">Unverified</p>
-      </div>
-    </div>
-  );
-}
-
-function SendMessageSection({
-  message,
-  setMsgString,
-  sender,
-  receiver,
-  dispatch
-}) {
+function SendMessageSection({ sender, receiver, dispatch }) {
+  const [message, setMsgString] = useState('');
   const receiverContacts = useSelector(
     (state) => state.contacts.receiverContacts
   );
@@ -766,66 +840,79 @@ function SendMessageSection({
       className="mt-2"
       onSubmit={(e) => {
         e.preventDefault();
-        setMsgString('');
-        saveMessage(message, sender, receiver, dispatch);
-        userExists();
-        createLastMsgTime(sender, receiver);
+        if (message !== '') {
+          setMsgString('');
+          saveMessage(message, sender, receiver, dispatch);
+          userExists();
+          createLastMsgTime(sender, receiver);
+        }
       }}
     >
-      <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
-        <input
-          value={message}
-          type="text"
-          name="search"
-          autoComplete="off"
-          id="search"
-          className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
-          placeholder={'Type your message here'}
-          onChange={(e) => setMsgString(e.target.value)}
-          onKeyPress={(event) => {
-            event.key === 'Enter' && saveMessage();
-          }}
-        />
-        <button
-          onClick={() => {
-            setMsgString('');
-            saveMessage(message, sender, receiver, dispatch);
-          }}
-          type="button"
-          className="h-12"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+      {receiver === '' && (
+        <div className="flex w-full h-14 p-[6px] bg-gray6 rounded-lg items-center">
+          <p className="text-black/[0.5] pl-2 text-[14px]">
+            Type in search field and add a new address to start messaging
+          </p>
+        </div>
+      )}
+      {receiver !== '' && (
+        <div className="flex w-full h-14 p-[6px] justify-evenly bg-gray6 rounded-lg items-center">
+          <input
+            value={message}
+            type="text"
+            name="search"
+            autoComplete="off"
+            id="search"
+            className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
+            placeholder={'Write a message...'}
+            onChange={(e) => setMsgString(e.target.value)}
+            onKeyPress={(e) => {
+              if (/[ ]/.test(e.key)) {
+                e.preventDefault();
+              } else {
+                e.key === 'Enter' && saveMessage();
+              }
+            }}
+          />
+          <button
+            onClick={() => {
+              setMsgString('');
+              saveMessage(message, sender, receiver, dispatch);
+            }}
+            type="button"
+            className="h-12"
           >
-            <path
-              d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
-              fill="white"
-            />
-            <path
-              d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
-              stroke="#AB224E"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z"
-              fill="#EED3DC"
-              stroke="#AB224E"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-      </div>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04444 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
+                fill="white"
+              />
+              <path
+                d="M14.2619 1.47108C13.5115 0.720689 12.0665 0.565296 6.59713 2.811C2.78529 4.37615 0.583448 5.30298 0.969117 7.68861C1.13848 8.73622 2.21637 10.3446 3.42852 11.6379V13.9883C3.42852 14.9805 4.606 15.5014 5.34015 14.834L6.26707 13.9914C6.92343 14.3984 7.54711 14.6835 8.04443 14.764C10.4301 15.1496 11.3569 12.9477 12.9221 9.13592C15.1678 3.66656 15.0123 2.22148 14.2619 1.47108Z"
+                stroke="#AB224E"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M14.3658 1.58434L3.12212 11.301C2.03933 10.0746 1.1241 8.64697 0.96917 7.68861C0.583502 5.30298 2.78534 4.37615 6.59718 2.811C12.0665 0.565296 13.5117 0.720689 14.2621 1.47108C14.2981 1.50712 14.3327 1.54474 14.3658 1.58434Z"
+                fill="#EED3DC"
+                stroke="#AB224E"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </form>
   );
 }
 
 function Messages({
-  message,
-  setMsgString,
   sender,
   receiver,
   dispatch,
@@ -834,7 +921,6 @@ function Messages({
   receiverContacts
 }) {
   const messages = useSelector((state) => state.messages?.messages);
-  const newUser = useSelector((state) => state.newUser.showNewUser);
   const [showDelMessage, setShowDelMessage] = useState(null);
 
   useEffect(() => {
@@ -869,126 +955,82 @@ function Messages({
   return (
     <ul
       role="list"
-      className="flex flex-[4] flex-col py-5 bg-white10 w-full relative"
+      className="flex flex-[4] flex-col py-5 bg-white10 w-full relative mx-1"
     >
-      {newUser ? (
-        <AddUser
-          receiver={receiver}
-          contacts={contacts}
-          sender={sender}
-          dispatch={dispatch}
-        />
-      ) : (
-        <TopSection receiver={receiver} />
-      )}
+      <TopSection receiver={receiver} />
+
       <div className="flex flex-1 flex-col-reverse overflow-y-scroll px-2">
-        {chats?.map(({ text, name, timestamp, id }, index) => {
-          return (
-            <div key={id}>
-              <div
-                className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
-                  name === sender ? 'items-end' : 'items-start'
-                } `}
-              >
-                <div className="flex items-center">
-                  <div
-                    onClick={() => {
-                      {
-                        showDelMessage === index
-                          ? hideMessageDetails(id)
-                          : showMessageDetails(id, index);
-                      }
-                    }}
-                    key={index}
-                    className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
-                      name === sender
-                        ? 'text-parsley bg-parsleytint'
-                        : 'text-gum bg-gumtint'
-                    }`}
-                  >
-                    {text}
-                  </div>
-                </div>
-                {name === sender &&
-                  showDelMessage === index &&
-                  timestamp?.seconds && (
-                    <div className="text-gray3 text-[11px] capitalize p-2 flex w-[120px] justify-between">
-                      <p>{getDateTime(timestamp?.seconds).date},</p>
-                      <p>{getDateTime(timestamp?.seconds).time} </p>
-                      <p>{'(UTC)'}</p>
+        {messages !== null &&
+          chats?.map(({ text, name, timestamp, id }, index) => {
+            return (
+              <div key={id}>
+                <div
+                  className={`flex flex-col text-[14px] h-auto text-white0 m-1 ${
+                    name === sender ? 'items-end' : 'items-start'
+                  } `}
+                >
+                  <div className="flex items-center">
+                    <div
+                      onClick={() => {
+                        {
+                          showDelMessage === index
+                            ? hideMessageDetails(id)
+                            : showMessageDetails(id, index);
+                        }
+                      }}
+                      key={index}
+                      className={`min-w-min max-w-xs p-3 break-words2 rounded-md ${
+                        name === sender
+                          ? 'text-parsley bg-parsleytint'
+                          : 'text-gum bg-gumtint'
+                      }`}
+                    >
+                      {text}
                     </div>
-                  )}
+                  </div>
+                  {name === sender &&
+                    showDelMessage === index &&
+                    timestamp?.seconds && (
+                      <div className="text-gray3 text-[11px] capitalize p-2 flex w-[120px] justify-between">
+                        <p>{getDateTime(timestamp?.seconds).date},</p>
+                        <p>{getDateTime(timestamp?.seconds).time} </p>
+                        <p>{'(UTC)'}</p>
+                      </div>
+                    )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        {chats.length === 0 && contacts.length !== 0 && receiver !== '' && (
+          <div className="flex flex-col justify-center items-center mt-[20%]">
+            <p className="text-[12px] text-gray2 text-center w-[80%]">
+              No messages here yet. Send your first message below.
+            </p>
+          </div>
+        )}
       </div>
-      {messages === null && contacts.length === 0 && (
-        <div className="flex flex-col text-[12px] text-center text-gray2 h-[400px] justify-evenly items-center mt-4 absolute top-[20%] w-full">
-          <p className="text-[24px]">👋</p>
-          <p className="w-[50%]">
-            Be polite and respectful while communcating with other users using
-            Beetrot chat.
-          </p>
-          <p className="w-[50%]">Useful Tips:</p>
-          <div className="w-full flex flex-col items-center">
-            <p className="text-parsley w-[50%]">Verfied:</p>
-            <p className="w-[50%]">
-              This address has been authenticated with Beetroot using a
-              signature.
-            </p>
-          </div>
-          <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Unverfied:</p>
-            <p className="w-[50%]">
-              This address has not been authenticated with Beetroot.
-            </p>
-          </div>
-          <div className="w-full flex flex-col items-center">
-            <p className="w-[50%]">Start chatting by clicking the</p>
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0.68555 7.33425C0.795645 8.36332 1.62329 9.19097 2.65183 9.30561C4.23168 9.48168 5.76817 9.48168 7.348 9.30561C8.37657 9.19097 9.20422 8.36332 9.31429 7.33425C9.39557 6.5746 9.46422 5.7947 9.46422 4.99959C9.46422 4.20448 9.39557 3.42458 9.31429 2.66493C9.20422 1.63589 8.37657 0.808243 7.348 0.693597C5.76817 0.517499 4.23168 0.517499 2.65183 0.693597C1.62329 0.808243 0.795645 1.63589 0.68555 2.66493C0.604275 3.42458 0.535645 4.20448 0.535645 4.99959C0.535645 5.7947 0.604276 6.5746 0.68555 7.33425Z"
-                fill="#EED3DC"
-                stroke="#AB224E"
-              />
-              <path
-                d="M5 3.21387V6.7853"
-                stroke="#AB224E"
-                strokeLinecap="round"
-              />
-              <path
-                d="M6.78578 5H3.21436"
-                stroke="#AB224E"
-                strokeLinecap="round"
-              />
-            </svg>
-            <p className="w-[50%]">button on the top left of this chat box</p>
-          </div>
-        </div>
-      )}
-      {messages === null && contacts.length === 1 && (
-        <div className="flex flex-col justify-center items-center absolute top-[20%]">
-          <p className="text-[24px]">🍻</p>
-          <p className="text-[12px] text-gray2 text-center w-[50%]">
-            Yay! You have added your first contact to your address book. Use the
-            input field below to send them a message.
+      {contacts.length === 0 && (
+        <div className="flex flex-col text-[12px] text-left text-gray2 p-4 mb-4 justify-evenly absolute bottom-[10%] w-full border-dotted border-2">
+          <p className="w-[90%]">
+            <span className="font-bold">Some useful tips: </span>
+            <br />
+            Be polite and respectful while communcating with other.
+            <br />
+            <br />
+            <span className="text-parsley font-bold">VERIFIED:</span> A verified
+            account on Beetroot has authenticated its address using
+            cryptographic signature.
+            <br />
+            <br />
+            <span className="text-gray3 font-bold">UNVERIFIED:</span> This means
+            that the address has not yet created an account on Beetroot.
           </p>
         </div>
       )}
       <SendMessageSection
-        message={message}
-        setMsgString={setMsgString}
         sender={sender}
         receiver={receiver}
         dispatch={dispatch}
-        contacts={contacts}
         receiverContacts={receiverContacts}
         setReceiverContacts={setReceiverContacts}
       />
@@ -997,9 +1039,7 @@ function Messages({
 }
 
 export default function Chat() {
-  const [message, setMsgString] = useState('');
   const [receiver, setReceiver] = useState('');
-  const [selected, setSelected] = useState(0);
   const [modal, setModalState] = useState(false);
   const [newModal, setNewModalState] = useState(false);
   const [signModal, setSignModalState] = useState(false);
@@ -1017,17 +1057,19 @@ export default function Chat() {
 
   const funcNewUser = async () => {
     // if users list exist then check if sender already exists in the list
-    if (users && sender !== '') {
+    if ((await users) && sender !== '') {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       if (!user.exists()) {
         await saveUser(sender);
         getUsers(dispatch);
+        console.log('users not null');
       }
     }
     // if the users list is empty then add the new user
-    if (users != null && users.length === 0 && sender !== '') {
+    if ((await users) != null && users.length === 0 && sender !== '') {
       saveUser(sender);
+      console.log('users null');
     }
   };
 
@@ -1036,7 +1078,7 @@ export default function Chat() {
       const userRef = doc(getFirestore(), `users/${sender}`);
       const user = await getDoc(userRef);
       const userData = user.data();
-      if (userData.has_onboarded == false && userData.has_skipped == false) {
+      if (userData.has_onboarded == false) {
         setOnboarded(false);
       } else {
         setOnboarded(true);
@@ -1048,8 +1090,6 @@ export default function Chat() {
     showOnboarding();
   }, [address]);
 
-  const { chain } = useNetwork()
-
   useEffect(() => {
     if (sender && (!signatureData || !signatureData?.signature)) {
       dispatch(showLoader());
@@ -1058,16 +1098,14 @@ export default function Chat() {
   }, [sender]);
 
   useEffect(() => {
+    getLastMsgTime(dispatch);
     getUsers(dispatch);
   }, []);
 
   useEffect(() => {
-    getLastMsgTime(dispatch);
-  });
-
-  useEffect(() => {
     getContacts(sender, setContacts);
     listenMessages(sender, receiver, dispatch);
+    setReceiver('');
   }, [sender]);
   useEffect(() => {
     funcNewUser();
@@ -1111,15 +1149,12 @@ export default function Chat() {
                   setReceiver={setReceiver}
                   setModalState={setModalState}
                   modal={modal}
-                  selected={selected}
-                  setSelected={setSelected}
                   setSignModalState={setSignModalState}
                   signModal={signModal}
                   contacts={contacts}
+                  setContacts={setContacts}
                 />
                 <Messages
-                  message={message}
-                  setMsgString={setMsgString}
                   sender={sender}
                   receiver={receiver}
                   dispatch={dispatch}
@@ -1128,7 +1163,7 @@ export default function Chat() {
                   receiverContacts={receiverContacts}
                   setReceiverContacts={setReceiverContacts}
                 />
-                <div className="flex flex-[6] flex-col">
+                <div className="flex flex-[6] flex-col ml-5">
                   <Order
                     sender={sender}
                     receiver={receiver}

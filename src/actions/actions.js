@@ -59,10 +59,11 @@ export function updateMessage(message) {
     message
   };
 }
-export function updateMsgTime(msgTime) {
+export function updateMsgTime(msgTime, unread) {
   return {
     type: 'UPDATE_MSG_TIME',
-    msgTime
+    msgTime,
+    unread
   };
 }
 
@@ -102,14 +103,16 @@ export function hideLoader() {
     type: 'HIDE_LOADER'
   };
 }
-export function showNewUser() {
+export function showPopUp(category, msgTitle) {
   return {
-    type: 'SHOW_NEW_USER'
+    type: 'SHOW_POPUP',
+    category,
+    msgTitle
   };
 }
 
-export function hideNewUser() {
+export function hidePopUp() {
   return {
-    type: 'HIDE_NEW_USER'
+    type: 'HIDE_POPUP'
   };
 }

@@ -1,4 +1,4 @@
-@keyframes changeLetter1 {
+@keyframes changeLetterE {
   0% {
     content: 'Z';
   }
@@ -18,27 +18,132 @@
     content: 'B';
   }
   60% {
-    content: 'M';
+    content: 'E';
   }
   70% {
-    content: 'S';
+    content: 'E';
   }
   80% {
-    content: 'H';
+    content: 'E';
   }
   90% {
-    content: 'X';
+    content: 'E';
   }
   100% {
-    content: 'M';
+    content: 'E';
   }
 }
-@keyframes changeLetter2 {
+@keyframes changeLetterN {
+  0% {
+    content: 'W';
+  }
+  10% {
+    content: 'D';
+  }
+  20% {
+    content: 'E';
+  }
+  30% {
+    content: 'L';
+  }
+  40% {
+    content: 'I';
+  }
+  50% {
+    content: 'A';
+  }
+  60% {
+    content: 'N';
+  }
+  70% {
+    content: 'N';
+  }
+  80% {
+    content: 'N';
+  }
+  90% {
+    content: 'N';
+  }
+  100% {
+    content: 'N';
+  }
+}
+@keyframes changeLetterC {
   0% {
     content: 'D';
   }
   10% {
-    content: 'N';
+    content: 'Q';
+  }
+  20% {
+    content: 'Z';
+  }
+  30% {
+    content: 'E';
+  }
+  40% {
+    content: 'B';
+  }
+  50% {
+    content: 'V';
+  }
+  60% {
+    content: 'C';
+  }
+  70% {
+    content: 'C';
+  }
+  80% {
+    content: 'C';
+  }
+  90% {
+    content: 'C';
+  }
+  100% {
+    content: 'C';
+  }
+}
+@keyframes changeLetterR {
+  0% {
+    content: 'K';
+  }
+  10% {
+    content: 'G';
+  }
+  20% {
+    content: 'O';
+  }
+  30% {
+    content: 'J';
+  }
+  40% {
+    content: 'T';
+  }
+  50% {
+    content: 'U';
+  }
+  60% {
+    content: 'R';
+  }
+  70% {
+    content: 'R';
+  }
+  80% {
+    content: 'R';
+  }
+  90% {
+    content: 'R';
+  }
+  100% {
+    content: 'R';
+  }
+}
+@keyframes changeLetterY {
+  0% {
+    content: 'C';
+  }
+  10% {
+    content: 'A';
   }
   20% {
     content: 'R';
@@ -47,80 +152,263 @@
     content: 'Y';
   }
   40% {
-    content: 'X';
+    content: 'O';
   }
   50% {
-    content: 'K';
+    content: 'E';
   }
   60% {
-    content: 'V';
+    content: 'Y';
   }
   70% {
-    content: 'G';
+    content: 'Y';
   }
   80% {
-    content: 'J';
+    content: 'Y';
   }
   90% {
-    content: 'F';
+    content: 'Y';
   }
   100% {
+    content: 'Y';
+  }
+}
+@keyframes changeLetterP {
+  0% {
+    content: 'R';
+  }
+  10% {
+    content: 'L';
+  }
+  20% {
+    content: 'T';
+  }
+  30% {
+    content: 'N';
+  }
+  40% {
+    content: 'V';
+  }
+  50% {
+    content: 'F';
+  }
+  60% {
+    content: 'P';
+  }
+  70% {
+    content: 'P';
+  }
+  80% {
+    content: 'P';
+  }
+  90% {
+    content: 'P';
+  }
+  100% {
+    content: 'P';
+  }
+}
+@keyframes changeLetterT {
+  0% {
+    content: 'Q';
+  }
+  10% {
+    content: 'A';
+  }
+  20% {
+    content: 'Z';
+  }
+  30% {
+    content: 'W';
+  }
+  40% {
+    content: 'S';
+  }
+  50% {
+    content: 'F';
+  }
+  60% {
+    content: 'T';
+  }
+  70% {
+    content: 'T';
+  }
+  80% {
+    content: 'T';
+  }
+  90% {
+    content: 'T';
+  }
+  100% {
+    content: 'T';
+  }
+}
+@keyframes changeLetterI {
+  0% {
+    content: 'G';
+  }
+  10% {
+    content: 'H';
+  }
+  20% {
+    content: 'J';
+  }
+  30% {
+    content: 'K';
+  }
+  40% {
+    content: 'L';
+  }
+  50% {
     content: 'U';
+  }
+  60% {
+    content: 'I';
+  }
+  70% {
+    content: 'I';
+  }
+  80% {
+    content: 'I';
+  }
+  90% {
+    content: 'I';
+  }
+  100% {
+    content: 'I';
+  }
+}
+@keyframes changeLetterO {
+  0% {
+    content: 'C';
+  }
+  10% {
+    content: 'V';
+  }
+  20% {
+    content: 'B';
+  }
+  30% {
+    content: 'N';
+  }
+  40% {
+    content: 'M';
+  }
+  50% {
+    content: 'T';
+  }
+  60% {
+    content: 'O';
+  }
+  70% {
+    content: 'O';
+  }
+  80% {
+    content: 'O';
+  }
+  90% {
+    content: 'O';
+  }
+  100% {
+    content: 'O';
   }
 }
 
 .E::after {
   content: 'E';
+  animation: changeLetterE 1s linear 3s infinite alternate;
 }
 .N::after {
   content: 'N';
+  animation: changeLetterN 1s linear 3s infinite alternate;
 }
 .C::after {
   content: 'C';
+  animation: changeLetterC 1s linear 3s infinite alternate;
 }
 .R::after {
   content: 'R';
+  animation: changeLetterR 1s linear 3s infinite alternate;
 }
 .Y::after {
   content: 'Y';
+  animation: changeLetterY 1s linear 3s infinite alternate;
 }
 .P::after {
   content: 'P';
+  animation: changeLetterP 1s linear 3s infinite alternate;
 }
 .T::after {
   content: 'T';
+  animation: changeLetterT 1s linear 3s infinite alternate;
 }
 .I::after {
   content: 'I';
+  animation: changeLetterI 1s linear 3s infinite alternate;
 }
 .O::after {
   content: 'O';
+  animation: changeLetterO 1s linear 3s infinite alternate;
 }
 
-.encryption:hover > .E::after {
-  animation: changeLetter1 1s linear alternate;
+.scale-in-center {
+  -webkit-animation: scale-in-center 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+  animation: scale-in-center 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
-.encryption:hover > .N::after {
-  animation: changeLetter2 1.2s linear 0.2s alternate;
+
+@-webkit-keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
 }
-.encryption:hover > .C::after {
-  animation: changeLetter1 1.3s linear 0.3s alternate;
+@keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
 }
-.encryption:hover > .R::after {
-  animation: changeLetter2 1s linear 0.1s alternate;
+
+.scale-out-center {
+  -webkit-animation: scale-out-center 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53)
+    both;
+  animation: scale-out-center 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
 }
-.encryption:hover > .Y::after {
-  animation: changeLetter1 1s linear 0.2s alternate;
+
+@-webkit-keyframes scale-out-center {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
 }
-.encryption:hover > .P::after {
-  animation: changeLetter2 1s linear 0.3s alternate;
-}
-.encryption:hover > .T::after {
-  animation: changeLetter1 1.1s linear 0.2s alternate;
-}
-.encryption:hover > .I::after {
-  animation: changeLetter2 1s linear 0.15s alternate;
-}
-.encryption:hover > .O::after {
-  animation: changeLetter1 1.2s linear alternate;
+@keyframes scale-out-center {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
 }

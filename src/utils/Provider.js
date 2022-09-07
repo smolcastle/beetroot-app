@@ -1,6 +1,4 @@
-import {
-  resetSignatureData,
-} from '../actions/actions';
+import { resetSignatureData } from '../actions/actions';
 
 class ProviderClass {
   constructor() {

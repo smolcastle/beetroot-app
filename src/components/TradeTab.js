@@ -5,6 +5,9 @@ import erc721ABI from '../abis/erc721.json';
 import seaport from '../utils/seaport';
 import { getAsset, getAssetsInCollection } from '../utils/opensea';
 import ReviewOrder from './ReviewOrder';
+import weth from '../abis/weth.json';
+import { showPopUp } from '../actions/actions';
+import { useDispatch } from 'react-redux';
 
 const TradeTab = ({
   createOrder,
@@ -35,6 +38,8 @@ const TradeTab = ({
   const [userAssets, setUserAssets] = useState([]);
   const [showHelp, setShowHelp] = useState('');
   const [reviewOrder, setReviewOrder] = useState(false);
+
+  const dispatch = useDispatch();
 
   const reset = () => {
     inputRef.current.value = '';
@@ -104,7 +109,8 @@ const TradeTab = ({
       // will throw if tokenId doesn't exist.
       const owner = await erc721Contract.ownerOf(tokenId);
       if (owner != (await seaport.signer.getAddress())) {
-        alert('You are not the owner');
+        dispatch(showPopUp('alert', 'You are not the owner'));
+
         return;
       }
 
@@ -118,6 +124,7 @@ const TradeTab = ({
         {
           id: uuidv4(),
           itemType: 2,
+          name: assetInfo.name,
           token: nftBox,
           identifier: tokenId,
           image_url: assetInfo.image_url ? assetInfo.image_url : ''
@@ -141,7 +148,19 @@ const TradeTab = ({
       setEtherBox('');
       reset();
     }
+
+    const wethContract = new ethers.Contract(
+      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      weth,
+      seaport.signer
+    );
+    const wethBalance = await wethContract.balanceOf(sender);
+
     if (wEtherBox !== '') {
+      if (parseEther(wEtherBox) > wethBalance) {
+        dispatch(showPopUp('alert', 'Insufficient Balance'));
+        return;
+      }
       setOffers([
         ...offers,
         {
@@ -149,6 +168,7 @@ const TradeTab = ({
           name: 'Wrapped Ethereum',
           symbol: 'WETH',
           token: '0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15',
+          enteredAmount: parseFloat(wEtherBox).toFixed(4),
           amount: parseEther(wEtherBox)
         }
       ]);
@@ -181,6 +201,7 @@ const TradeTab = ({
           {
             id: uuidv4(),
             itemType: 2,
+            name: assetInfo.name,
             token: nftBox,
             identifier: tokenId,
             recipient: sender,
@@ -189,7 +210,7 @@ const TradeTab = ({
         ]);
       } catch (error) {
         console.log(error);
-        alert('NFT details not correct');
+        dispatch(showPopUp('alert', 'NFT details not correct'));
       }
     }
 
@@ -216,6 +237,7 @@ const TradeTab = ({
           name: 'Wrapped Ethereum',
           symbol: 'WETH',
           token: '0xDf032Bc4B9dC2782Bb09352007D4C57B75160B15',
+          enteredAmount: parseFloat(wEtherBox).toFixed(4),
           amount: parseEther(wEtherBox),
           recipient: sender
         }
@@ -365,11 +387,15 @@ const TradeTab = ({
           <div className="cart p-2">
             {offers?.map((offer) => {
               return (
-                <>
+                <div key={offer.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {offer.name === 'Ethereum' && <p>Ethereum</p>}
                       {offer.symbol === 'ETH' && <p className="mt-2">ETH</p>}
+                      {offer.name === 'Wrapped Ethereum' && (
+                        <p>Wrapped Ethereum</p>
+                      )}
+                      {offer.symbol === 'WETH' && <p className="mt-2">WETH</p>}
                       <div className="flex items-center justify-between">
                         {offer.identifier && (
                           <img
@@ -424,7 +450,7 @@ const TradeTab = ({
                       <p className="mt-4">{offer.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
@@ -432,12 +458,18 @@ const TradeTab = ({
           <div className="cart p-2">
             {considerations?.map((consideration) => {
               return (
-                <>
+                <div key={consideration.id}>
                   <div className="flex text-[12px] text-gum justify-between items-center mb-4">
                     <div className="flex flex-col justify-center">
                       {consideration.name === 'Ethereum' && <p>Ethereum</p>}
                       {consideration.symbol === 'ETH' && (
                         <p className="mt-2">ETH</p>
+                      )}
+                      {consideration.name === 'Wrapped Ethereum' && (
+                        <p>Wrapped Ethereum</p>
+                      )}
+                      {consideration.symbol === 'WETH' && (
+                        <p className="mt-2">WETH</p>
                       )}
                       <div className="flex items-center justify-between">
                         {consideration.identifier && (
@@ -495,7 +527,7 @@ const TradeTab = ({
                       <p className="mt-4">{consideration.enteredAmount}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
             {considerations.length === 0 && (
@@ -509,7 +541,56 @@ const TradeTab = ({
       </>
     );
   }
+  // get the expiry date from the input field
+  const [inputExpiryDate, setInputExpiryDate] = useState('');
+  const [inputExpiryMonth, setInputExpiryMonth] = useState('');
+  const [inputExpiryYear, setInputExpiryYear] = useState('');
+  const [expiryHours, setExpiryHours] = useState('');
+  const [expiryMinutes, setExpiryMinutes] = useState('');
+  const [expiryDate, setExpiryDate] = useState(0);
+  const [added, setAdded] = useState(false);
+  function addExpiryDate() {
+    // create a date object only if the input fields are not empty
+    if (
+      (parseInt(inputExpiryDate) > 0 &&
+        parseInt(inputExpiryDate) <= 31 &&
+        parseInt(inputExpiryMonth) > 0 &&
+        parseInt(inputExpiryMonth) <= 12 &&
+        inputExpiryYear !== '') ||
+      (parseInt(inputExpiryDate) > 0 &&
+        parseInt(inputExpiryDate) <= 31 &&
+        parseInt(inputExpiryMonth) > 0 &&
+        parseInt(inputExpiryMonth) <= 12 &&
+        inputExpiryYear !== '' &&
+        parseInt(expiryHours) <= 23 &&
+        parseInt(expiryMinutes) <= 59)
+    ) {
+      const d1 = new Date(
+        inputExpiryYear,
+        inputExpiryMonth - 1,
+        inputExpiryDate,
+        expiryHours,
+        expiryMinutes
+      ); // create a new date object with a specified date i.e. expiry date
 
+      setExpiryDate(d1.getTime()); // convert the above obj in milliseconds
+
+      setInputExpiryDate('');
+      setInputExpiryMonth('');
+      setInputExpiryYear('');
+      setExpiryHours('');
+      setExpiryMinutes('');
+    } else {
+      dispatch(showPopUp('alert', 'Please add complete and valid expiry date'));
+    }
+  }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (added) setAdded(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [added]);
   return (
     <>
       <div className="flex flex-col h-[95%] w-[95%] max-h-[95%] justify-evenly">
@@ -548,7 +629,7 @@ const TradeTab = ({
                 </div>
               </div>
               <div className="flex text-[12px] bg-white0 justify-between p-3">
-                <p>{truncate(sender, 14)}</p>
+                <p className="w-[80%]">{truncate(sender, 14)}</p>
                 <button>
                   <svg
                     id="cart1"
@@ -614,9 +695,8 @@ const TradeTab = ({
               <div className="flex text-[12px] bg-white0 justify-between p-3">
                 <input
                   onChange={(e) => setOfferFor(e.target.value)}
-                  className="outline-none text-parsley placeholder-parsley"
+                  className="outline-none text-parsley placeholder-parsley w-[80%]"
                 ></input>
-                {/* <p>{truncate(receiver, 14)}</p> */}
                 <button
                   onClick={() => {
                     showHelp !== 'cart2'
@@ -658,21 +738,104 @@ const TradeTab = ({
               Set a time and set at which this order request will expire. Leave
               field empty to let the order remain active forever.{' '}
             </p>
-            <div className="flex justify-between items-center text-[12px] w-[60%]">
-              <input
-                placeholder="yyyy/mm/dd"
-                className=" w-[90px] outline-none placeholder:text-center bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
-              ></input>
-              <input
-                placeholder="00.00 HRS"
-                className="w-[80px] outline-none bg-parsleytint rounded-md p-2 placeholder-parsley text-parsley"
-              ></input>
+            <div className="flex justify-between items-center text-[12px] w-full">
+              <div className="flex justify-evenly w-[40%] bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  value={inputExpiryYear}
+                  onChange={(e) => {
+                    setInputExpiryYear(e.target.value);
+                  }}
+                  // allow only numbers
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  minLength="4"
+                  maxLength="4"
+                  placeholder="yyyy"
+                  className=" w-[40%] pl-1 text-[12px] text-center border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">-</span>
+                <input
+                  value={inputExpiryMonth}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setInputExpiryMonth(e.target.value);
+                  }}
+                  placeholder="mm"
+                  className=" w-[30%] pl-1 text-[12px] border-none text-center outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley pl-1">-</span>
+                <input
+                  value={inputExpiryDate}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setInputExpiryDate(e.target.value);
+                  }}
+                  placeholder="dd"
+                  className=" w-[30%] pl-1 text-[12px] border-none text-center outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+              </div>
+              <div className="flex items-center w-[25%] bg-parsleytint rounded-[4px] px-2 py-3">
+                <input
+                  value={expiryHours}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength="2"
+                  onChange={(e) => {
+                    setExpiryHours(e.target.value);
+                  }}
+                  placeholder="00"
+                  className="w-[25%] text-[12px] border-none outline-none placeholder:text-center bg-parsleytint placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">.</span>
+                <input
+                  value={expiryMinutes}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setExpiryMinutes(e.target.value);
+                  }}
+                  maxLength="2"
+                  placeholder="00"
+                  className="w-[25%] text-[12px] outline-none bg-parsleytint rounded-[4px] placeholder-parsley text-parsley"
+                ></input>
+                <span className="text-parsley">HRS</span>
+              </div>
+              <button
+                className={`border-[1px] border-parsley border-solid w-[20%] rounded-[2px] bg-parsleytint text-parsley p-2 ${
+                  added ? 'text-[14px]' : ''
+                }`}
+                onClick={() => {
+                  addExpiryDate();
+                  setAdded(true);
+                }}
+              >
+                {added ? 'Added!' : 'Add'}
+              </button>
             </div>
             <button
               className="w-full border-[1px] border-gum border-solid rounded-[4px] text-[14px] text-gum h-10 font-bold mt-5 cursor-pointer"
               onClick={() => {
                 if (offers.length == 0 || considerations.length == 0) {
-                  alert('Order cannot be empty');
+                  dispatch(showPopUp('alert', 'Order cannot be empty'));
                 } else {
                   setReviewOrder(true);
                 }
@@ -717,6 +880,12 @@ const TradeTab = ({
               </div>
               <input
                 placeholder="Token ID"
+                // only numbers
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 value={tokenId}
                 className="w-[30%] text-[12px] rounded-md outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
                 onChange={(e) => setTokenId(e.target.value)}
@@ -753,33 +922,57 @@ const TradeTab = ({
             </div>
             <div className="flex items-center my-3 justify-between">
               <div className="flex rounded-md text-parsley w-[50%] bg-parsleytint items-center px-2 py-1 justify-between">
-                {/* <input placeholder='ETH' className='w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley'></input> */}
-                <select
-                  name="tokens"
-                  value={selectOption}
-                  onChange={handleChange}
-                  id="tokens"
-                  className="w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley"
-                >
-                  <option value="ETH" className="bg-white0 text-gray1">
-                    ETH
-                  </option>
-                  <option value="WETH" className="bg-white0 text-gray1">
+                {offerTrade && (
+                  <p className="w-[70%] text-[12px] outline-none bg-parsleytint p-2 placeholder-parsley text-parsley">
                     WETH
-                  </option>
-                </select>
+                  </p>
+                )}
+                {askTrade && (
+                  <select
+                    name="tokens"
+                    value={selectOption}
+                    onChange={handleChange}
+                    id="tokens"
+                    className="w-[100%] border-none focus:ring-0 text-[12px] outline-none bg-parsleytint p-2 text-parsley"
+                  >
+                    <option value="ETH" className="bg-white0 text-gray1">
+                      ETH
+                    </option>
+                    <option value="WETH" className="bg-white0 text-gray1">
+                      WETH
+                    </option>
+                  </select>
+                )}
               </div>
-              <input
-                list="tokens"
-                placeholder="Amount"
-                ref={inputRef}
-                className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
-                onChange={(e) => {
-                  selectOption === 'ETH'
-                    ? setEtherBox(e.target.value)
-                    : setWEtherBox(e.target.value);
-                }}
-              />
+              {askTrade && (
+                <input
+                  list="tokens"
+                  // allow only numbers and .
+                  onKeyPress={(e) => {
+                    if (!/[0-9.]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="Amount"
+                  ref={inputRef}
+                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                  onChange={(e) => {
+                    selectOption === 'ETH'
+                      ? setEtherBox(e.target.value)
+                      : setWEtherBox(e.target.value);
+                  }}
+                />
+              )}
+              {offerTrade && (
+                <input
+                  placeholder="Amount"
+                  ref={inputRef}
+                  className="rounded-md text-[12px] w-[30%] outline-none bg-parsleytint p-3 placeholder-parsley text-parsley"
+                  onChange={(e) => {
+                    setWEtherBox(e.target.value);
+                  }}
+                />
+              )}
               <svg
                 className="cursor-pointer"
                 onClick={
@@ -812,7 +1005,7 @@ const TradeTab = ({
             </div>
             <div className="h-[90%] max-h-[500px] overflow-y-scroll">
               <CartItems />
-              <div className="bg-gray6 rounded-[4px]">
+              {/* <div className="bg-gray6 rounded-[4px]">
                 {nftBox !== '' &&
                   //instead of using includes() which check whether a string 'includes' a sub string at any position, use startsWith()
                   userAssets
@@ -869,7 +1062,7 @@ const TradeTab = ({
                         </div>
                       </div>
                     ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -888,6 +1081,8 @@ const TradeTab = ({
           setOffers={setOffers}
           setConsiderations={setConsiderations}
           setOrderCreated={setOrderCreated}
+          expiryDate={expiryDate}
+          truncate={truncate}
         />
       )}
     </>

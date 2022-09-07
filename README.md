@@ -1,4 +1,4 @@
-# Beetroot - NFT Marketplace for Negotiators
+# Beetroot - wallet-to-wallet messaging platform
 
 ### To start development
 
@@ -10,7 +10,7 @@ Requirements:
 ###### Installing dependencies
 
 ```bash
-npm install --legacy-peer-deps
+npm install
 ```
 
 ###### Run setup

@@ -9,7 +9,6 @@ import twitter_f from '../img/twitter_footer.png';
 import discord_f from '../img/discord_footer.png';
 import medium_f from '../img/medium_footer.png';
 import artboard from '../img/Artboard.png';
-import asset2 from '../img/asset2.png';
 import chatImg from '../img/chat_img.png';
 import tradeImg from '../img/trade_img.png';
 import { Link } from 'react-router-dom';
@@ -20,13 +19,17 @@ function FAQList({ id, title, answer }) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-[600px] my-4">
+      <div
+        onClick={() => {
+          showFAQ === null ? setShowFAQ(id) : setShowFAQ(null);
+        }}
+        className="flex items-center justify-between w-[600px] my-4 cursor-pointer"
+      >
         <p className="text-parsley font-questa text-[24px] font-medium">
           {title}
         </p>
         {!showFAQ && (
           <svg
-            onClick={() => setShowFAQ(id)}
             className="cursor-pointer"
             width="24"
             height="24"
@@ -50,7 +53,6 @@ function FAQList({ id, title, answer }) {
         )}
         {showFAQ && (
           <svg
-            onClick={() => setShowFAQ(null)}
             className="cursor-pointer"
             width="24"
             height="24"
@@ -84,22 +86,22 @@ function FAQList({ id, title, answer }) {
 function LandingPage() {
   return (
     <div className="h-full w-screen bg-white0 font-rubrik flex flex-col relative md:py-0 md:px-0 overflow-x-hidden">
-      <section className="flex h-full justify-between lg:px-24 mb-32">
-        <div className="flex flex-col w-[60%] lg:pt-24">
+      <section className="flex h-full justify-between ">
+        <div className="flex absolute flex-col w-[55%] lg:pl-24 mb-32 lg:pt-24">
           <img src={logo4} className="w-[48px]" />
-          <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[90%]">
-            NFT marketplace for negotiators
+          <h1 className="font-questa text-gray1 lg:text-[100px] font-medium mt-16 leading-[100px] w-[100%]">
+            Messaging for NFT Traders.
           </h1>
-          <div className="mt-16">
-            <Link to="/chat">
-              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px]">
-                {'< LAUNCH APP />'}
+          <div className="mt-16 z-20">
+            <Link to="/chat" target="_blank" rel="noopener noreferrer">
+              <button className="bg-gumtint text-gum text-[24px] font-extrabold w-[250px] px-4 py-2 rounded-[4px] ">
+                {'< Launch App />'}
               </button>
             </Link>
           </div>
           <div className="flex justify-between mt-4">
-            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor">
-              Read Launch Announcement
+            <button className="bg-parsleytint text-parsley text-[14px] font-medium w-[250px] h-[40px] px-4 py-2 rounded-[4px] eye_cursor z-20">
+              Read Announcement
             </button>
             <div className="w-[370px] flex flex-col">
               <p className="text-gray1 text-right text-[36px] font-light">
@@ -109,13 +111,13 @@ function LandingPage() {
             </div>
           </div>
           <div className="flex justify-between">
-            <div>
+            <div className="z-20">
               <a
                 href="https://twitter.com/beetrootai"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img className="w-[30px] cursor-pointer" src={twitter} />
+                <img className="w-[30px] cursor-pointer " src={twitter} />
               </a>
               <img
                 className="w-[30px] cursor-pointer eye_cursor mt-4"
@@ -132,35 +134,35 @@ function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="w-[30%] -mb-32">
-          <div className="scroll-card overflow-y-scroll h-full relative">
+        <div className="w-[100%] flex justify-end scroll-card overflow-y-scroll lg:pr-24 mb-32 z-10 -mb-32">
+          <div className=" h-full relative">
             <img src={ellipse1} className="w-[200px] translate-y-64" />
             <div className="translate-y-[40%]">
               <p className="reenie-beanie text-[32px] text-gum font-medium">
                 Chat to negotiate deals...
               </p>
               <img src={chatImg} className="mt-6" />
-              <p className="reenie-beanie text-[32px] text-gum font-medium mt-24">
+              <p className="reenie-beanie text-[32px] w-[450px] text-gum font-medium mt-24">
                 Create orders by adding NFTS and coins into individual carts...
               </p>
               <img src={tradeImg} />
-              <div className="h-[500px]"></div>
+              <div className="h-[300px]"></div>
             </div>
           </div>
         </div>
       </section>
-      <section className="home-section bg-gray7 px-24 pb-24 mb-20">
-        <h1 className="text-[92px] font-medium font-questa text-gum mt-32">
+      <section className="home-section bg-gray7 px-24 pb-24 z-20 mb-20">
+        <h1 className="text-[92px] font-medium font-questa text-gum mt-32 text-center">
           Discuss every deal that you do.
         </h1>
-        <p className="text-[20px] text-gum font-light">
-          Due to non-fungible nature of NFTs, their fair prices are
-          hard to determine.
+        <p className="text-[20px] text-gum font-light text-center">
+          Due to non-fungible nature of NFTs, their fair prices are hard to
+          determine.
         </p>
         <div className="flex flex-col items-center justify-center">
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[550px] ">
-              <div className="encryption grid grid-cols-5 gap-5 bg-gumlight/[0.5] p-16 rounded-[8px] hover:bg-gumlight">
+              <div className="encryption font-mono grid grid-cols-5 gap-5 p-16 rounded-[8px] bg-gumlight">
                 <div className="E bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px] "></div>
                 <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
                 <div className="C bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
@@ -173,22 +175,22 @@ function LandingPage() {
                 <div className="N bg-gumtint text-gum text-[48px] font-medium text-center rounded-[6px]"></div>
               </div>
             </div>
-            <div className="w-[400px]">
-              <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
+            <div className="w-auto">
+              <h1 className="font-questa text-[48px] font-bold text-gray2 max-w-[300px]">
                 Wallet To Wallet Deals
               </h1>
-              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+              <p className="max-w-[350px] text-[16px] text-gray2 font-normal mt-4">
                 Negotiating deals is hard and time consuming. You can never be
                 certain that the other user is not scamming you and owns the
                 particular NFT. We make it easy to verify the ownership of NFTs.
               </p>
-              <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
+              <p className="max-w-[350px] text-[16px] text-gray2 font-normal mt-4">
                 You can use Beetroot to send encrypted deals to other wallets
                 which only they can see.
               </p>
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
             <div className="w-[400px]">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
                 Buy With Your NFTs
@@ -199,20 +201,35 @@ function LandingPage() {
                 multiple trades and paying high fees.
               </p>
               <p className="w-[350px] text-[16px] text-gray2 font-normal mt-4">
-                With Beetroot, you can use digital currencies and/or NFTs
-                to buy other NFTs in a single trade.
+                With Beetroot, you can use digital currencies and/or NFTs to buy
+                other NFTs in a single trade.
               </p>
             </div>
             <div className="w-[550px] bg-gumlight/[0.5] p-16 rounded-[8px]">
               <img src={artboard} />
             </div>
           </div>
-          <div className="flex mt-40 items-center justify-between w-[70%]">
-            <div className="w-[550px] h-[300px] bg-gumlight/[0.5]  rounded-[8px]">
-              <img
-                src={asset2}
-                className="h-[350px] place-self-end -mt-[50px]"
-              />
+          <div className="flex mt-40 items-center justify-evenly w-[100%]">
+            <div className="w-[550px] h-[300px] bg-gumlight/[0.5] flex justify-center items-center rounded-[16px]">
+              <div className="bg-gumtint w-[50%] text-center p-4 rounded-[4px]">
+                <h1 className="text-gum font-rubrikExtraB text-[32px] font-extrabold">
+                  COUNTER
+                </h1>
+              </div>
+
+              <svg
+                className="-ml-[48px] mt-[72px]"
+                width="32"
+                height="36"
+                viewBox="0 0 32 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M31.3669 17.6607L0.408119 0.166107L8.48704 35.1594L14.8782 23.604L23.3378 34.9789L27.0678 32.1263L18.5926 20.7304L31.3669 17.6607Z"
+                  fill="#AB224E"
+                />
+              </svg>
             </div>
             <div className="w-[400px] ">
               <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
@@ -231,9 +248,9 @@ function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="mb-36 px-24">
-        <div className="flex px-24 justify-between">
-          <div className="w-[50%]">
+      <section className="mb-36 px-24 w-[100%]">
+        <div className="flex justify-evenly ">
+          <div className="">
             <h1 className="font-questa text-[48px] font-bold text-gray2 w-[300px]">
               FAQs
             </h1>
@@ -241,27 +258,33 @@ function LandingPage() {
               <FAQList
                 id={1}
                 title={'How are messages encrypted?'}
-                answer={''}
+                answer={'Coming soon.'}
               />
               <FAQList
                 id={2}
                 title={'How does NFT trading work on Beetroot?'}
-                answer={''}
+                answer={'Coming soon.'}
               />
-              <FAQList id={3} title={'What are NFTS?'} answer={''} />
+              <FAQList
+                id={3}
+                title={'What are NFTS?'}
+                answer={'Coming soon.'}
+              />
               <FAQList
                 id={4}
                 title={'Can I receive notifications when I’m offline?'}
                 answer={
-                  'Yes. You can receive notifications on your telegram, discord or email even when you are offline.'
+                  'Yes. You can choose to receive notifications on youur email.'
                 }
               />
             </div>
           </div>
-          <div className="w-[40%] mt-16 text-[18px] text-gray1 font-normal">
+          <div className="w-[400px] mt-16 text-[18px] text-gray1 font-normal ml-16">
             <p className="w-[200px] ">{"Don't see what you're looking for?"}</p>
             <p className="w-[200px] mt-4">Write to us at </p>
-            <span className="text-gum">hello@beetroot.ai</span>
+            <a href="mailto:hello@beetroot.ai">
+              <span className="text-gum">hello@beetroot.ai</span>
+            </a>
             <p className="w-[200px]">
               and we will try our best to answer your query at the earliest.
             </p>
@@ -279,8 +302,8 @@ function LandingPage() {
         </div>
       </section>
       <footer className="mb-20 px-24">
-        <div className="flex flex-col px-24">
-          <div className="flex justify-between">
+        <div className="flex justify-evenly w-[100%]">
+          <div className="flex flex-col">
             <div className="bg-gumtint rounded-[8px] w-[400px] p-8 text-gum">
               <h1 className="text-[24px] font-bold">Join the community!</h1>
               <p className="text-[14px] font-normal w-[250px] mt-4">
@@ -299,18 +322,23 @@ function LandingPage() {
                 <img className="cursor-pointer eye_cursor" src={medium_f} />
               </div>
             </div>
-            <div className="footer-section w-[800px] h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12">
+            <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
+          </div>
+          <Link
+            className="w-[50%] ml-16"
+            to="/chat"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="footer-section  h-[250px] rounded-[8px] flex flex-col justify-between py-8 px-12 cursor-pointer">
               <h1 className="font-bold text-[24px] text-gray6">
                 An NFT Marketplace for negotiators
               </h1>
-              <Link to="/chat">
-                <button className="text-gray6 text-[14px] font-medium">
-                  {'< LAUNCH APP />'}
-                </button>
-              </Link>
+              <h1 className="text-gray6 text-[14px] font-medium">
+                {'< Launch App />'}
+              </h1>
             </div>
-          </div>
-          <p className="text-gray1 text-[14px] mt-4">&copy; Beetroot 2022</p>
+          </Link>
         </div>
       </footer>
     </div>
