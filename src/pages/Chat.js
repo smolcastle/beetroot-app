@@ -341,7 +341,6 @@ function User({
   sender,
   receiver,
   dispatch,
-  index,
   setSelected,
   selected,
   setReceiver,
@@ -441,7 +440,6 @@ function User({
         )}
 
         <li
-          key={index}
           className={`flex h-[80px] justify-center rounded-[8px] items-center text-gray1 divide-y mb-2 text-center ${
             selected === receiver ? 'bg-gray6' : ' '
           }`}
@@ -638,14 +636,14 @@ function Users({
             if (contact.from === sender) {
               const receiver = contact.to;
               return (
-                <div key={uuidv4()}>
+                // <div key={uuid.v4()}> assigns new key for each <div> every time. this causes component to re-render
+                <div key={index}>
                   <User
                     key={contact}
                     sender={sender}
                     receiver={receiver}
                     dispatch={dispatch}
                     selected={selected}
-                    index={index}
                     setSelected={setSelected}
                     setReceiver={setReceiver}
                     setSearchTerm={setSearchTerm}
