@@ -15,13 +15,13 @@ export function PopUpBox() {
 
   return (
     <div
-      className={`w-[300px] h-[50px] overflow-x-hidden scale-in-center px-2 pb-2 justify-around font-rubrik flex flex-col rounded-[4px] shadow-lg absolute right-12 bottom-12 z-50 ${
+      className={`w-[300px] h-[50px] overflow-x-hidden scale-in-center p-2 px-3 flex justify-between items-center font-rubrik rounded-[4px] shadow-lg absolute right-12 bottom-12 z-50 ${
         category === 'alert' ? 'bg-gumtint' : 'bg-parsleytint'
       }
       `}
     >
+      <h1 className="text-[14px] text-gray1 ">{msgTitle}</h1>
       <button
-        className="place-self-end "
         onClick={() => {
           dispatch(hidePopUp());
         }}
@@ -40,7 +40,6 @@ export function PopUpBox() {
           <path d="M12.5254 12.5254L7.47461 7.47461" strokeLinecap="round" />
         </svg>
       </button>
-      <h1 className="text-[14px] text-gray1 ">{msgTitle}</h1>
     </div>
   );
 }
