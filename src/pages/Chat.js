@@ -504,6 +504,7 @@ function Users({
   useEffect(() => {
     async function updateState() {
       setSelected((await contacts.length) > 0 ? contacts[0].to : '');
+      setReceiver(selected);
     }
     updateState();
   }, [sender, contacts]);
@@ -842,10 +843,12 @@ function SendMessageSection({ sender, receiver, dispatch }) {
       className="mt-2"
       onSubmit={(e) => {
         e.preventDefault();
-        setMsgString('');
-        saveMessage(message, sender, receiver, dispatch);
-        userExists();
-        createLastMsgTime(sender, receiver);
+        if (message !== '') {
+          setMsgString('');
+          saveMessage(message, sender, receiver, dispatch);
+          userExists();
+          createLastMsgTime(sender, receiver);
+        }
       }}
     >
       {receiver === '' && (
@@ -866,8 +869,12 @@ function SendMessageSection({ sender, receiver, dispatch }) {
             className="w-[90%] h-full border-none outline-none focus:ring-0 text-black placeholder:text-black/[0.5] font-inter rounded-sm bg-gray6 pl-1"
             placeholder={'Write a message...'}
             onChange={(e) => setMsgString(e.target.value)}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && saveMessage();
+            onKeyPress={(e) => {
+              if (/[ ]/.test(e.key)) {
+                e.preventDefault();
+              } else {
+                e.key === 'Enter' && saveMessage();
+              }
             }}
           />
           <button
