@@ -4,6 +4,7 @@ import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore';
 import { fetchUserAssets } from '../utils/opensea';
 import { showPopUp } from '../actions/actions';
 import { useDispatch } from 'react-redux';
+import { createIcon } from '@download/blockies';
 
 const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   const { v4: uuidv4 } = require('uuid'); // to generate unique ids
@@ -15,6 +16,11 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
 
   const dispatch = useDispatch();
 
+  var profileIcon = createIcon({
+    size: 15,
+    scale: 3
+  }).toDataURL();
+
   async function updateUserOnboarded() {
     if (later != null || email != null || selectImage !== '') {
       try {
@@ -23,7 +29,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
           has_onboarded: true,
           email: email,
           verified: true,
-          profilePic: selectImage
+          profilePic: selectImage !== '' ? selectImage : profileIcon
         });
         setOnboarded(true);
       } catch (e) {
