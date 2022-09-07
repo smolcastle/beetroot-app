@@ -1,2 +1,2 @@
 touch .env
-echo "OPENSEA_KEY=$1" >> .env
+echo "REACT_APP_OPENSEA_KEY=$1" >> .env
