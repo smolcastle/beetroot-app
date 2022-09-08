@@ -6,7 +6,8 @@ export default function SigningModal({
   sender,
   setSignModalState,
   dispatch,
-  chainId
+  chainId,
+  signatureAddress
 }) {
   const { data: signer } = useSigner();
 
@@ -26,7 +27,13 @@ export default function SigningModal({
             <div className="relative p-6 flex-auto">
               <button
                 onClick={() => {
-                  signMessage(sender, dispatch, chainId, signer);
+                  signMessage(
+                    signatureAddress,
+                    sender,
+                    dispatch,
+                    chainId,
+                    signer
+                  );
                   setSignModalState(false);
                 }}
                 type="button"

@@ -20,7 +20,7 @@ const Onboarding = ({ onboarded, setOnboarded, sender, truncate, users }) => {
   var profileIcon = createIcon({
     size: 15,
     scale: 3
-  }).toDataURL();
+  }).toDataURL(); //profileIcon stores a <canvas>. so convert it to an url using toDataURL()
 
   async function updateUserOnboarded() {
     if (later !== false || email != null) {
