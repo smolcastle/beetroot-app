@@ -60,7 +60,6 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
       receiver: receiver.toLowerCase(),
       queue_id:
         sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
-      profilePicUrl: 'https://i.pravatar.cc/150?img=3',
       timestamp: serverTimestamp()
     });
     await addDoc(collection(db, `address book/ ${receiver}/texts`), {
@@ -70,7 +69,6 @@ async function saveMessage(messageText, sender, receiver, dispatch) {
       receiver: receiver.toLowerCase(),
       queue_id:
         sender > receiver ? `${receiver}_${sender}` : `${sender}_${receiver}`,
-      profilePicUrl: 'https://i.pravatar.cc/150?img=3',
       timestamp: serverTimestamp()
     });
   } catch (error) {
@@ -153,13 +151,19 @@ async function getSignatureData(sender, dispatch) {
   }
 }
 
-async function signMessage(sender, dispatch, chainId, signer) {
+async function signMessage(
+  signatureAddress,
+  sender,
+  dispatch,
+  chainId,
+  signer
+) {
   try {
     dispatch(showLoader());
     const nonce = generateNonce();
     const message = new SiweMessage({
       domain: window.location.host,
-      address: sender,
+      address: signatureAddress,
       statement: 'Sign in with Ethereum to the app.',
       uri: window.location.origin,
       version: '1',
@@ -1186,6 +1190,7 @@ export default function Chat() {
             <SigningModal
               signMessage={signMessage}
               sender={sender}
+              signatureAddress={result}
               setSignModalState={setSignModalState}
               dispatch={dispatch}
               chainId={chain.id}
